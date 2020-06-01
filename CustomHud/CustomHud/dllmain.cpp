@@ -8,9 +8,7 @@
 #pragma comment(lib, "d3dx9.lib")
 #include "detours.h"
 #pragma comment(lib, "detours.lib")
-#include "Types.h"
-#include <DxErr.h>
-#pragma comment(lib, "dxerr.lib")
+#include "CarHud.h"
 
 using namespace std;
 
@@ -19,90 +17,15 @@ HINSTANCE DllHandle;
 typedef HRESULT(__stdcall* endScene)(IDirect3DDevice9* pDevice);
 endScene pEndScene;
 
-map<HUD, LPDIRECT3DTEXTURE9> Textures;
-LPDIRECT3DTEXTURE9 GetTexture(IDirect3DDevice9* pDevice, HUD hudPart)
-{
-	LPDIRECT3DTEXTURE9 pTexture = nullptr;
-	for (auto& x : Textures)
-	{
-		if (x.first == hudPart)
-		{
-			return x.second;
-		}
-	}
-
-	if (hudPart == HUD::Background)
-	{
-		if (FAILED(D3DXCreateTextureFromFile(pDevice, "scripts\\CustomHUD\\background.dds", &pTexture)))
-		{
-			return nullptr;
-		}
-	}
-
-	Textures.insert({ hudPart, pTexture });
-
-	return pTexture;
-}
-
-map<HUD, ID3DXSprite*> Sprites;
-void DrawSprite(IDirect3DDevice9* pDevice, HUD hudPart)
-{
-	ID3DXSprite* pSprite = nullptr;
-	for (auto& x : Sprites)
-	{
-		if (x.first == hudPart)
-		{
-			pSprite = x.second;
-		}
-	}
-
-	if (pSprite == nullptr)
-	{
-		if (!FAILED(D3DXCreateSprite(pDevice, &pSprite)))
-		{
-			Sprites.insert({ hudPart, pSprite });
-		}
-	}
-
-	if (pSprite != nullptr)
-	{
-		RECT rect;
-		rect.left = 0;
-		rect.top = 0;
-		rect.right = 100;
-		rect.bottom = 100;
-
-		D3DXVECTOR3 center;
-		center.x = 0;
-		center.y = 0;
-		center.z = 0;
-
-		D3DXVECTOR3 position;
-		position.x = 100;
-		position.y = 100;
-
-		D3DCOLOR color = D3DCOLOR_RGBA(255, 255, 255, 255);
-
-		//if (FAILED(pSprite->Draw(pTexture, &rect, &center, &position, color)))
-		auto pTexture = GetTexture(pDevice, hudPart);
-		if (pTexture != nullptr)
-		{
-			pSprite->Begin(D3DXSPRITE_ALPHABLEND);
-			HRESULT hr = pSprite->Draw(pTexture, NULL, NULL, NULL, color);
-			const char* a= DXGetErrorString(hr);
-			const char* b = DXGetErrorDescription(hr);
-			if (FAILED(hr))
-			{
-				center.x = 1;
-			}
-			pSprite->End();
-		}
-	}
-}
-
+CarHud carHud;
 HRESULT __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 {
-	DrawSprite(pDevice, HUD::Background);
+	if (!carHud.IsInit())
+	{
+		carHud.Init(pDevice, "CustomHUD");
+	}
+
+	carHud.Draw();
 
 	return pEndScene(pDevice); // call original endScene
 }
@@ -145,9 +68,8 @@ DWORD __stdcall EjectThread(LPVOID lpParameter)
 }
 
 
-DWORD WINAPI Menue(HINSTANCE hModule)
+DWORD WINAPI Init(HINSTANCE hModule)
 {
-
 	hookEndScene();
 
 	return 0;
@@ -166,7 +88,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		if ((base + nt->OptionalHeader.AddressOfEntryPoint + (0x400000 - base)) == 0x87E926) // Check if .exe file is compatible - Thanks to thelink2012 and MWisBest
 		{
 			//hookEndScene();
-			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Menue, NULL, 0, NULL);
+			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Init, NULL, 0, NULL);
 		}
 		else
 		{
