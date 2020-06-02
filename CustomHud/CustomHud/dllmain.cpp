@@ -44,11 +44,13 @@ HRESULT __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* 
 	return pReset(pDevice, pPresentationParameters);
 }
 
-void hookEndScene()
+bool hookEndScene()
 {
 	IDirect3D9* pD3D = Direct3DCreate9(D3D_SDK_VERSION); // create IDirect3D9 object
-	if (!pD3D)
-		return;
+	if (!pD3D) 
+	{
+		return false;
+	}
 
 	D3DPRESENT_PARAMETERS d3dparams = { 0 };
 	d3dparams.SwapEffect = D3DSWAPEFFECT_DISCARD;
@@ -60,7 +62,7 @@ void hookEndScene()
 	HRESULT result = pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dparams.hDeviceWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dparams, &pDevice);
 	if (FAILED(result) || !pDevice) {
 		pD3D->Release();
-		return;
+		return false;
 	}
 	//if device creation worked out -> lets get the virtual table:
 	void** vTable = *reinterpret_cast<void***>(pDevice);
@@ -72,6 +74,8 @@ void hookEndScene()
 
 	pDevice->Release();
 	pD3D->Release();
+
+	return true;
 }
 
 
@@ -82,10 +86,38 @@ DWORD __stdcall EjectThread(LPVOID lpParameter)
 	return 0;
 }
 
+auto Game_DetermineHudFeatures = (int(__thiscall*)(void* _this, signed int var1))0x005DC4B0;
+
+bool GetBit(int n, int k)
+{
+	return (n & (1 << k)) >> k;
+}
+
+void ClearBit(int& n, int k)
+{
+	n &= ~(1 << k);
+}
+
+int __fastcall DetermineHudFeatures(void* _this, int v1, int v2)
+{
+	int result = Game_DetermineHudFeatures(_this, v2);
+
+	CarHud::ShowHUD = GetBit(result, 1);
+
+	ClearBit(result, 1);
+	ClearBit(result, 11);
+	ClearBit(result, 14);
+	ClearBit(result, 18);
+
+	return result;
+}
 
 DWORD WINAPI Init(HINSTANCE hModule)
 {
-	hookEndScene();
+	if (hookEndScene())
+	{
+		injector::MakeCALL(0x005E6F7B, DetermineHudFeatures, true);
+	}
 
 	return 0;
 }

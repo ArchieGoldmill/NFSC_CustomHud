@@ -5,6 +5,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "DALVehicleCarbon.h"
+#include "injector/injector.hpp"
 
 using namespace std;
 
@@ -52,6 +53,8 @@ private:
 	HudTexture tachArrow;
 
 public:
+	static bool ShowHUD;
+
 	CarHud(IDirect3DDevice9* pDevice, string path)
 	{
 		this->pDevice = pDevice;
@@ -69,9 +72,9 @@ public:
 
 	void Draw()
 	{
-		if (!this->IsHudVisible() || !this->IsPlayerControlling())
+		if (!this->IsHudVisible() || !this->IsPlayerControlling() || !CarHud::ShowHUD)
 		{
-			//return;
+			return;
 		}
 
 		this->SetupTachNumbers();
@@ -207,3 +210,5 @@ private:
 		return res != 0;
 	}
 };
+
+bool CarHud::ShowHUD = false;
