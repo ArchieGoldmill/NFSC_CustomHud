@@ -20,6 +20,13 @@ public:
 	D3DCOLOR color;
 	D3DXVECTOR3 position;
 
+	HudTexture()
+	{
+		this->position.x = 0;
+		this->position.y = 0;
+		this->position.z = 0;
+	}
+
 	void Draw()
 	{
 		this->sprite->Begin(D3DXSPRITE_ALPHABLEND);
@@ -56,10 +63,10 @@ public:
 
 	void Draw()
 	{
-		/*if (!this->IsHudVisible() || !this->IsPlayerControlling())
+		if (!this->IsHudVisible() || !this->IsPlayerControlling())
 		{
 			return;
-		}*/
+		}
 
 		this->SetupTachNumbers();
 		this->tachNumbers.Draw();
@@ -83,7 +90,20 @@ private:
 		position.x = 0;
 		position.y = 0;
 
-		this->Setup(&this->tachNumbers, targetRes, D3DCOLOR_RGBA(150, 227, 255, 255), center, position, 0);
+		float rpm;
+		DALVehicle_GetRPM(NULL, &rpm, 0);
+
+		float maxrpm;
+		DALVehicle_GetRedLine(NULL, &maxrpm, 0);
+
+		D3DCOLOR color = D3DCOLOR_RGBA(150, 227, 255, 255);
+
+		if (maxrpm - rpm < 200)
+		{
+			color = D3DCOLOR_RGBA(255, 0, 0, 255);
+		}
+
+		this->Setup(&this->tachNumbers, targetRes, color, center, position, 0);
 	}
 
 	void SetupTachArrow()
@@ -93,56 +113,61 @@ private:
 		targetRes.y = 10;
 
 		D3DXVECTOR2 center;
-		center.x = 0;
-		center.y = 0;
+		center.x = 1.15;
+		center.y = 0.5;
 
 		D3DXVECTOR2 position;
-		position.x = 172;
-		position.y = 180;
+		position.x = 193;
+		position.y = 179;
 
-		this->Setup(&this->tachArrow, targetRes, D3DCOLOR_RGBA(200, 0, 0, 255), center, position, 30);
+		float rpm;
+		DALVehicle_GetRPM(NULL, &rpm, 0);
+
+		float rotation = -30 + 24 * rpm / 1000.0;
+
+		this->Setup(&this->tachArrow, targetRes, D3DCOLOR_RGBA(200, 0, 0, 255), center, position, rotation);
 	}
 
-	void Setup(HudTexture* texture, D3DXVECTOR2 targetRes, D3DCOLOR color, D3DXVECTOR2 center, D3DXVECTOR2 position, float rotation)
+	void Setup(HudTexture* texture, D3DXVECTOR2 targetRes, D3DCOLOR color, D3DXVECTOR2 centerPercent, D3DXVECTOR2 positionOffset, float rotation)
 	{
 		texture->color = color;
-
-		D3DXVECTOR2 realCenter;
-		realCenter.x = targetRes.x * center.x;
-		realCenter.y = targetRes.y * center.y;
 
 		D3DXVECTOR2 scale;
 		scale.x = targetRes.x / texture->info.Width;
 		scale.y = targetRes.y / texture->info.Height;
 
-		D3DXMATRIX matrix;
-		D3DXMatrixTransformation2D(&matrix, &center, NULL, &scale, &realCenter, degToRad(rotation), NULL);
-		texture->sprite->SetTransform(&matrix);
+		D3DXVECTOR2 center;
+		center.x = targetRes.x * centerPercent.x;
+		center.y = targetRes.y * centerPercent.y;
 
 		RECT wndSize = GetWindowSize();
-		texture->position.x = (wndSize.right - targetRes.x - position.x) / scale.x;
-		texture->position.y = (wndSize.bottom - targetRes.y - position.y) / scale.y;
-		texture->position.z = 0;
+		D3DXVECTOR2 position;
+		position.x = wndSize.right - targetRes.x - positionOffset.x;
+		position.y = wndSize.bottom - targetRes.y - positionOffset.y;
+
+		D3DXMATRIX matrix;
+		D3DXMatrixTransformation2D(&matrix, NULL, NULL, &scale, &center, degToRad(rotation), &position);
+		texture->sprite->SetTransform(&matrix);
 	}
 
-	void CreateHudTexture(HudTexture * hudTexture, string path)
+	void CreateHudTexture(HudTexture* hudTexture, string path)
 	{
 		this->LoadTexture(&hudTexture->texture, path);
 		this->GetTextureInfo(&hudTexture->info, path);
 		this->CreateSprite(&hudTexture->sprite);
 	}
 
-	bool LoadTexture(IDirect3DTexture9 * *pTexture, string path)
+	bool LoadTexture(IDirect3DTexture9** pTexture, string path)
 	{
 		return FAILED(D3DXCreateTextureFromFile(this->pDevice, path.c_str(), pTexture));
 	}
 
-	bool  GetTextureInfo(D3DXIMAGE_INFO * info, string path)
+	bool  GetTextureInfo(D3DXIMAGE_INFO* info, string path)
 	{
 		return FAILED(D3DXGetImageInfoFromFile(path.c_str(), info));
 	}
 
-	bool CreateSprite(ID3DXSprite * *pSprite)
+	bool CreateSprite(ID3DXSprite** pSprite)
 	{
 		return FAILED(D3DXCreateSprite(this->pDevice, pSprite));
 	}
