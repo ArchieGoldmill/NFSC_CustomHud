@@ -35,6 +35,12 @@ public:
 
 		this->sprite->End();
 	}
+
+	void Release()
+	{
+		this->sprite->Release();
+		this->texture->Release();
+	}
 };
 
 class CarHud
@@ -46,7 +52,7 @@ private:
 	HudTexture tachArrow;
 
 public:
-	void Init(IDirect3DDevice9* pDevice, string path)
+	CarHud(IDirect3DDevice9* pDevice, string path)
 	{
 		this->pDevice = pDevice;
 
@@ -65,7 +71,7 @@ public:
 	{
 		if (!this->IsHudVisible() || !this->IsPlayerControlling())
 		{
-			return;
+			//return;
 		}
 
 		this->SetupTachNumbers();
@@ -73,6 +79,12 @@ public:
 
 		this->SetupTachArrow();
 		this->tachArrow.Draw();
+	}
+
+	~CarHud()
+	{
+		this->tachArrow.Release();
+		this->tachNumbers.Release();
 	}
 
 private:

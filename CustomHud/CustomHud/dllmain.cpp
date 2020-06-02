@@ -14,20 +14,34 @@ using namespace std;
 
 HINSTANCE DllHandle;
 
+typedef HRESULT(__stdcall* reset)(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPresentationParameters);
+reset pReset;
+
 typedef HRESULT(__stdcall* endScene)(IDirect3DDevice9* pDevice);
 endScene pEndScene;
 
-CarHud carHud;
+CarHud* carHud = NULL;
 HRESULT __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 {
-	if (!carHud.IsInit())
+	if (carHud == NULL)
 	{
-		carHud.Init(pDevice, "CustomHUD");
+		carHud = new CarHud(pDevice, "CustomHUD");
 	}
 
-	carHud.Draw();
+	carHud->Draw();
 
-	return pEndScene(pDevice); // call original endScene
+	return pEndScene(pDevice);
+}
+
+HRESULT __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPresentationParameters)
+{
+	if (carHud != NULL)
+	{
+		delete carHud;
+		carHud = NULL;
+	}
+
+	return pReset(pDevice, pPresentationParameters);
 }
 
 void hookEndScene()
@@ -54,6 +68,7 @@ void hookEndScene()
 	//now detour:
 
 	pEndScene = (endScene)DetourFunction((PBYTE)vTable[42], (PBYTE)hookedEndScene);
+	pReset = (reset)DetourFunction((PBYTE)vTable[16], (PBYTE)hookedReset);
 
 	pDevice->Release();
 	pD3D->Release();
