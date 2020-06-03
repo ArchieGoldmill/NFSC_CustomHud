@@ -41,6 +41,8 @@ HRESULT __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* 
 		carHud = NULL;
 	}
 
+	TextureInfo::Release();
+
 	return pReset(pDevice, pPresentationParameters);
 }
 
