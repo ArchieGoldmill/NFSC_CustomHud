@@ -5,7 +5,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "DALVehicleCarbon.h"
-#include "injector/injector.hpp"
+#include <map>
 
 using namespace std;
 
@@ -19,20 +19,18 @@ public:
 	IDirect3DTexture9* texture;
 	D3DXIMAGE_INFO info;
 	D3DCOLOR color;
-	D3DXVECTOR3 position;
+	RECT* Rect;
 
 	HudTexture()
 	{
-		this->position.x = 0;
-		this->position.y = 0;
-		this->position.z = 0;
+		this->Rect = NULL;
 	}
 
 	void Draw()
 	{
 		this->sprite->Begin(D3DXSPRITE_ALPHABLEND);
 
-		this->sprite->Draw(this->texture, NULL, NULL, &this->position, this->color);
+		this->sprite->Draw(this->texture, this->Rect, NULL, NULL, this->color);
 
 		this->sprite->End();
 	}
@@ -41,6 +39,10 @@ public:
 	{
 		this->sprite->Release();
 		this->texture->Release();
+		if (this->Rect != NULL)
+		{
+			delete this->Rect;
+		}
 	}
 };
 
@@ -51,6 +53,7 @@ private:
 
 	HudTexture tachNumbers;
 	HudTexture tachArrow;
+	HudTexture gear;
 
 public:
 	static bool ShowHUD;
@@ -61,8 +64,12 @@ public:
 
 		string p = path;
 		this->CreateHudTexture(&tachNumbers, p.append("\\tach-numbers.dds"));
+
 		p = path;
 		this->CreateHudTexture(&tachArrow, p.append("\\tach-arrow.dds"));
+
+		p = path;
+		this->CreateHudTexture(&gear, p.append("\\digits.dds"));
 	}
 
 	bool IsInit()
@@ -78,24 +85,25 @@ public:
 		}
 
 		this->SetupTachNumbers();
-		this->tachNumbers.Draw();
 
 		this->SetupTachArrow();
-		this->tachArrow.Draw();
+
+		this->SetupGear();
 	}
 
 	~CarHud()
 	{
 		this->tachArrow.Release();
 		this->tachNumbers.Release();
+		this->gear.Release();
 	}
 
 private:
 	void SetupTachNumbers()
 	{
-		D3DXVECTOR2 targetRes;
-		targetRes.x = 356.0;
-		targetRes.y = 356.0;
+		D3DXVECTOR2 size;
+		size.x = 350;
+		size.y = 350;
 
 		D3DXVECTOR2 center;
 		center.x = 0;
@@ -115,37 +123,100 @@ private:
 
 		if (maxrpm - rpm < 200)
 		{
-			color = D3DCOLOR_RGBA(255, 0, 0, 255);
+			color = D3DCOLOR_RGBA(255, 30, 30, 255);
 		}
 
-		this->Setup(&this->tachNumbers, targetRes, color, center, position, 0);
+		this->Setup(&this->tachNumbers, size, color, center, position, 0);
+
+		this->tachNumbers.Draw();
 	}
 
 	void SetupTachArrow()
 	{
 		D3DXVECTOR2 targetRes;
-		targetRes.x = 100;
-		targetRes.y = 10;
+		targetRes.x = 200;
+		targetRes.y = 100;
 
 		D3DXVECTOR2 center;
-		center.x = 1.15;
+		center.x = 0.78;
 		center.y = 0.5;
 
 		D3DXVECTOR2 position;
-		position.x = 193;
-		position.y = 179;
+		position.x = 130;
+		position.y = 126;
 
 		float rpm;
 		DALVehicle_GetRPM(NULL, &rpm, 0);
 
 		float rotation = -30 + 24 * rpm / 1000.0;
 
-		this->Setup(&this->tachArrow, targetRes, D3DCOLOR_RGBA(200, 0, 0, 255), center, position, rotation);
+		this->Setup(&this->tachArrow, targetRes, D3DCOLOR_RGBA(255, 44, 44, 170), center, position, rotation);
+
+		this->tachArrow.Draw();
 	}
 
-	void Setup(HudTexture* texture, D3DXVECTOR2 targetRes, D3DCOLOR color, D3DXVECTOR2 centerPercent, D3DXVECTOR2 positionOffset, float rotation)
+	void SetupGear()
+	{
+		int gear;
+		DALVehicle_GetGear(NULL, &gear, 0);
+
+		if (gear == 0)
+		{
+			gear = 12;
+		}
+
+		if (gear == 1)
+		{
+			gear = 11;
+		}
+
+		if (gear > 12 || gear < 0)
+		{
+			gear = 0;
+		}
+
+		D3DXVECTOR2 size;
+		size.x = 12 * 45;
+		size.y = 68;
+
+		D3DXVECTOR2 center;
+		center.x = 0;
+		center.y = 0;
+
+		D3DXVECTOR2 position;
+		position.x = -348;
+		position.y = 90;
+
+		this->Setup(&this->gear, size, D3DCOLOR_RGBA(255, 44, 44, 255), center, position, 0);
+
+		if (this->gear.Rect == NULL)
+		{
+			this->gear.Rect = new RECT();
+
+		}
+
+		int numSize = 43;
+
+		this->gear.Rect->left = (gear - 1) * numSize + 1;
+		this->gear.Rect->right = numSize * gear - 2;
+		this->gear.Rect->top = 0;
+		this->gear.Rect->bottom = this->gear.info.Height;
+
+		this->gear.Draw();
+	}
+
+	void Setup(HudTexture * texture, D3DXVECTOR2 targetRes, D3DCOLOR color, D3DXVECTOR2 centerPercent, D3DXVECTOR2 positionOffset, float rotation)
 	{
 		texture->color = color;
+
+		D3DVIEWPORT9 wndSize = GetWindowSize();
+		float wscale = wndSize.Height / 1080.0;
+
+		targetRes.x *= wscale;
+		targetRes.y *= wscale;
+
+		positionOffset.x *= wscale;
+		positionOffset.y *= wscale;
 
 		D3DXVECTOR2 scale;
 		scale.x = targetRes.x / texture->info.Width;
@@ -155,45 +226,48 @@ private:
 		center.x = targetRes.x * centerPercent.x;
 		center.y = targetRes.y * centerPercent.y;
 
-		RECT wndSize = GetWindowSize();
+		D3DXVECTOR2 generalOffset;
+		generalOffset.x = 30;
+		generalOffset.y = 0;
+
 		D3DXVECTOR2 position;
-		position.x = wndSize.right - targetRes.x - positionOffset.x;
-		position.y = wndSize.bottom - targetRes.y - positionOffset.y;
+		position.x = wndSize.Width - targetRes.x - positionOffset.x - generalOffset.x;
+		position.y = wndSize.Height - targetRes.y - positionOffset.y - generalOffset.y;
 
 		D3DXMATRIX matrix;
 		D3DXMatrixTransformation2D(&matrix, NULL, NULL, &scale, &center, degToRad(rotation), &position);
 		texture->sprite->SetTransform(&matrix);
 	}
 
-	void CreateHudTexture(HudTexture* hudTexture, string path)
+	void CreateHudTexture(HudTexture * hudTexture, string path)
 	{
+		// TODO Add texture map
 		this->LoadTexture(&hudTexture->texture, path);
 		this->GetTextureInfo(&hudTexture->info, path);
 		this->CreateSprite(&hudTexture->sprite);
 	}
 
-	bool LoadTexture(IDirect3DTexture9** pTexture, string path)
+	bool LoadTexture(IDirect3DTexture9 * *pTexture, string path)
 	{
 		return FAILED(D3DXCreateTextureFromFile(this->pDevice, path.c_str(), pTexture));
 	}
 
-	bool  GetTextureInfo(D3DXIMAGE_INFO* info, string path)
+	bool  GetTextureInfo(D3DXIMAGE_INFO * info, string path)
 	{
 		return FAILED(D3DXGetImageInfoFromFile(path.c_str(), info));
 	}
 
-	bool CreateSprite(ID3DXSprite** pSprite)
+	bool CreateSprite(ID3DXSprite * *pSprite)
 	{
 		return FAILED(D3DXCreateSprite(this->pDevice, pSprite));
 	}
 
-	RECT GetWindowSize()
+	D3DVIEWPORT9 GetWindowSize()
 	{
-		HWND wnd = GetActiveWindow();
-		RECT result;
-		GetWindowRect(wnd, &result);
+		D3DVIEWPORT9 viewprot;
+		this->pDevice->GetViewport(&viewprot);
 
-		return result;
+		return viewprot;
 	}
 
 	bool IsHudVisible()
