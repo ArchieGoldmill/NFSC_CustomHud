@@ -8,6 +8,7 @@ struct HUD_Gauge_Callbacks
 
 	float ZeroAngle;
 	float StepAngle;
+	int direction;
 };
 
 class HUD_Gauge : HUD_Element
@@ -36,16 +37,20 @@ public:
 
 	void Draw()
 	{
+		this->DrawBackground();
 		this->DrawNumbers();
 		this->DrawArrow();
-		this->DrawBackground();
 	}
 
 	void Release()
 	{
-		this->numbers->Release();
-		this->arrow->Release();
-		this->background->Release();
+		if (!this->isReleased)
+		{
+			if (this->numbers != NULL) this->numbers->Release();
+			if (this->arrow != NULL)this->arrow->Release();
+			if (this->background != NULL)this->background->Release();
+			this->isReleased = true;
+		}
 	}
 
 	~HUD_Gauge()
@@ -56,9 +61,10 @@ public:
 private:
 	void DrawNumbers()
 	{
-		D3DXVECTOR2 center;
-		center.x = 0;
-		center.y = 0;
+		if (this->numbers == NULL)
+		{
+			return;
+		}
 
 		float rpm = this->callbacks.GetValue();
 		float redline = this->callbacks.GetMaxValue();
@@ -70,13 +76,18 @@ private:
 			color = D3DCOLOR_RGBA(255, 30, 30, 255);
 		}
 
-		this->Setup(this->numbers, { this->size,this->size }, center, this->position, NULL, 0);
+		this->Setup(this->numbers, { this->size,this->size }, { 0, 0 }, this->position, NULL, 0);
 
 		this->numbers->Draw(NULL, color);
 	}
 
 	void DrawBackground()
 	{
+		if (this->background == NULL)
+		{
+			return;
+		}
+
 		this->Setup(this->background, { this->size, this->size }, { 0, 0 }, this->position, NULL, 0);
 
 		this->background->Draw(NULL, D3DCOLOR_RGBA(255, 255, 255, 255));
@@ -84,13 +95,14 @@ private:
 
 	void DrawArrow()
 	{
+		if (this->arrow == NULL)
+		{
+			return;
+		}
+
 		D3DXVECTOR2 targetRes;
 		targetRes.x = this->size / 1.75;
 		targetRes.y = this->size / 3.5;
-
-		D3DXVECTOR2 center;
-		center.x = 0.78;
-		center.y = 0.5;
 
 		D3DXVECTOR2 position;
 		position.x = this->size / 2.69 + this->position.x;
@@ -98,9 +110,9 @@ private:
 
 		float rpm = this->callbacks.GetValue();
 
-		float rotation = this->callbacks.ZeroAngle + this->callbacks.StepAngle * rpm / 1000.0;
+		float rotation = this->callbacks.ZeroAngle + this->callbacks.StepAngle * rpm;
 
-		this->Setup(this->arrow, targetRes, center, position, NULL, rotation);
+		this->Setup(this->arrow, targetRes, { 0.78, 0.5 }, position, NULL, rotation);
 
 		this->arrow->Draw(NULL, D3DCOLOR_RGBA(255, 44, 44, 170));
 	}

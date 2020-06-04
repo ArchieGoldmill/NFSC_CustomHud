@@ -7,10 +7,19 @@ class HUD_Speedometer : HUD_Element
 {
 private:
 	HUD_Digit* Speed[3];
+	Sprite* units;
+	float size;
+	float distance;
+	D3DXVECTOR2 position;
 
 public:
-	HUD_Speedometer(LPDIRECT3DDEVICE9 pDevice, float size, float distance, D3DXVECTOR2 position, Sprite* digits) : HUD_Element(pDevice)
+	HUD_Speedometer(LPDIRECT3DDEVICE9 pDevice, float size, float distance, D3DXVECTOR2 position, Sprite* digits, Sprite* units) : HUD_Element(pDevice)
 	{
+		this->units = units;
+		this->size = size;
+		this->position = position;
+		this->distance = distance;
+
 		for (int i = 0; i < 3; i++)
 		{
 			IntValueCallback* cb = 0;
@@ -41,18 +50,45 @@ public:
 		{
 			this->Speed[i]->Draw();
 		}
+
+		RECT rect;
+		if (IsKMH())
+		{
+			rect.left = this->units->Info.Width / 2.0;
+			rect.right = this->units->Info.Width;
+		}
+		else
+		{
+			rect.left = 0;
+			rect.right = this->units->Info.Width / 2.0;
+		}
+
+		rect.top = 0;
+		rect.bottom = this->units->Info.Height;
+
+		this->Setup(this->units, { 128, 32 }, { 0, 0 }, { 162, 65 }, &rect, 0);
+		this->units->Draw(&rect, D3DCOLOR_RGBA(150, 227, 255, 255));
 	}
 
 	void Release()
 	{
-		for (int i = 0; i < 3; i++)
+		if (!this->isReleased)
 		{
-			this->Speed[i]->Release();
+			for (int i = 0; i < 3; i++)
+			{
+				this->Speed[i]->Release();
+			}
+
+			this->units->Release();
+
+			this->isReleased = true;
 		}
 	}
 
 	~HUD_Speedometer()
 	{
+		this->Release();
+
 		for (int i = 0; i < 3; i++)
 		{
 			delete this->Speed[i];

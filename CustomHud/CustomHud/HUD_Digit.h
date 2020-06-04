@@ -26,9 +26,6 @@ public:
 		size.x = 12 * (this->size / 1.55);
 		size.y = this->size;
 
-		D3DXVECTOR2 center;
-		center.x = 0;
-		center.y = 0;
 
 		int gear = this->getNumber();
 		float numSize = this->digits->Info.Width / 12.0;
@@ -39,14 +36,18 @@ public:
 		rect.top = 0;
 		rect.bottom = this->digits->Info.Height;
 
-		this->Setup(this->digits, size, center, this->position, &rect, 0);
+		this->Setup(this->digits, size, { 0, 0 }, this->position, &rect, 0);
 
 		this->digits->Draw(&rect, color);
 	}
 
 	void Release()
 	{
-		this->digits->Release();
+		if (!this->isReleased)
+		{
+			this->digits->Release();
+			this->isReleased = true;
+		}
 	}
 
 	~HUD_Digit()

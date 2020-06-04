@@ -25,7 +25,7 @@ HRESULT __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 {
 	if (carHud == NULL)
 	{
-		carHud = new CarHud(pDevice, "CustomHUD");
+		carHud = new CarHud(pDevice, "CustomHUD\\NFS15");
 	}
 
 	carHud->Draw();
@@ -138,7 +138,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		}
 		else
 		{
-			MessageBoxA(NULL, "This .exe is not supported.\nPlease use v1.4 English nfsc.exe (6,88 MB (7.217.152 bytes)).", "NFSC - Customization Extender", MB_ICONERROR);
+			MessageBoxA(NULL, "This .exe is not supported.\nPlease use v1.4 English nfsc.exe (6,88 MB (7.217.152 bytes)).", "NFSC - Custom HUD", MB_ICONERROR);
 			return FALSE;
 		}
 	}

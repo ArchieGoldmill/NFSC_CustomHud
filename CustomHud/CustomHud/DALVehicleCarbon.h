@@ -36,12 +36,31 @@ bool(__thiscall* DALVehicle_GetIVehicle)(const int playerNum) = (bool(__thiscall
 bool(__thiscall* DALVehicle_GetInt)(void* DALVehicle, const int valueType, int* getVal, const int arg1, const int arg2, const int arg3) = (bool(__thiscall*)(void*, const int, int*, const int, const int, const int))0x004CC1C0;
 bool(__thiscall* DALVehicle_GetFloat)(void* DALVehicle, const int valueType, float* getVal, const int arg1, const int arg2, const int arg3) = (bool(__thiscall*)(void*, const int, float*, const int, const int, const int))0x004CC000;
 
+bool IsHudVisible()
+{
+	int res;
+	DALVehicle_GetIsHudVisible(NULL, &res, 0);
+	return res != 0;
+}
+
+float GetBoost()
+{
+	float res;
+	DALVehicle_GetTurbo(NULL, &res, 0);
+	if (res > 20)
+	{
+		res = 20;
+	}
+
+	return res;
+}
+
 float GetRPM()
 {
 	float rpm;
 	DALVehicle_GetRPM(NULL, &rpm, 0);
 
-	return rpm;
+	return rpm / 1000.0;
 }
 
 float GetRedline()
@@ -75,13 +94,6 @@ int GetGear()
 	return gear;
 }
 
-bool IsHudVisible()
-{
-	int res;
-	DALVehicle_GetIsHudVisible(NULL, &res, 0);
-	return res != 0;
-}
-
 bool IsPlayerControlling()
 {
 	int res;
@@ -89,10 +101,23 @@ bool IsPlayerControlling()
 	return res != 0;
 }
 
+auto Game_GetSpeedoUnits = (char(__stdcall*)(int* getVal))0x004A4550;
+bool IsKMH()
+{
+	int res = 0;
+	if (IsHudVisible())
+	{
+		Game_GetSpeedoUnits(&res);
+	}
+
+	return res == 1;
+}
+
 int GetSpeed()
 {
 	float speed;
 	DALVehicle_GetSpeedLocalized(NULL, &speed, 0);
+
 	if (speed > 999)
 	{
 		speed = 999;
@@ -119,3 +144,26 @@ int GetSpeed2()
 {
 	return GetSpeed() / 100 % 10 + 1;
 }
+
+float GetNos()
+{
+	float nos = 0;
+	if (IsHudVisible())
+	{
+		DALVehicle_GetNos(NULL, &nos, 0);
+	}
+
+	return nos * 10;
+}
+
+float GetSpeedBreaker()
+{
+	float res = 0;
+	if (IsHudVisible())
+	{
+		DALVehicle_GetSpeedBreaker(NULL, &res, 0);
+	}
+
+	return res * 10;
+}
+

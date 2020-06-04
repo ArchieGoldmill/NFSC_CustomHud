@@ -9,6 +9,7 @@ class HUD_Element
 {
 protected:
 	LPDIRECT3DDEVICE9 pDevice;
+	bool isReleased;
 
 public:
 	virtual void Draw() = 0;
@@ -17,6 +18,7 @@ public:
 
 	HUD_Element(LPDIRECT3DDEVICE9 pDevice)
 	{
+		this->isReleased = false;
 		this->pDevice = pDevice;
 	}
 
@@ -25,7 +27,7 @@ protected:
 	{
 		D3DVIEWPORT9 wndSize = GetWindowSize();
 		float wscale = wndSize.Height / 1080.0;
-		//float wscale = wndSize.Height / 600.0;
+		//wscale = wndSize.Height / 600.0;
 
 		targetRes.x *= wscale;
 		targetRes.y *= wscale;

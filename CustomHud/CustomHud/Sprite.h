@@ -18,6 +18,7 @@ public:
 
 	Sprite(LPDIRECT3DDEVICE9 pDevice, string& path)
 	{
+		this->isReleased = false;
 		this->pDevice = pDevice;
 		this->LoadTexture(path);
 		this->GetTextureInfo(path);
