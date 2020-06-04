@@ -68,7 +68,7 @@ float GetRedline()
 	float rpm;
 	DALVehicle_GetRedLine(NULL, &rpm, 0);
 
-	return rpm;
+	return rpm / 1000;
 }
 
 int GetGear()

@@ -71,7 +71,7 @@ private:
 
 		D3DCOLOR color = D3DCOLOR_RGBA(150, 227, 255, 255);
 
-		if (redline - rpm < 200)
+		if (redline - rpm < 0.2f)
 		{
 			color = D3DCOLOR_RGBA(255, 30, 30, 255);
 		}
