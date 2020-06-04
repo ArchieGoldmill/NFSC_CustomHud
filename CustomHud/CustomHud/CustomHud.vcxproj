@@ -169,7 +169,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CarHud.h" />
+    <ClInclude Include="DALVehicleCarbon.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="HUD_Gauge.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
