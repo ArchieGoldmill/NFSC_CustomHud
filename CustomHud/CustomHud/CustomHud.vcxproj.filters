@@ -13,7 +13,7 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\HUD">
+    <Filter Include="Header Files\HUD_Elements">
       <UniqueIdentifier>{e2a701d6-3433-4d29-b13a-0673d484c20e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -31,7 +31,22 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Gauge.h">
-      <Filter>Header Files\HUD</Filter>
+      <Filter>Header Files\HUD_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD_Element.h">
+      <Filter>Header Files\HUD_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD_Digit.h">
+      <Filter>Header Files\HUD_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD_Tachometer.h">
+      <Filter>Header Files\HUD_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD_Speedometer.h">
+      <Filter>Header Files\HUD_Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

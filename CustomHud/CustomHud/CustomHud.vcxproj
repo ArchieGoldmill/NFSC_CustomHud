@@ -171,8 +171,13 @@
     <ClInclude Include="CarHud.h" />
     <ClInclude Include="DALVehicleCarbon.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="HUD_Digit.h" />
+    <ClInclude Include="HUD_Element.h" />
     <ClInclude Include="HUD_Gauge.h" />
+    <ClInclude Include="HUD_Speedometer.h" />
+    <ClInclude Include="HUD_Tachometer.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Sprite.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
