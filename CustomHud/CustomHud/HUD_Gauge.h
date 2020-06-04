@@ -70,10 +70,10 @@ private:
 		float redline = this->callbacks.GetMaxValue();
 
 		D3DCOLOR color = D3DCOLOR_RGBA(150, 227, 255, 255);
-
+		D3DCOLOR colorMax = D3DCOLOR_RGBA(255, 30, 30, 255);
 		if (redline - rpm < 0.2f)
 		{
-			color = D3DCOLOR_RGBA(255, 30, 30, 255);
+			color = colorMax;
 		}
 
 		this->Setup(this->numbers, { this->size,this->size }, { 0, 0 }, this->position, NULL, 0);
@@ -114,6 +114,12 @@ private:
 
 		this->Setup(this->arrow, targetRes, { 0.78, 0.5 }, position, NULL, rotation);
 
-		this->arrow->Draw(NULL, D3DCOLOR_RGBA(255, 44, 44, 170));
+		D3DCOLOR color = D3DCOLOR_RGBA(255, 44, 44, 170);
+		/*if (IsInPerfectLaunchRange())
+		{
+			color = D3DCOLOR_RGBA(68, 245, 37, 170);
+		}*/
+
+		this->arrow->Draw(NULL, color);
 	}
 };

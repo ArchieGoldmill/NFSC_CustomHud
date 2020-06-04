@@ -43,6 +43,13 @@ bool IsHudVisible()
 	return res != 0;
 }
 
+bool IsInPerfectLaunchRange()
+{
+	int res;
+	DALVehicle_GetInPerfectLaunchRange(NULL, &res, 0);
+	return res != 0;
+}
+
 float GetBoost()
 {
 	float res;
@@ -59,6 +66,10 @@ float GetRPM()
 {
 	float rpm;
 	DALVehicle_GetRPM(NULL, &rpm, 0);
+	if (rpm > 10000)
+	{
+		rpm = 10000;
+	}
 
 	return rpm / 1000.0;
 }
