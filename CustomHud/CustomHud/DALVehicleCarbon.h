@@ -59,6 +59,11 @@ float GetBoost()
 		res = 20;
 	}
 
+	if (res < -20)
+	{
+		res = 0;
+	}
+
 	return res;
 }
 
@@ -164,7 +169,7 @@ float GetNos()
 		DALVehicle_GetNos(NULL, &nos, 0);
 	}
 
-	return nos * 10;
+	return nos;
 }
 
 float GetSpeedBreaker()
@@ -175,6 +180,5 @@ float GetSpeedBreaker()
 		DALVehicle_GetSpeedBreaker(NULL, &res, 0);
 	}
 
-	return res * 10;
+	return res;
 }
-

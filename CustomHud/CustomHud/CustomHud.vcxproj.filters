@@ -16,6 +16,9 @@
     <Filter Include="Header Files\HUD_Elements">
       <UniqueIdentifier>{e2a701d6-3433-4d29-b13a-0673d484c20e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Sprites">
+      <UniqueIdentifier>{40ab7874-a16c-47f6-bbb9-03b1f0d654db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -36,9 +39,6 @@
     <ClInclude Include="HUD_Element.h">
       <Filter>Header Files\HUD_Elements</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HUD_Digit.h">
       <Filter>Header Files\HUD_Elements</Filter>
     </ClInclude>
@@ -47,6 +47,12 @@
     </ClInclude>
     <ClInclude Include="HUD_Speedometer.h">
       <Filter>Header Files\HUD_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleSprite.h">
+      <Filter>Header Files\Sprites</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

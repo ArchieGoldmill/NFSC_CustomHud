@@ -171,6 +171,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CarHud.h" />
+    <ClInclude Include="CircleSprite.h" />
     <ClInclude Include="DALVehicleCarbon.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="HUD_Digit.h" />

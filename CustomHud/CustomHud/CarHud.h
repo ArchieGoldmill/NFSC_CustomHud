@@ -15,8 +15,7 @@ class CarHud
 {
 private:
 	IDirect3DDevice9* pDevice;
-	hash<string> stringHasher;
-	map<int, Sprite*> spritesMap;
+	vector<Sprite*> sprites;
 
 	HUD_Tachometer* Tachometer;
 	HUD_Speedometer* Speedometer;
@@ -31,64 +30,97 @@ public:
 	{
 		this->pDevice = pDevice;
 
+		D3DXVECTOR2 maskSize;
+		maskSize.x = 128;
+		maskSize.y = maskSize.x;
+
 		string temp = path;
-		Sprite* tachNumbers = this->CreateSprite(temp.append("\\tach-numbers.dds"));
+		auto tachNumbers = new Sprite(this->pDevice, temp.append("\\tach-numbers.dds"));
+		this->sprites.push_back(tachNumbers);
 
 		temp = path;
-		Sprite* tachArrow = this->CreateSprite(temp.append("\\tach-arrow.dds"));
+		auto redLine = new CircleSprite(this->pDevice, temp.append("\\tach-redline.dds"), &maskSize);
+		this->sprites.push_back(redLine);
 
 		temp = path;
-		Sprite* tachBackground = this->CreateSprite(temp.append("\\tach-background.dds"));
+		auto tachArrow = new Sprite(this->pDevice, temp.append("\\tach-arrow.dds"));
+		this->sprites.push_back(tachArrow);
 
 		temp = path;
-		Sprite* digits = this->CreateSprite(temp.append("\\digits.dds"));
-		
-		temp = path;
-		Sprite* speedUnits = this->CreateSprite(temp.append("\\speed-units.dds"));
-		
-		temp = path;
-		Sprite* boostBackground = this->CreateSprite(temp.append("\\boost-background.dds"));
-		
-		temp = path;
-		Sprite* nosBackground = this->CreateSprite(temp.append("\\nos-background.dds"));
-		
-		temp = path;
-		Sprite* speedbreakBackground = this->CreateSprite(temp.append("\\speedbreak-background.dds"));
+		auto tachBackground = new Sprite(this->pDevice, temp.append("\\tach-background.dds"));
+		this->sprites.push_back(tachBackground);
 
-		this->Tachometer = new HUD_Tachometer(pDevice, 330, { 30, 60 }, tachNumbers, tachArrow, digits, tachBackground);
+		temp = path;
+		auto digits = new Sprite(this->pDevice, temp.append("\\digits.dds"));
+		this->sprites.push_back(digits);
+
+		temp = path;
+		auto speedUnits = new Sprite(this->pDevice, temp.append("\\speed-units.dds"));
+		this->sprites.push_back(speedUnits);
+
+		temp = path;
+		auto boostBackground = new Sprite(this->pDevice, temp.append("\\boost-background.dds"));
+		this->sprites.push_back(boostBackground);
+
+		temp = path;
+		auto nosBackground = new Sprite(this->pDevice, temp.append("\\nos-background.dds"));
+		this->sprites.push_back(nosBackground);
+		
+		temp = path;
+		auto nosFilled = new CircleSprite(this->pDevice, temp.append("\\nos-filled.dds"), &maskSize);
+		this->sprites.push_back(nosFilled);
+
+		temp = path;
+		auto speedbreakBackground = new Sprite(this->pDevice, temp.append("\\speedbreak-background.dds"));
+		this->sprites.push_back(speedbreakBackground);
+
+		this->Tachometer = new HUD_Tachometer(pDevice, 330, { 30, 60 }, tachNumbers, tachArrow, digits, tachBackground, redLine);
 
 		this->Speedometer = new HUD_Speedometer(pDevice, 75, 10, { 145, 99 }, digits, speedUnits);
 
 		HUD_Gauge_Callbacks boostCallbacks;
-		boostCallbacks.GetValue = GetBoost;
+		boostCallbacks.GetArrowValue = GetBoost;
 		boostCallbacks.GetMaxValue = NULL;
+		boostCallbacks.Value = 20;
 		boostCallbacks.ZeroAngle = 90;
-		boostCallbacks.StepAngle = 6;
+		boostCallbacks.MaxAngle = 210;
 		boostCallbacks.direction = 1;
-		this->Boost = new HUD_Gauge(pDevice, 110, { 340, 65 }, NULL, tachArrow, boostBackground, boostCallbacks);
+		this->Boost = new HUD_Gauge(pDevice, 110, { 340, 65 }, NULL, tachArrow, boostBackground, NULL, boostCallbacks);
 
 		HUD_Gauge_Callbacks nosCallbacks;
-		nosCallbacks.GetValue = GetNos;
+		nosCallbacks.GetArrowValue = GetNos;
 		nosCallbacks.GetMaxValue = NULL;
+		nosCallbacks.GetMaskValue1 = []() {return 0.0f; };
+		nosCallbacks.GetMaskValue2 = GetNos;
+		nosCallbacks.MaskColor1 = D3DCOLOR_RGBA(0, 0, 0, 60);
+		nosCallbacks.MaskColor2 = D3DCOLOR_RGBA(255, 255, 255, 255);
+		nosCallbacks.Value = 1;
 		nosCallbacks.ZeroAngle = -30;
-		nosCallbacks.StepAngle = 24;
+		nosCallbacks.MaxAngle = 210;
 		nosCallbacks.direction = 1;
-		this->Nos = new HUD_Gauge(pDevice, 110, { 360, 190 }, NULL, tachArrow, nosBackground, nosCallbacks);
+		this->Nos = new HUD_Gauge(pDevice, 110, { 360, 190 }, NULL, tachArrow, nosBackground, nosFilled, nosCallbacks);
 
 		HUD_Gauge_Callbacks speedbreakCallbacks;
-		speedbreakCallbacks.GetValue = GetSpeedBreaker;
+		speedbreakCallbacks.GetArrowValue = GetSpeedBreaker;
 		speedbreakCallbacks.GetMaxValue = NULL;
+		speedbreakCallbacks.GetMaskValue1 = []() {return 0.0f; };
+		speedbreakCallbacks.GetMaskValue2 = GetSpeedBreaker;
+		speedbreakCallbacks.MaskColor1 = D3DCOLOR_RGBA(0, 0, 0, 60);
+		speedbreakCallbacks.MaskColor2 = D3DCOLOR_RGBA(255, 255, 255, 255);
+		speedbreakCallbacks.Value = 1;
 		speedbreakCallbacks.ZeroAngle = -30;
-		speedbreakCallbacks.StepAngle = 24;
+		speedbreakCallbacks.MaxAngle = 210;
 		speedbreakCallbacks.direction = 1;
-		this->SpeedBreak = new HUD_Gauge(pDevice, 110, { 320, 310 }, NULL, tachArrow, speedbreakBackground, speedbreakCallbacks);
+		this->SpeedBreak = new HUD_Gauge(pDevice, 110, { 320, 310 }, NULL, tachArrow, speedbreakBackground, nosFilled, speedbreakCallbacks);
 	}
 
 	void Draw()
 	{
+		auto start = chrono::steady_clock::now();
+
 		if (!IsHudVisible() || !IsPlayerControlling() || !CarHud::ShowHUD)
 		{
-			return;
+			//return;
 		}
 
 		this->Tachometer->Draw();
@@ -100,6 +132,12 @@ public:
 		this->Nos->Draw();
 
 		this->SpeedBreak->Draw();
+
+		auto now = chrono::steady_clock::now();
+
+		int a = chrono::duration_cast<std::chrono::microseconds>(now - start).count();
+
+		int b = a;
 	}
 
 	~CarHud()
@@ -123,34 +161,17 @@ public:
 		{
 			delete this->Nos;
 		}
-		
+
 		if (this->SpeedBreak != NULL)
 		{
 			delete this->SpeedBreak;
 		}
 
-		for (auto sprite : this->spritesMap)
+		for (auto sprite : this->sprites)
 		{
-			delete sprite.second;
+			sprite->Release();
+			delete sprite;
 		}
-	}
-
-private:
-	Sprite* CreateSprite(string& path)
-	{
-		int hash = stringHasher(path);
-		for (auto i : this->spritesMap)
-		{
-			if (i.first == hash)
-			{
-				return i.second;
-			}
-		}
-
-		Sprite* sprite = new Sprite(pDevice, path);
-		this->spritesMap.insert({ hash, sprite });
-
-		return sprite;
 	}
 };
 bool CarHud::ShowHUD = false;
