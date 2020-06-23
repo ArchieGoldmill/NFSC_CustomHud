@@ -4,30 +4,32 @@
 class HUD_Digit : HUD_Element
 {
 private:
-	Sprite* digits;
-	float size;
-	D3DXVECTOR2 position;
-	IntValueCallback* getNumber;
-	D3DCOLOR color;
+	HUD_Digit_Params params;
+	Sprite* digits = NULL;
 
 public:
-	HUD_Digit(LPDIRECT3DDEVICE9 pDevice, float size, D3DXVECTOR2 position, Sprite* digits, IntValueCallback* getNumber, D3DCOLOR color) : HUD_Element(pDevice)
+	HUD_Digit(LPDIRECT3DDEVICE9 pDevice, HUD_Digit_Params& params) : HUD_Element(pDevice)
 	{
-		this->digits = digits;
-		this->size = size;
-		this->position = position;
-		this->getNumber = getNumber;
-		this->color = color;
+		this->params = params;
+
+		if (!this->params.TextureDigits.empty())
+		{
+			this->digits = new Sprite(pDevice, this->params.TextureDigits);
+		}
 	}
 
 	void Draw()
 	{
+		if (this->digits == NULL)
+		{
+			return;
+		}
+
 		D3DXVECTOR2 size;
-		size.x = 12 * (this->size / 1.55);
-		size.y = this->size;
+		size.x = 12 * (this->params.Size / 1.55);
+		size.y = this->params.Size;
 
-
-		int gear = this->getNumber();
+		int gear = this->params.GetNumber();
 		float numSize = this->digits->Info.Width / 12.0;
 
 		RECT rect;
@@ -36,9 +38,9 @@ public:
 		rect.top = 0;
 		rect.bottom = this->digits->Info.Height;
 
-		this->Setup(this->digits, size, { 0, 0 }, this->position, &rect, 0);
+		this->Setup(this->digits, size, { 0, 0 }, this->params.Position, &rect, 0);
 
-		this->digits->Draw(&rect, color);
+		this->digits->Draw(&rect, this->params.Color);
 	}
 
 	void Release()
@@ -46,6 +48,8 @@ public:
 		if (!this->isReleased)
 		{
 			this->digits->Release();
+			delete this->digits;
+
 			this->isReleased = true;
 		}
 	}

@@ -1,5 +1,5 @@
-// dllmain.cpp : Defines the entry point for the DLL application.
-#include "pch.h"
+#pragma warning( push )
+#pragma warning( disable : 26495)
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <iostream>
@@ -10,6 +10,7 @@
 #pragma comment(lib, "detours.lib")
 #include "CarHud.h"
 #include <chrono>
+#include "Globals.h"
 
 using namespace std;
 
@@ -21,12 +22,13 @@ reset pReset;
 typedef HRESULT(__stdcall* endScene)(IDirect3DDevice9* pDevice);
 endScene pEndScene;
 
-CarHud* carHud = NULL;
+HUD* carHud = NULL;
 HRESULT __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 {
 	if (carHud == NULL)
 	{
-		carHud = new CarHud(pDevice, "CustomHUD\\NFS15");
+		Global::Init();
+		carHud = new HUD(pDevice);
 	}
 
 	carHud->Draw();
@@ -81,7 +83,7 @@ bool hookEndScene()
 			}
 
 			Sleep(1);
-			pDevice = *(IDirect3DDevice9 * *)0xAB0ABC;			
+			pDevice = *(IDirect3DDevice9 * *)0xAB0ABC;
 		}
 	}
 
@@ -119,7 +121,7 @@ int __fastcall DetermineHudFeatures(void* _this, int v1, int v2)
 {
 	int result = Game_DetermineHudFeatures(_this, v2);
 
-	CarHud::ShowHUD = GetBit(result, 1);
+	HUD::ShowHUD = GetBit(result, 1);
 
 	ClearBit(result, 1);
 	ClearBit(result, 11);

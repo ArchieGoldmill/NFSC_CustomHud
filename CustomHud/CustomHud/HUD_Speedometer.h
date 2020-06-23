@@ -2,26 +2,30 @@
 #include "HUD_Element.h"
 #include "HUD_Digit.h"
 #include "DALVehicleCarbon.h"
+#include "Globals.h"
 
 class HUD_Speedometer : HUD_Element
 {
 private:
+	HUD_Speedometer_Params params;
+
 	HUD_Digit* Speed[3];
-	Sprite* units;
-	float size;
-	float distance;
-	D3DXVECTOR2 position;
+	Sprite* units = NULL;
 
 public:
-	HUD_Speedometer(LPDIRECT3DDEVICE9 pDevice, float size, float distance, D3DXVECTOR2 position, Sprite* digits, Sprite* units) : HUD_Element(pDevice)
+	HUD_Speedometer(LPDIRECT3DDEVICE9 pDevice, HUD_Speedometer_Params params) : HUD_Element(pDevice)
 	{
-		this->units = units;
-		this->size = size;
-		this->position = position;
-		this->distance = distance;
+		this->params = params;
+
+		if (!this->params.Units.TextureUnits.empty())
+		{
+			this->units = new Sprite(pDevice, this->params.Units.TextureUnits);
+		}
 
 		for (int i = 0; i < 3; i++)
 		{
+			HUD_Digit_Params digitParams = this->params;
+
 			IntValueCallback* cb = 0;
 			if (i == 0)
 			{
@@ -36,38 +40,55 @@ public:
 				cb = GetSpeed2;
 			}
 
-			D3DXVECTOR2 pos;
-			pos.x = i * (size / 3.0f) + position.x + distance * i;
-			pos.y = position.y;
+			digitParams.GetNumber = cb;
 
-			this->Speed[i] = new HUD_Digit(pDevice, size, pos, digits, cb, D3DCOLOR_RGBA(12, 26, 48, 255));
+			digitParams.Position.x = this->params.Position.x + i * (digitParams.Size / 1.55f) + this->params.Distance * i;
+			digitParams.Position.y = this->params.Position.y;
+
+			this->Speed[i] = new HUD_Digit(pDevice, digitParams);
 		}
 	}
 
 	void Draw()
 	{
-		for (int i = 0; i < 3; i++)
+		int numCount = 3;
+		if (!this->params.ShowAllDigits)
+		{
+			int speed = GetSpeed();
+			if (speed < 10)
+			{
+				numCount = 1;
+			}
+			else if (speed < 100) {
+				numCount = 2;
+			}
+		}
+
+		for (int i = 0; i < numCount; i++)
 		{
 			this->Speed[i]->Draw();
 		}
 
-		RECT rect;
-		if (IsKMH())
+		if (this->units != NULL)
 		{
-			rect.left = this->units->Info.Width / 2.0;
-			rect.right = this->units->Info.Width;
-		}
-		else
-		{
-			rect.left = 0;
-			rect.right = this->units->Info.Width / 2.0;
-		}
+			RECT rect;
+			if (IsKMH())
+			{
+				rect.left = this->units->Info.Width / 2.0;
+				rect.right = this->units->Info.Width;
+			}
+			else
+			{
+				rect.left = 0;
+				rect.right = this->units->Info.Width / 2.0;
+			}
 
-		rect.top = 0;
-		rect.bottom = this->units->Info.Height;
+			rect.top = 0;
+			rect.bottom = this->units->Info.Height;
 
-		this->Setup(this->units, { 128, 32 }, { 0, 0 }, { 162, 65 }, &rect, 0);
-		this->units->Draw(&rect, D3DCOLOR_RGBA(150, 227, 255, 255));
+			this->Setup(this->units, { this->params.Units.Size * 4, this->params.Units.Size }, { 0, 0 }, this->params.Units.Position, &rect, 0);
+			this->units->Draw(&rect, this->params.Units.Color);
+		}
 	}
 
 	void Release()
@@ -76,10 +97,20 @@ public:
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				this->Speed[i]->Release();
+				if (this->Speed[i] != NULL)
+				{
+					this->Speed[i]->Release();
+
+					delete this->Speed[i];
+				}
 			}
 
-			this->units->Release();
+			if (this->units != NULL)
+			{
+				this->units->Release();
+
+				delete this->units;
+			}
 
 			this->isReleased = true;
 		}

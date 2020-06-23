@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "Sprite.h"
+#include "Globals.h"
 
 #define degToRad(angleDegrees) ((angleDegrees) * M_PI / 180.0)
 #define radToDeg(angleRadians) ((angleRadians) * 180.0 / M_PI)
@@ -26,8 +27,7 @@ protected:
 	void Setup(Sprite* texture, D3DXVECTOR2 targetRes, D3DXVECTOR2 centerPercent, D3DXVECTOR2 positionOffset, RECT* rect, float rotation)
 	{
 		D3DVIEWPORT9 wndSize = GetWindowSize();
-		float wscale = wndSize.Height / 1080.0;
-		//wscale = wndSize.Height / 600.0;
+		float wscale = wndSize.Height / 1080.0 * Global::HUDParams.Scale;
 
 		targetRes.x *= wscale;
 		targetRes.y *= wscale;
@@ -73,6 +73,3 @@ private:
 		return viewprot;
 	}
 };
-
-typedef float(FloatValueCallback)();
-typedef int(IntValueCallback)();

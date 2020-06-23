@@ -75,6 +75,10 @@ float GetRPM()
 	{
 		rpm = 10000;
 	}
+	if (rpm < 0)
+	{
+		rpm = 0;
+	}
 
 	return rpm / 1000.0;
 }
