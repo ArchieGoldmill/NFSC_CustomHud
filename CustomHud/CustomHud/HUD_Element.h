@@ -24,10 +24,10 @@ public:
 	}
 
 protected:
-	void Setup(Sprite* texture, D3DXVECTOR2 targetRes, D3DXVECTOR2 centerPercent, D3DXVECTOR2 positionOffset, RECT* rect, float rotation)
+	void Setup(Sprite* texture, D3DXVECTOR2 targetRes, D3DXVECTOR2 centerPercent, D3DXVECTOR2 positionOffset, D3DXVECTOR2* rect, float rotation)
 	{
 		D3DVIEWPORT9 wndSize = GetWindowSize();
-		float wscale = wndSize.Height / 1080.0 * Global::HUDParams.Scale;
+		float wscale = wndSize.Height / 1080.0f * Global::HUDParams.Scale;
 
 		targetRes.x *= wscale;
 		targetRes.y *= wscale;
@@ -46,8 +46,8 @@ protected:
 		D3DXVECTOR2 offset;
 		if (rect != NULL)
 		{
-			offset.x = abs(rect->right - rect->left) * wscale;
-			offset.y = abs(rect->bottom - rect->top) * wscale;
+			offset.x = rect->x * wscale;
+			offset.y = rect->y * wscale;
 		}
 		else
 		{
@@ -56,8 +56,8 @@ protected:
 		}
 
 		D3DXVECTOR2 position;
-		position.x = wndSize.Width - offset.x - positionOffset.x;
-		position.y = wndSize.Height - offset.y - positionOffset.y;
+		position.x = wndSize.Width - offset.x - positionOffset.x - Global::HUDParams.Offset.x;
+		position.y = wndSize.Height - offset.y - positionOffset.y - Global::HUDParams.Offset.y;
 
 		D3DXMATRIX matrix;
 		D3DXMatrixTransformation2D(&matrix, NULL, NULL, &scale, &center, degToRad(rotation), &position);

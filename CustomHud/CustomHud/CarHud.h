@@ -8,6 +8,7 @@
 
 #include "HUD_Tachometer.h"
 #include "HUD_Speedometer.h"
+#include "HUD_Filled.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ private:
 	HUD_Speedometer* Speedometer = NULL;
 	HUD_Gauge* Boost = NULL;
 	HUD_Gauge* Nos = NULL;
+	HUD_Filled* NosFilled = NULL;
 	HUD_Gauge* SpeedBreak = NULL;
 
 public:
@@ -53,6 +55,12 @@ public:
 			this->Nos = new HUD_Gauge(pDevice, Global::HUDParams.Nos);
 		}
 
+		if (Global::HUDParams.NosFilled.Enabled)
+		{
+			Global::HUDParams.NosFilled.GetValue = GetNos;
+			this->NosFilled = new HUD_Filled(pDevice, Global::HUDParams.NosFilled);
+		}
+
 		if (Global::HUDParams.SpeedBreak.Enabled)
 		{
 			Global::HUDParams.SpeedBreak.GetMaskValue1 = []() {return 0.0f; };
@@ -69,7 +77,7 @@ public:
 
 		if (!IsHudVisible() || !IsPlayerControlling() || !HUD::ShowHUD)
 		{
-			//return;
+			return;
 		}
 
 		if (this->Tachometer != NULL)
@@ -90,6 +98,11 @@ public:
 		if (this->Nos != NULL)
 		{
 			this->Nos->Draw();
+		}
+
+		if (this->NosFilled != NULL)
+		{
+			this->NosFilled->Draw();
 		}
 
 		if (this->SpeedBreak != NULL)
@@ -124,6 +137,11 @@ public:
 		if (this->Nos != NULL)
 		{
 			delete this->Nos;
+		}
+
+		if (this->NosFilled != NULL)
+		{
+			delete this->NosFilled;
 		}
 
 		if (this->SpeedBreak != NULL)

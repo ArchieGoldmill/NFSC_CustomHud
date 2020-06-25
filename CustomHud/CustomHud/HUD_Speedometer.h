@@ -51,6 +51,13 @@ public:
 
 	void Draw()
 	{
+		this->DrawSpeedometer();
+
+		this->DrawUnits();
+	}
+
+	void DrawSpeedometer()
+	{
 		int numCount = 3;
 		if (!this->params.ShowAllDigits)
 		{
@@ -68,7 +75,10 @@ public:
 		{
 			this->Speed[i]->Draw();
 		}
+	}
 
+	void DrawUnits()
+	{
 		if (this->units != NULL)
 		{
 			RECT rect;
@@ -86,7 +96,14 @@ public:
 			rect.top = 0;
 			rect.bottom = this->units->Info.Height;
 
-			this->Setup(this->units, { this->params.Units.Size * 4, this->params.Units.Size }, { 0, 0 }, this->params.Units.Position, &rect, 0);
+			D3DXVECTOR2 size;
+			size.x = this->params.Units.Size * 2;
+			size.y = this->params.Units.Size;
+
+			D3DXVECTOR2 texSize = size;
+			texSize.x *= 2;
+
+			this->Setup(this->units, texSize, { 0, 0 }, this->params.Units.Position, &size, 0);
 			this->units->Draw(&rect, this->params.Units.Color);
 		}
 	}
@@ -99,16 +116,12 @@ public:
 			{
 				if (this->Speed[i] != NULL)
 				{
-					this->Speed[i]->Release();
-
 					delete this->Speed[i];
 				}
 			}
 
 			if (this->units != NULL)
 			{
-				this->units->Release();
-
 				delete this->units;
 			}
 
@@ -119,10 +132,5 @@ public:
 	~HUD_Speedometer()
 	{
 		this->Release();
-
-		for (int i = 0; i < 3; i++)
-		{
-			delete this->Speed[i];
-		}
 	}
 };

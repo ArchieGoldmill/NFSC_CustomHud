@@ -87,6 +87,14 @@ float GetRedline()
 {
 	float rpm;
 	DALVehicle_GetRedLine(NULL, &rpm, 0);
+	if (rpm > 10000)
+	{
+		rpm = 10000;
+	}
+	if (rpm < 0)
+	{
+		rpm = 0;
+	}
 
 	return rpm / 1000;
 }

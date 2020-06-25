@@ -85,6 +85,30 @@ public:
 	}
 };
 
+class HUD_Filled_Params : public HUD_Element_Params
+{
+public:
+	string TextureFilled;
+	string TextureBackground;
+	float Value;
+	bool Direction;
+	FloatValueCallback* GetValue;
+	D3DCOLOR BackgroundColor;
+
+	void Init(CIniReader& ini, char* category)
+	{
+		HUD_Element_Params::Init(ini, category);
+		if (this->Enabled)
+		{
+			this->TextureFilled = this->ReadString(ini, category, "TextureFilled");
+			this->TextureBackground = this->ReadString(ini, category, "TextureBackground");
+			this->Value = ini.ReadFloat(category, (char*)"Value", 0.0f);
+			this->Direction = ini.ReadInteger(category, (char*)"Direction", 0);
+			this->BackgroundColor = ini.ReadInteger(category, (char*)"BackgroundColor", 0);
+		}
+	}
+};
+
 class HUD_Speedometer_Params : public HUD_Digit_Params
 {
 public:
@@ -116,6 +140,7 @@ public:
 	float NumbersMaxThreshold;
 
 	D3DCOLOR ArrowColor;
+	D3DCOLOR ArrowMaskedColor;
 	D3DCOLOR BackgroundColor;
 	D3DCOLOR BackgroundMaskedColor;
 	D3DCOLOR NumbersColor;
@@ -125,17 +150,25 @@ public:
 	D3DCOLOR BackgroundMaskedColor1;
 	D3DCOLOR BackgroundMaskedColor2;
 
+	D3DCOLOR ArrowMaskedColor1;
+	D3DCOLOR ArrowMaskedColor2;
+
 	string TextureBackground;
 	string TextureNumbers;
 	string TextureArrow;
 	string TextureBackgroundMasked;
+	string TextureArrowMasked;
 	float BackgroundMaskedSize;
+	float ArrowMaskedSize;
 
 	FloatValueCallback* GetArrowValue;
 	FloatValueCallback* GetMaxValue;
 
 	FloatValueCallback* GetMaskValue1;
 	FloatValueCallback* GetMaskValue2;
+
+	FloatValueCallback* GetArrowMaskValue1;
+	FloatValueCallback* GetArrowMaskValue2;
 
 	BoolValueCallback* IsInperfectZone;
 
@@ -145,6 +178,7 @@ public:
 		if (this->Enabled)
 		{
 			this->BackgroundMaskedSize = ini.ReadFloat(category, (char*)"BackgroundMaskedSize", 128.0f);
+			this->ArrowMaskedSize = ini.ReadFloat(category, (char*)"ArrowMaskedSize", 128.0f);
 
 			this->ArrowMinAngle = ini.ReadFloat(category, (char*)"ArrowMinAngle", 0.0f);
 			this->ArrowMaxAngle = ini.ReadFloat(category, (char*)"ArrowMaxAngle", 0.0f);
@@ -159,11 +193,15 @@ public:
 			this->BackgroundMaskedColor1 = ini.ReadInteger(category, (char*)"BackgroundMaskedColor1", 0);
 			this->BackgroundMaskedColor2 = ini.ReadInteger(category, (char*)"BackgroundMaskedColor2", 0);
 			this->PerfectZoneColor = ini.ReadInteger(category, (char*)"PerfectZoneColor", 0);
+			this->ArrowMaskedColor = ini.ReadInteger(category, (char*)"ArrowMaskedColor", 0);
+			this->ArrowMaskedColor1 = ini.ReadInteger(category, (char*)"ArrowMaskedColor1", 0);
+			this->ArrowMaskedColor2 = ini.ReadInteger(category, (char*)"ArrowMaskedColor2", 0);
 
 			this->TextureBackground = this->ReadString(ini, category, "TextureBackground");
 			this->TextureNumbers = this->ReadString(ini, category, (char*)"TextureNumbers");
 			this->TextureArrow = this->ReadString(ini, category, (char*)"TextureArrow");
 			this->TextureBackgroundMasked = this->ReadString(ini, category, (char*)"TextureBackgroundMasked");
+			this->TextureArrowMasked = this->ReadString(ini, category, (char*)"TextureArrowMasked");
 		}
 	}
 };
@@ -186,16 +224,19 @@ class HUD_Params
 public:
 	HUD_Tachometer_Params Tachometer;
 	HUD_Gauge_Params Nos;
+	HUD_Filled_Params NosFilled;
 	HUD_Gauge_Params Boost;
 	HUD_Gauge_Params SpeedBreak;
 	HUD_Speedometer_Params Speedometer;
 	float Scale;
+	D3DXVECTOR2 Offset;
 
 	void Init(CIniReader& ini)
 	{
 		this->Tachometer.Init(ini);
 		this->Speedometer.Init(ini);
 		this->Nos.Init(ini, (char*)"NOS");
+		this->NosFilled.Init(ini, (char*)"NOS_FILLED");
 		this->Boost.Init(ini, (char*)"BOOST");
 		this->SpeedBreak.Init(ini, (char*)"SPEEDBREAK");
 	}

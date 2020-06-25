@@ -218,6 +218,11 @@ public:
 	{
 		if (!this->isReleased)
 		{
+			if (this->tsm != NULL)
+			{
+				delete this->tsm;
+			}
+
 			this->pSprite->Release();
 			this->pTexture->Release();
 			if (this->pMaskTexture != NULL)
@@ -243,10 +248,6 @@ public:
 	~Sprite()
 	{
 		this->Release();
-		if (this->tsm != NULL)
-		{
-			delete this->tsm;
-		}
 	}
 
 private:

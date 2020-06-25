@@ -25,20 +25,23 @@ public:
 			return;
 		}
 
-		D3DXVECTOR2 size;
-		size.x = 12 * (this->params.Size / 1.55);
-		size.y = this->params.Size;
-
 		int gear = this->params.GetNumber();
-		float numSize = this->digits->Info.Width / 12.0;
+		float numSize = this->digits->Info.Width / 12.0f;
 
 		RECT rect;
-		rect.left = (gear - 1) * numSize + 1;
-		rect.right = numSize * gear - 2;
+		rect.left = (gear - 1) * numSize;
+		rect.right = gear * numSize;
 		rect.top = 0;
 		rect.bottom = this->digits->Info.Height;
 
-		this->Setup(this->digits, size, { 0, 0 }, this->params.Position, &rect, 0);
+		D3DXVECTOR2 size;
+		size.x = this->params.Size / 1.50f;
+		size.y = this->params.Size;
+
+		D3DXVECTOR2 texSize = size;
+		texSize.x *= 12;
+
+		this->Setup(this->digits, texSize, { 0, 0 }, this->params.Position, &size, 0);
 
 		this->digits->Draw(&rect, this->params.Color);
 	}
@@ -47,8 +50,10 @@ public:
 	{
 		if (!this->isReleased)
 		{
-			this->digits->Release();
-			delete this->digits;
+			if (this->digits != NULL)
+			{
+				delete this->digits;
+			}
 
 			this->isReleased = true;
 		}

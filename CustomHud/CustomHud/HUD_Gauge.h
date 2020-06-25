@@ -9,6 +9,7 @@ private:
 	Sprite* arrow = NULL;
 	Sprite* background = NULL;
 	CircleSprite* masked = NULL;
+	CircleSprite* arrowMasked = NULL;
 
 	HUD_Gauge_Params params;
 
@@ -38,6 +39,12 @@ public:
 			D3DXVECTOR2 maskSize = { this->params.BackgroundMaskedSize, this->params.BackgroundMaskedSize };
 			this->masked = new CircleSprite(pDevice, this->params.TextureBackgroundMasked, &maskSize);
 		}
+
+		if (!this->params.TextureArrowMasked.empty())
+		{
+			D3DXVECTOR2 maskSize = { this->params.ArrowMaskedSize, this->params.ArrowMaskedSize };
+			this->arrowMasked = new CircleSprite(pDevice, this->params.TextureArrowMasked, &maskSize);
+		}
 	}
 
 	void Draw()
@@ -46,16 +53,34 @@ public:
 		this->DrawNumbers();
 		this->DrawMasked();
 		this->DrawArrow();
+		this->DrawArrowMasked();
 	}
 
 	void Release()
 	{
 		if (!this->isReleased)
 		{
-			if (this->numbers != NULL) this->numbers->Release();
-			if (this->arrow != NULL) this->arrow->Release();
-			if (this->background != NULL) this->background->Release();
-			if (this->masked != NULL) this->masked->Release();
+			if (this->numbers != NULL) 
+			{
+				delete this->numbers;
+			}
+			if (this->arrow != NULL) 
+			{
+				delete this->arrow;
+			}
+			if (this->background != NULL) 
+			{
+				delete this->background;
+			}
+			if (this->masked != NULL)
+			{
+				delete this->masked;
+			}
+			if (this->arrowMasked != NULL) 
+			{
+				delete this->arrowMasked;
+			}
+
 			this->isReleased = true;
 		}
 	}
@@ -133,6 +158,32 @@ private:
 		this->masked->Draw(NULL, this->params.BackgroundMaskedColor);
 	}
 
+	void DrawArrowMasked()
+	{
+		if (this->masked == NULL)
+		{
+			return;
+		}
+
+		if (this->params.GetArrowMaskValue1 == NULL)
+		{
+			return;
+		}
+
+		this->Setup(this->masked, { this->params.Size, this->params.Size }, { 0, 0 }, this->params.Position, NULL, 0);
+
+		float step = (this->params.ArrowMaxAngle - this->params.ArrowMinAngle) / this->params.Value;
+		float val1 = this->params.GetArrowMaskValue1();
+		float a1 = step * val1 + this->params.ArrowMinAngle;
+
+		float val2 = this->params.GetArrowMaskValue2();
+		float a2 = step * val2 + this->params.ArrowMinAngle;
+
+		this->masked->SetupMask({ 0.5f, 0.5f }, a1, a2, this->params.ArrowMaskedColor1, this->params.ArrowMaskedColor2);
+
+		this->masked->Draw(NULL, this->params.ArrowMaskedColor);
+	}
+
 	void DrawArrow()
 	{
 		if (this->arrow == NULL)
@@ -145,7 +196,7 @@ private:
 		targetRes.y = this->params.Size / 3.5f;
 
 		D3DXVECTOR2 position;
-		position.x = this->params.Size / 2.63f + this->params.Position.x;
+		position.x = this->params.Size / 2.65f + this->params.Position.x;
 		position.y = this->params.Size / 2.77f + this->params.Position.y;
 
 		float val = this->params.GetArrowValue();

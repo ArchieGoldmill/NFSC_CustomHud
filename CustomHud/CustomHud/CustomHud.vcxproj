@@ -176,6 +176,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="HUD_Digit.h" />
     <ClInclude Include="HUD_Element.h" />
+    <ClInclude Include="HUD_Filled.h" />
     <ClInclude Include="HUD_Gauge.h" />
     <ClInclude Include="HUD_Speedometer.h" />
     <ClInclude Include="HUD_Tachometer.h" />

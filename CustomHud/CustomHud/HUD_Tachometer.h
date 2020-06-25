@@ -22,10 +22,12 @@ public:
 		this->params.GaugeParams.GetMaskValue1 = GetRedline;
 		this->params.GaugeParams.GetMaskValue2 = []() { return 10.0f; };
 
+		this->params.GaugeParams.GetArrowMaskValue1 = []() { return 0.0f; };
+		this->params.GaugeParams.GetArrowMaskValue2 = GetRPM;
+
 		this->params.GaugeParams.IsInperfectZone = IsInPerfectLaunchRange;
 
 		this->params.GearParams.GetNumber = GetGear;
-
 		
 		this->Gauge = new HUD_Gauge(pDevice, this->params.GaugeParams);
 
@@ -45,19 +47,18 @@ public:
 		}
 	}
 
-
 	void Release()
 	{
 		if (!this->isReleased)
 		{
 			if (this->Gauge != NULL)
 			{
-				this->Gauge->Release();
+				delete this->Gauge;
 			}
 
 			if (this->Gear != NULL)
 			{
-				this->Gear->Release();
+				delete this->Gear;
 			}
 
 			this->isReleased = true;
@@ -67,16 +68,6 @@ public:
 	~HUD_Tachometer()
 	{
 		this->Release();
-
-		if (this->Gauge != NULL)
-		{
-			delete this->Gauge;
-		}
-
-		if (this->Gear != NULL)
-		{
-			delete this->Gear;
-		}
 	}
 
 };
