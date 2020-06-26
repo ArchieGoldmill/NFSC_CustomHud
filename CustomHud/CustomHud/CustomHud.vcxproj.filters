@@ -19,6 +19,9 @@
     <Filter Include="Header Files\Sprites">
       <UniqueIdentifier>{40ab7874-a16c-47f6-bbb9-03b1f0d654db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\MirrorHook">
+      <UniqueIdentifier>{414d04cd-b8f7-4490-a76c-108e3c5eacec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DALVehicleCarbon.h">
@@ -53,6 +56,15 @@
     </ClInclude>
     <ClInclude Include="HUD_Filled.h">
       <Filter>Header Files\HUD_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="MirrorHook\WndProc\WndProcExtender.hpp">
+      <Filter>Header Files\MirrorHook</Filter>
+    </ClInclude>
+    <ClInclude Include="MirrorHook\MemoryEditor\MemoryEditor.hpp">
+      <Filter>Header Files\MirrorHook</Filter>
+    </ClInclude>
+    <ClInclude Include="MirrorHook\D3D9\D3D9Extender.hpp">
+      <Filter>Header Files\MirrorHook</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
