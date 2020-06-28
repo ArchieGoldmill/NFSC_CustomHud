@@ -51,24 +51,36 @@ public:
 	{
 		this->DrawBackground();
 		this->DrawNumbers();
+		this->DrawArrowMasked();
 		this->DrawMasked();
 		this->DrawArrow();
+	}
+
+	void Draw(bool drawArrow)
+	{
+		this->DrawBackground();
+		this->DrawNumbers();
 		this->DrawArrowMasked();
+		this->DrawMasked();
+		if (drawArrow)
+		{
+			this->DrawArrow();
+		}
 	}
 
 	void Release()
 	{
 		if (!this->isReleased)
 		{
-			if (this->numbers != NULL) 
+			if (this->numbers != NULL)
 			{
 				delete this->numbers;
 			}
-			if (this->arrow != NULL) 
+			if (this->arrow != NULL)
 			{
 				delete this->arrow;
 			}
-			if (this->background != NULL) 
+			if (this->background != NULL)
 			{
 				delete this->background;
 			}
@@ -76,7 +88,7 @@ public:
 			{
 				delete this->masked;
 			}
-			if (this->arrowMasked != NULL) 
+			if (this->arrowMasked != NULL)
 			{
 				delete this->arrowMasked;
 			}
@@ -152,6 +164,10 @@ private:
 
 		float val2 = this->params.GetMaskValue2();
 		float a2 = step * val2 + this->params.ArrowMinAngle;
+		if (a1 > a2)
+		{
+			swap(a1, a2);
+		}
 
 		this->masked->SetupMask({ 0.5f, 0.5f }, a1, a2, this->params.BackgroundMaskedColor1, this->params.BackgroundMaskedColor2);
 
@@ -184,6 +200,7 @@ private:
 		this->masked->Draw(NULL, this->params.ArrowMaskedColor);
 	}
 
+public:
 	void DrawArrow()
 	{
 		if (this->arrow == NULL)
@@ -192,12 +209,12 @@ private:
 		}
 
 		D3DXVECTOR2 targetRes;
-		targetRes.x = this->params.Size / 1.75f;
-		targetRes.y = this->params.Size / 3.5f;
+		targetRes.x = this->params.Size / 1.4f;
+		targetRes.y = this->params.Size / 2.8f;
 
 		D3DXVECTOR2 position;
-		position.x = this->params.Size / 2.65f + this->params.Position.x;
-		position.y = this->params.Size / 2.77f + this->params.Position.y;
+		position.x = this->params.Size / 2.92f + this->params.Position.x;
+		position.y = this->params.Size / 3.13f + this->params.Position.y;
 
 		float val = this->params.GetArrowValue();
 

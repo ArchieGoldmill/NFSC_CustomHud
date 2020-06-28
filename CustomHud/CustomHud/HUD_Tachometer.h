@@ -38,12 +38,17 @@ public:
 	{
 		if (this->Gauge != NULL)
 		{
-			this->Gauge->Draw();
+			this->Gauge->Draw(false);
 		}
 
 		if (this->Gear != NULL)
 		{
 			this->Gear->Draw();
+		}
+
+		if (this->Gauge != NULL)
+		{
+			this->Gauge->DrawArrow();
 		}
 	}
 

@@ -38,7 +38,7 @@ public:
 		auto start = chrono::steady_clock::now();
 
 		D3DXVECTOR2 O = { this->maskSize.x * this->center.x, this->maskSize.y * this->center.y };
-		bool invert = angle2 - angle1 > 180.0f;
+		bool invert = abs(angle2 - angle1) > 180.0f;
 
 		D3DXVECTOR2 A, B;
 		if (!invert)
