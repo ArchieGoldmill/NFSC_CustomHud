@@ -66,6 +66,9 @@
     <ClInclude Include="MirrorHook\D3D9\D3D9Extender.hpp">
       <Filter>Header Files\MirrorHook</Filter>
     </ClInclude>
+    <ClInclude Include="TextureStateManager.h">
+      <Filter>Header Files\Sprites</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

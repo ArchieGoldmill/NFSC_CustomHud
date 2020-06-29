@@ -42,6 +42,8 @@ void __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPr
 	{
 		delete carHud;
 		carHud = NULL;
+
+		Sprite::Reset();
 	}
 }
 

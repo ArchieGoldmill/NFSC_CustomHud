@@ -186,6 +186,7 @@
     <ClInclude Include="MirrorHook\MemoryEditor\MemoryEditor.hpp" />
     <ClInclude Include="MirrorHook\WndProc\WndProcExtender.hpp" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="TextureStateManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
