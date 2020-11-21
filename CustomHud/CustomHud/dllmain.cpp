@@ -4,17 +4,15 @@
 #include <d3dx9.h>
 #include <iostream>
 #include "injector/injector.hpp"
-#pragma comment(lib, "d3d9.lib")
-#pragma comment(lib, "d3dx9.lib")
-#include "detours.h"
-#pragma comment(lib, "detours.lib")
 #include "CarHud.h"
 #include <chrono>
 #include "Globals.h"
 #include "MirrorHook/D3D9/D3D9Extender.hpp"
 using namespace MirrorHookInternals;
-
 using namespace std;
+
+#pragma comment(lib, "d3d9.lib")
+#pragma comment(lib, "d3dx9.lib")
 
 HINSTANCE DllHandle;
 
@@ -48,7 +46,6 @@ void __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPr
 }
 
 auto Game_DetermineHudFeatures = (int(__thiscall*)(void* _this, signed int var1))0x005DC4B0;
-
 bool GetBit(int n, int k)
 {
 	return (n & (1 << k)) >> k;

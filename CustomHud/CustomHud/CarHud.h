@@ -25,6 +25,8 @@ private:
 	HUD_Filled* NosFilled = NULL;
 	HUD_Gauge* SpeedBreak = NULL;
 
+	ID3DXFont* Font = NULL;
+
 public:
 	static bool ShowHUD;
 
@@ -33,42 +35,52 @@ public:
 		this->pDevice = pDevice;
 		this->tsm = new TextureStateManager(pDevice);
 
-		if (Global::HUDParams.Tachometer.GaugeParams.Enabled)
+		try
 		{
-			this->Tachometer = new HUD_Tachometer(pDevice, Global::HUDParams.Tachometer);
-		}
+			if (Global::HUDParams.Tachometer.GaugeParams.Enabled)
+			{
+				this->Tachometer = new HUD_Tachometer(pDevice, Global::HUDParams.Tachometer);
+			}
 
-		if (Global::HUDParams.Speedometer.Enabled)
-		{
-			this->Speedometer = new HUD_Speedometer(pDevice, Global::HUDParams.Speedometer);
-		}
+			if (Global::HUDParams.Speedometer.Enabled)
+			{
+				this->Speedometer = new HUD_Speedometer(pDevice, Global::HUDParams.Speedometer);
+			}
 
-		if (Global::HUDParams.Boost.Enabled)
-		{
-			Global::HUDParams.Boost.GetArrowValue = GetBoost;
-			this->Boost = new HUD_Gauge(pDevice, Global::HUDParams.Boost);
-		}
+			if (Global::HUDParams.Boost.Enabled)
+			{
+				Global::HUDParams.Boost.GetArrowValue = GetBoost;
+				Global::HUDParams.Boost.IsInstalled = IsBoostInstalled;
+				this->Boost = new HUD_Gauge(pDevice, Global::HUDParams.Boost);
+			}
 
-		if (Global::HUDParams.Nos.Enabled)
-		{
-			Global::HUDParams.Nos.GetMaskValue1 = []() {return 0.0f; };
-			Global::HUDParams.Nos.GetMaskValue2 = GetNos;
-			Global::HUDParams.Nos.GetArrowValue = GetNos;
-			this->Nos = new HUD_Gauge(pDevice, Global::HUDParams.Nos);
-		}
+			if (Global::HUDParams.Nos.Enabled)
+			{
+				Global::HUDParams.Nos.GetMaskValue1 = []() {return 0.0f; };
+				Global::HUDParams.Nos.GetMaskValue2 = GetNos;
+				Global::HUDParams.Nos.GetArrowValue = GetNos;
+				Global::HUDParams.Nos.IsInstalled = IsNosInstalled;
+				this->Nos = new HUD_Gauge(pDevice, Global::HUDParams.Nos);
+			}
 
-		if (Global::HUDParams.NosFilled.Enabled)
-		{
-			Global::HUDParams.NosFilled.GetValue = GetNos;
-			this->NosFilled = new HUD_Filled(pDevice, Global::HUDParams.NosFilled);
-		}
+			if (Global::HUDParams.NosFilled.Enabled)
+			{
+				Global::HUDParams.NosFilled.GetValue = GetNos;
+				Global::HUDParams.NosFilled.IsInstalled = IsNosInstalled;
+				this->NosFilled = new HUD_Filled(pDevice, Global::HUDParams.NosFilled);
+			}
 
-		if (Global::HUDParams.SpeedBreak.Enabled)
+			if (Global::HUDParams.SpeedBreak.Enabled)
+			{
+				Global::HUDParams.SpeedBreak.GetMaskValue1 = []() {return 0.0f; };
+				Global::HUDParams.SpeedBreak.GetMaskValue2 = GetSpeedBreaker;
+				Global::HUDParams.SpeedBreak.GetArrowValue = GetSpeedBreaker;
+				this->SpeedBreak = new HUD_Gauge(pDevice, Global::HUDParams.SpeedBreak);
+			}
+		}
+		catch (string& s)
 		{
-			Global::HUDParams.SpeedBreak.GetMaskValue1 = []() {return 0.0f; };
-			Global::HUDParams.SpeedBreak.GetMaskValue2 = GetSpeedBreaker;
-			Global::HUDParams.SpeedBreak.GetArrowValue = GetSpeedBreaker;
-			this->SpeedBreak = new HUD_Gauge(pDevice, Global::HUDParams.SpeedBreak);
+			MessageBoxA(NULL, s.c_str(), "NFSC - Custom HUD", MB_ICONERROR);
 		}
 	}
 
@@ -78,7 +90,9 @@ public:
 		auto start = chrono::steady_clock::now();
 		if (!IsHudVisible() || !IsPlayerControlling() || !HUD::ShowHUD)
 		{
-			//return;
+#ifdef NDEBUG
+			return;
+#endif
 		}
 
 		for (int i = 0; i < NUM_TEX; i++)
@@ -134,14 +148,21 @@ public:
 			this->SpeedBreak->Draw();
 		}
 
+		if (this->Tachometer != NULL)
+		{
+			this->Tachometer->DrawArrow();
+		}
+
 		this->tsm->Restore();
+
+		//this->DrawDebugInfo();
 
 		auto now = chrono::steady_clock::now();
 
 		int a = chrono::duration_cast<std::chrono::microseconds>(now - start).count();
 
 		gen = (a + gen) / 2;
-	}
+		}
 
 	~HUD()
 	{
@@ -175,7 +196,40 @@ public:
 			delete this->SpeedBreak;
 		}
 
+		if (this->Font != NULL)
+		{
+			this->Font->Release();
+		}
+
 		delete this->tsm;
 	}
-};
+
+private:
+	void DrawDebugInfo()
+	{
+		this->DrawTextS("RPM=" + std::to_string(GetRPM() * 1000.0f), 0);
+		this->DrawTextS("RedLine=" + std::to_string(GetRedline() * 1000.0f), 1);
+		this->DrawTextS("Speed=" + std::to_string(GetSpeed()), 2);
+		this->DrawTextS("NOS=" + std::to_string(GetNos()), 3);
+		this->DrawTextS("SpeedBreaker=" + std::to_string(GetSpeedBreaker()), 4);
+		this->DrawTextS("Boost=" + std::to_string(GetBoost()), 5);
+		this->DrawTextS("TIME(microsec)=" + std::to_string(gen), 6);
+	}
+
+	void DrawTextS(string str, int line)
+	{
+		if (this->Font == NULL)
+		{
+			D3DXCreateFont(this->pDevice, 22, 0, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial", &this->Font);
+		}
+
+		RECT font_rect;
+		font_rect.left = 10;
+		font_rect.top = 30 * line;
+		font_rect.right = 100;
+		font_rect.bottom = 30 * (line + 1);
+
+		this->Font->DrawText(NULL, str.c_str(), -1, &font_rect, DT_LEFT | DT_NOCLIP, 0xFFFFFFFF);
+	}
+	};
 bool HUD::ShowHUD = false;

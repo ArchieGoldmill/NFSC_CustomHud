@@ -45,7 +45,10 @@ public:
 		{
 			this->Gear->Draw();
 		}
+	}
 
+	void DrawArrow()
+	{
 		if (this->Gauge != NULL)
 		{
 			this->Gauge->DrawArrow();

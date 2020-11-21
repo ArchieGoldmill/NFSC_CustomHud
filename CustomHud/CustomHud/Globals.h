@@ -12,6 +12,8 @@ namespace Global
 	extern HUD_Params HUDParams;
 	string GetHudPath();
 	void Init();
+	D3DXVECTOR2 GetRand();
+	void SetRand(bool);
 };
 
 typedef float(FloatValueCallback)();
@@ -93,6 +95,7 @@ public:
 	float Value;
 	bool Direction;
 	FloatValueCallback* GetValue;
+	BoolValueCallback* IsInstalled;
 	D3DCOLOR BackgroundColor;
 
 	void Init(CIniReader& ini, char* category)
@@ -170,6 +173,7 @@ public:
 	FloatValueCallback* GetArrowMaskValue1;
 	FloatValueCallback* GetArrowMaskValue2;
 
+	BoolValueCallback* IsInstalled;
 	BoolValueCallback* IsInperfectZone;
 
 	void Init(CIniReader& ini, char* category)

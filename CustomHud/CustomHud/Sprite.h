@@ -19,6 +19,11 @@ private:
 	LPDIRECT3DTEXTURE9 pMaskTexture;
 	bool isReleased;
 	bool useMask;
+
+#ifdef _DEBUG
+	string path;
+#endif
+
 protected:
 	D3DXVECTOR2 maskSize;
 
@@ -27,17 +32,25 @@ public:
 
 	Sprite(LPDIRECT3DDEVICE9 pDevice, string& path, D3DXVECTOR2* maskSize = NULL)
 	{
+#ifdef _DEBUG
+		this->path = path;
+#endif
 		this->isReleased = false;
 		this->useMask = useMask;
 		this->pDevice = pDevice;
 		this->LoadTexture(path);
+		if (!this->pTexture)
+		{
+			throw "Unable to load texturefrom: \n" + path;
+		}
+
 		this->GetTextureInfo();
 		this->CreateSprite();
 		if (maskSize != NULL)
 		{
 			this->maskSize = *maskSize;
 			this->useMask = true;
-			this->pDevice->CreateTexture(maskSize->x, maskSize->y, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &pMaskTexture, NULL);
+			this->pDevice->CreateTexture(maskSize->x, maskSize->y, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &this->pMaskTexture, NULL);
 		}
 	}
 
@@ -56,8 +69,8 @@ public:
 			int pTextureStage = 0;
 			int pMaskTextureStage = 1;
 
-			this->pDevice->SetTexture(pTextureStage, pTexture);
-			this->pDevice->SetTexture(pMaskTextureStage, pMaskTexture);
+			this->pDevice->SetTexture(pTextureStage, this->pTexture);
+			this->pDevice->SetTexture(pMaskTextureStage, this->pMaskTexture);
 
 			//pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 			//pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -84,25 +97,24 @@ public:
 			this->pDevice->SetTextureStageState(pMaskTextureStage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 			this->pDevice->SetTextureStageState(pMaskTextureStage, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 			this->pDevice->SetTextureStageState(pMaskTextureStage, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-
-			this->pSprite->Draw(this->pTexture, rect, NULL, NULL, color);
 		}
 		else
 		{
-			this->pDevice->SetTexture(0, pTexture);
-			this->pDevice->SetTexture(1, pMaskTexture);
+			this->pDevice->SetTexture(0, this->pTexture);
+			this->pDevice->SetTexture(1, this->pMaskTexture);
 
-			this->pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-			this->pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-			this->pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTA_TEXTURE);
-			this->pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-			this->pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TEXTURE);
 			this->pDevice->SetTextureStageState(0, D3DTSS_COLORARG0, D3DTA_TEXTURE);
+			this->pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+			this->pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+			this->pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
 			this->pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG0, D3DTA_TEXTURE);
-			this->pDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
+			this->pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_CURRENT);
+			this->pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TEXTURE);
 
-			this->pSprite->Draw(this->pTexture, rect, NULL, NULL, color);
+			this->pDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
 		}
+
+		this->pSprite->Draw(this->pTexture, rect, NULL, NULL, color);
 
 		this->pSprite->End();
 	}
@@ -149,7 +161,7 @@ public:
 private:
 	bool CreateSprite()
 	{
-		return FAILED(D3DXCreateSprite(this->pDevice, &pSprite));
+		return FAILED(D3DXCreateSprite(this->pDevice, &this->pSprite));
 	}
 
 	bool LoadTexture(string& path)

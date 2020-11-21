@@ -39,8 +39,8 @@ bool(__thiscall* DALVehicle_GetFloat)(void* DALVehicle, const int valueType, flo
 bool IsHudVisible()
 {
 	int res;
-	DALVehicle_GetIsHudVisible(NULL, &res, 0);
-	return res != 0;
+	bool v = DALVehicle_GetIsHudVisible(NULL, &res, 0);
+	return res != 0 && v;
 }
 
 bool IsInPerfectLaunchRange()
@@ -52,19 +52,30 @@ bool IsInPerfectLaunchRange()
 
 float GetBoost()
 {
-	float res;
-	DALVehicle_GetTurbo(NULL, &res, 0);
-	if (res > 20)
+	float res = 0;
+	if (IsHudVisible())
 	{
-		res = 20;
-	}
+		DALVehicle_GetTurbo(NULL, &res, 0);
+		int max = 20;
 
-	if (res < -20)
-	{
-		res = 0;
+		if (res > max)
+		{
+			res = max;
+		}
+
+		if (res < -max)
+		{
+			res = -max;
+		}
 	}
 
 	return res;
+}
+
+bool IsBoostInstalled()
+{
+	float res;
+	return DALVehicle_GetTurbo(NULL, &res, 0);
 }
 
 float GetRPM()
@@ -182,6 +193,17 @@ float GetNos()
 	}
 
 	return nos;
+}
+
+bool IsNosInstalled()
+{
+	if (IsHudVisible())
+	{
+		float nos = 0;
+		return DALVehicle_GetNos(NULL, &nos, 0);
+	}
+
+	return false;
 }
 
 float GetSpeedBreaker()

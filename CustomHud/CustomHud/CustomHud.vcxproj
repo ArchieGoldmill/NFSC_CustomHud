@@ -108,7 +108,8 @@
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>copy "$(TargetDir)*.*" "E:\Games\Need for Speed - Carbon\scripts"  /y</Command>
+      <Command>copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Carbon\scripts"  /y
+copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -147,9 +148,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Carbon\scripts"  /y
+copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

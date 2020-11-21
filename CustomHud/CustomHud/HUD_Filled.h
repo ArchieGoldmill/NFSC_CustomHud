@@ -25,8 +25,17 @@ public:
 
 	void Draw()
 	{
-		this->DrawBackground();
-		this->DrawFilled();
+		bool draw = true;
+		if (this->params.IsInstalled)
+		{
+			draw = this->params.IsInstalled();
+		}
+
+		if (draw)
+		{
+			this->DrawBackground();
+			this->DrawFilled();
+		}
 	}
 
 	void DrawBackground()

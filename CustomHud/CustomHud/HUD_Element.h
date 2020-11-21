@@ -59,6 +59,9 @@ protected:
 		position.x = wndSize.Width - offset.x - positionOffset.x - Global::HUDParams.Offset.x;
 		position.y = wndSize.Height - offset.y - positionOffset.y - Global::HUDParams.Offset.y;
 
+		position.x += Global::GetRand().x;
+		position.y += Global::GetRand().y;
+
 		D3DXMATRIX matrix;
 		D3DXMatrixTransformation2D(&matrix, NULL, NULL, &scale, &center, degToRad(rotation), &position);
 		texture->SetTransform(matrix);

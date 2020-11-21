@@ -13,8 +13,8 @@ class CircleSprite : public Sprite
 {
 private:
 	D3DXVECTOR2 center;
-	float angle1;
-	float angle2;
+	float angle1, _angle1 = 0;
+	float angle2, _angle2 = 0;
 	int color1;
 	int color2;
 
@@ -35,6 +35,13 @@ public:
 
 	virtual void DrawMask(int* mask)
 	{
+		float e = 0.1f;
+		if (abs(this->angle1 - this->_angle1) < e && abs(this->angle2 - this->_angle2) < e)
+		{
+			// Dont need to redraw mask if angle is the same
+			return;
+		}
+
 		auto start = chrono::steady_clock::now();
 
 		D3DXVECTOR2 O = { this->maskSize.x * this->center.x, this->maskSize.y * this->center.y };
@@ -85,6 +92,9 @@ public:
 		int a = chrono::duration_cast<std::chrono::microseconds>(now - start).count();
 
 		int b = a;
+
+		this->_angle1 = this->angle1;
+		this->_angle2 = this->angle2;
 	}
 
 private:

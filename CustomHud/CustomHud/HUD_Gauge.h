@@ -49,19 +49,24 @@ public:
 
 	void Draw()
 	{
-		this->DrawBackground();
-		this->DrawNumbers();
-		this->DrawArrowMasked();
-		this->DrawMasked();
-		this->DrawArrow();
+		bool draw = true;
+		if (this->params.IsInstalled)
+		{
+			draw = this->params.IsInstalled();
+		}
+
+		if (draw)
+		{
+			this->Draw(true);
+		}
 	}
 
 	void Draw(bool drawArrow)
 	{
 		this->DrawBackground();
-		this->DrawNumbers();
 		this->DrawArrowMasked();
 		this->DrawMasked();
+		this->DrawNumbers();
 		if (drawArrow)
 		{
 			this->DrawArrow();
@@ -120,10 +125,12 @@ private:
 		D3DCOLOR color;
 		if (redline - rpm < this->params.NumbersMaxThreshold)
 		{
+			//Global::SetRand(true);
 			color = this->params.NumbersMaxColor;
 		}
 		else
 		{
+			//Global::SetRand(false);
 			color = this->params.NumbersColor;
 		}
 
@@ -176,7 +183,7 @@ private:
 
 	void DrawArrowMasked()
 	{
-		if (this->masked == NULL)
+		if (this->arrowMasked == NULL)
 		{
 			return;
 		}
@@ -186,7 +193,7 @@ private:
 			return;
 		}
 
-		this->Setup(this->masked, { this->params.Size, this->params.Size }, { 0, 0 }, this->params.Position, NULL, 0);
+		this->Setup(this->arrowMasked, { this->params.Size, this->params.Size }, { 0, 0 }, this->params.Position, NULL, 0);
 
 		float step = (this->params.ArrowMaxAngle - this->params.ArrowMinAngle) / this->params.Value;
 		float val1 = this->params.GetArrowMaskValue1();
@@ -195,9 +202,9 @@ private:
 		float val2 = this->params.GetArrowMaskValue2();
 		float a2 = step * val2 + this->params.ArrowMinAngle;
 
-		this->masked->SetupMask({ 0.5f, 0.5f }, a1, a2, this->params.ArrowMaskedColor1, this->params.ArrowMaskedColor2);
+		this->arrowMasked->SetupMask({ 0.5f, 0.5f }, a1, a2, this->params.ArrowMaskedColor1, this->params.ArrowMaskedColor2);
 
-		this->masked->Draw(NULL, this->params.ArrowMaskedColor);
+		this->arrowMasked->Draw(NULL, this->params.ArrowMaskedColor);
 	}
 
 public:
