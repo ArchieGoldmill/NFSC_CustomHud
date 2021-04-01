@@ -3,12 +3,12 @@
 #include <string>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "DALVehicleCarbon.h"
 #include "TextureStateManager.h"
 
 #include "HUD_Tachometer.h"
 #include "HUD_Speedometer.h"
 #include "HUD_Filled.h"
+#include "GameApi.h"
 
 using namespace std;
 
@@ -49,32 +49,32 @@ public:
 
 			if (Global::HUDParams.Boost.Enabled)
 			{
-				Global::HUDParams.Boost.GetArrowValue = GetBoost;
-				Global::HUDParams.Boost.IsInstalled = IsBoostInstalled;
+				Global::HUDParams.Boost.GetArrowValue = Game::GetBoost;
+				Global::HUDParams.Boost.IsInstalled = Game::IsBoostInstalled;
 				this->Boost = new HUD_Gauge(pDevice, Global::HUDParams.Boost);
 			}
 
 			if (Global::HUDParams.Nos.Enabled)
 			{
 				Global::HUDParams.Nos.GetMaskValue1 = []() {return 0.0f; };
-				Global::HUDParams.Nos.GetMaskValue2 = GetNos;
-				Global::HUDParams.Nos.GetArrowValue = GetNos;
-				Global::HUDParams.Nos.IsInstalled = IsNosInstalled;
+				Global::HUDParams.Nos.GetMaskValue2 = Game::GetNos;
+				Global::HUDParams.Nos.GetArrowValue = Game::GetNos;
+				Global::HUDParams.Nos.IsInstalled = Game::IsNosInstalled;
 				this->Nos = new HUD_Gauge(pDevice, Global::HUDParams.Nos);
 			}
 
 			if (Global::HUDParams.NosFilled.Enabled)
 			{
-				Global::HUDParams.NosFilled.GetValue = GetNos;
-				Global::HUDParams.NosFilled.IsInstalled = IsNosInstalled;
+				Global::HUDParams.NosFilled.GetValue = Game::GetNos;
+				Global::HUDParams.NosFilled.IsInstalled = Game::IsNosInstalled;
 				this->NosFilled = new HUD_Filled(pDevice, Global::HUDParams.NosFilled);
 			}
 
 			if (Global::HUDParams.SpeedBreak.Enabled)
 			{
 				Global::HUDParams.SpeedBreak.GetMaskValue1 = []() {return 0.0f; };
-				Global::HUDParams.SpeedBreak.GetMaskValue2 = GetSpeedBreaker;
-				Global::HUDParams.SpeedBreak.GetArrowValue = GetSpeedBreaker;
+				Global::HUDParams.SpeedBreak.GetMaskValue2 = Game::GetSpeedBreaker;
+				Global::HUDParams.SpeedBreak.GetArrowValue = Game::GetSpeedBreaker;
 				this->SpeedBreak = new HUD_Gauge(pDevice, Global::HUDParams.SpeedBreak);
 			}
 		}
@@ -88,11 +88,11 @@ public:
 	void Draw()
 	{
 		auto start = chrono::steady_clock::now();
-		if (!IsHudVisible() || !IsPlayerControlling() || !HUD::ShowHUD)
+		if (!Game::Current->IsHudVisible())
 		{
-#ifdef NDEBUG
+//#ifdef NDEBUG
 			return;
-#endif
+//#endif
 		}
 
 		for (int i = 0; i < NUM_TEX; i++)
@@ -162,7 +162,7 @@ public:
 		int a = chrono::duration_cast<std::chrono::microseconds>(now - start).count();
 
 		gen = (a + gen) / 2;
-		}
+	}
 
 	~HUD()
 	{
@@ -207,12 +207,12 @@ public:
 private:
 	void DrawDebugInfo()
 	{
-		this->DrawTextS("RPM=" + std::to_string(GetRPM() * 1000.0f), 0);
-		this->DrawTextS("RedLine=" + std::to_string(GetRedline() * 1000.0f), 1);
-		this->DrawTextS("Speed=" + std::to_string(GetSpeed()), 2);
-		this->DrawTextS("NOS=" + std::to_string(GetNos()), 3);
-		this->DrawTextS("SpeedBreaker=" + std::to_string(GetSpeedBreaker()), 4);
-		this->DrawTextS("Boost=" + std::to_string(GetBoost()), 5);
+		this->DrawTextS("RPM=" + std::to_string(Game::GetRPM() * 1000.0f), 0);
+		this->DrawTextS("RedLine=" + std::to_string(Game::GetRedline() * 1000.0f), 1);
+		this->DrawTextS("Speed=" + std::to_string(Game::GetSpeed()), 2);
+		this->DrawTextS("NOS=" + std::to_string(Game::GetNos()), 3);
+		this->DrawTextS("SpeedBreaker=" + std::to_string(Game::GetSpeedBreaker()), 4);
+		this->DrawTextS("Boost=" + std::to_string(Game::GetBoost()), 5);
 		this->DrawTextS("TIME(microsec)=" + std::to_string(gen), 6);
 	}
 
@@ -231,5 +231,5 @@ private:
 
 		this->Font->DrawText(NULL, str.c_str(), -1, &font_rect, DT_LEFT | DT_NOCLIP, 0xFFFFFFFF);
 	}
-	};
+};
 bool HUD::ShowHUD = false;

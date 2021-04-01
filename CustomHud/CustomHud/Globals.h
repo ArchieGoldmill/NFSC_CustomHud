@@ -233,6 +233,7 @@ public:
 	HUD_Gauge_Params SpeedBreak;
 	HUD_Speedometer_Params Speedometer;
 	float Scale;
+	bool ReplaceDragHud;
 	D3DXVECTOR2 Offset;
 
 	void Init(CIniReader& ini)

@@ -1,8 +1,8 @@
 #pragma once
 #include "HUD_Element.h"
 #include "HUD_Digit.h"
-#include "DALVehicleCarbon.h"
 #include "Globals.h"
+#include "GameApi.h"
 
 class HUD_Speedometer : HUD_Element
 {
@@ -29,15 +29,15 @@ public:
 			IntValueCallback* cb = 0;
 			if (i == 0)
 			{
-				cb = GetSpeed0;
+				cb = Game::GetSpeed0;
 			}
 			if (i == 1)
 			{
-				cb = GetSpeed1;
+				cb = Game::GetSpeed1;
 			}
 			if (i == 2)
 			{
-				cb = GetSpeed2;
+				cb = Game::GetSpeed2;
 			}
 
 			digitParams.GetNumber = cb;
@@ -61,7 +61,7 @@ public:
 		int numCount = 3;
 		if (!this->params.ShowAllDigits)
 		{
-			int speed = GetSpeed();
+			int speed = Game::GetSpeed();
 			if (speed < 10)
 			{
 				numCount = 1;
@@ -82,7 +82,7 @@ public:
 		if (this->units != NULL)
 		{
 			RECT rect;
-			if (IsKMH())
+			if (Game::GetUnits())
 			{
 				rect.left = this->units->Info.Width / 2.0;
 				rect.right = this->units->Info.Width;

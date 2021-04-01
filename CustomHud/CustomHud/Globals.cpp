@@ -12,8 +12,6 @@ namespace Global
 
 	HUD_Params HUDParams;
 
-	bool IsInit = false;
-
 	D3DXVECTOR2 rndVec;
 	void SetRand(bool rnd)
 	{
@@ -42,11 +40,6 @@ namespace Global
 
 	void Init()
 	{
-		if (IsInit)
-		{
-			return;
-		}
-
 		CIniReader main_ini("CustomHud.ini");
 
 		HUDPath = main_ini.ReadString((char*)"GENERAL", (char*)"HUDpath", "");
@@ -60,10 +53,9 @@ namespace Global
 		CIniReader ini(iniPath.c_str());
 
 		HUDParams.Scale = main_ini.ReadFloat((char*)"GENERAL", (char*)"Scale", 1.0f);
+		HUDParams.ReplaceDragHud = main_ini.ReadInteger((char*)"GENERAL", (char*)"ReplaceDragHud", 0);
 		HUDParams.Offset.x = main_ini.ReadFloat((char*)"GENERAL", (char*)"OffsetX", 0.0f);
 		HUDParams.Offset.y = main_ini.ReadFloat((char*)"GENERAL", (char*)"OffsetY", 0.0f);
 		HUDParams.Init(ini);
-
-		IsInit = true;
 	}
 };

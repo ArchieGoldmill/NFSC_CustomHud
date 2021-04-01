@@ -109,7 +109,10 @@
       <Message>
       </Message>
       <Command>copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Carbon\scripts"  /y
-copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y</Command>
+copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y
+
+copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Most Wanted\scripts"  /y
+copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -153,7 +156,10 @@ copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y</Command
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Carbon\scripts"  /y
-copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y</Command>
+copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y
+
+copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Most Wanted\scripts"  /y
+copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -177,9 +183,10 @@ copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y</Command
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Carbon.h" />
     <ClInclude Include="CarHud.h" />
     <ClInclude Include="CircleSprite.h" />
-    <ClInclude Include="DALVehicleCarbon.h" />
+    <ClInclude Include="GameApi.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="HUD_Digit.h" />
     <ClInclude Include="HUD_Element.h" />
@@ -190,12 +197,16 @@ copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y</Command
     <ClInclude Include="MirrorHook\D3D9\D3D9Extender.hpp" />
     <ClInclude Include="MirrorHook\MemoryEditor\MemoryEditor.hpp" />
     <ClInclude Include="MirrorHook\WndProc\WndProcExtender.hpp" />
+    <ClInclude Include="MostWanted.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextureStateManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Carbon.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="GameApi.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="MostWanted.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

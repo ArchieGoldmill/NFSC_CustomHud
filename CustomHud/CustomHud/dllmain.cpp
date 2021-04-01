@@ -3,11 +3,13 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <iostream>
-#include "injector/injector.hpp"
 #include "CarHud.h"
 #include <chrono>
 #include "Globals.h"
 #include "MirrorHook/D3D9/D3D9Extender.hpp"
+#include "GameApi.h"
+#include "Carbon.h"
+#include "MostWanted.h"
 using namespace MirrorHookInternals;
 using namespace std;
 
@@ -27,7 +29,6 @@ void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 {
 	if (carHud == NULL)
 	{
-		Global::Init();
 		carHud = new HUD(pDevice);
 	}
 
@@ -45,51 +46,25 @@ void __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPr
 	}
 }
 
-auto Game_DetermineHudFeatures = (int(__thiscall*)(void* _this, signed int var1))0x005DC4B0;
-bool GetBit(int n, int k)
-{
-	return (n & (1 << k)) >> k;
-}
-
-void ClearBit(int& n, int k)
-{
-	n &= ~(1 << k);
-}
-
-int __fastcall DetermineHudFeatures(void* _this, int v1, int v2)
-{
-	int result = Game_DetermineHudFeatures(_this, v2);
-
-	HUD::ShowHUD = GetBit(result, 1);
-
-	ClearBit(result, 1);
-	ClearBit(result, 11);
-	//ClearBit(result, 14); // Heat bar
-	ClearBit(result, 18);
-
-	return result;
-}
-
 void Init()
 {
 	IDirect3DDevice9* pDevice = nullptr;
 	while (pDevice == NULL)
 	{
 		Sleep(10);
-		pDevice = *(IDirect3DDevice9 * *)0xAB0ABC;
+		pDevice = *(IDirect3DDevice9 * *)Game::Current->Device();
 	}
 
 	D3D9Extender::AddExtension(D3D9Extender::D3D9Extension::EndScene, hookedEndScene);
 	D3D9Extender::AddExtension(D3D9Extender::D3D9Extension::AfterReset, hookedReset);
 
-	if (D3D9Extender::Init(&pDevice))
+	if (!D3D9Extender::Init(&pDevice))
 	{
-		injector::MakeCALL(0x005E6F7B, DetermineHudFeatures, true);
+		MessageBoxA(NULL, "Unable to init hook.", "Custom HUD", MB_ICONERROR);
+		return;
 	}
-	else
-	{
-		MessageBoxA(NULL, "Unable to init hook.", "NFSC - Custom HUD", MB_ICONERROR);
-	}
+
+	Global::Init();
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
@@ -102,16 +77,23 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		IMAGE_DOS_HEADER* dos = (IMAGE_DOS_HEADER*)(base);
 		IMAGE_NT_HEADERS* nt = (IMAGE_NT_HEADERS*)(base + dos->e_lfanew);
 
-		if ((base + nt->OptionalHeader.AddressOfEntryPoint + (0x400000 - base)) == 0x87E926) // Check if .exe file is compatible - Thanks to thelink2012 and MWisBest
+		int ptr = (base + nt->OptionalHeader.AddressOfEntryPoint + (0x400000 - base));
+		if (ptr == 0x87E926) // Check if .exe file is compatible - Thanks to thelink2012 and MWisBest
 		{
-			DisableThreadLibraryCalls(hModule);
-			std::thread(Init).detach();
+			Game::Current = new Game::Carbon();
+		}
+		else if (ptr == 0x7C4040)
+		{
+			Game::Current = new Game::MostWanted();
 		}
 		else
 		{
-			MessageBoxA(NULL, "This .exe is not supported.\nPlease use v1.4 English nfsc.exe (6,88 MB (7.217.152 bytes)).", "NFSC - Custom HUD", MB_ICONERROR);
+			MessageBoxA(NULL, "This .exe is not supported.", "Custom HUD", MB_ICONERROR);
 			return FALSE;
 		}
+
+		DisableThreadLibraryCalls(hModule);
+		std::thread(Init).detach();
 	}
 	break;
 	case DLL_THREAD_ATTACH:

@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Header Files\HUD_Elements">
       <UniqueIdentifier>{e2a701d6-3433-4d29-b13a-0673d484c20e}</UniqueIdentifier>
     </Filter>
@@ -22,11 +18,20 @@
     <Filter Include="Header Files\MirrorHook">
       <UniqueIdentifier>{414d04cd-b8f7-4490-a76c-108e3c5eacec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Games">
+      <UniqueIdentifier>{644a6d72-8f8e-4a60-9950-0be0eec16d43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\Carbon">
+      <UniqueIdentifier>{75f2bec3-b208-456e-b21b-4682cdced07a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Globals">
+      <UniqueIdentifier>{8278cb79-4636-4fdd-a640-4ccbd3146beb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\MostWanted">
+      <UniqueIdentifier>{79d0a412-7908-4244-be38-cd11fd67d50d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DALVehicleCarbon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HUD_Gauge.h">
       <Filter>Header Files\HUD_Elements</Filter>
     </ClInclude>
@@ -48,9 +53,6 @@
     <ClInclude Include="CircleSprite.h">
       <Filter>Header Files\Sprites</Filter>
     </ClInclude>
-    <ClInclude Include="Globals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CarHud.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -69,13 +71,34 @@
     <ClInclude Include="TextureStateManager.h">
       <Filter>Header Files\Sprites</Filter>
     </ClInclude>
+    <ClInclude Include="GameApi.h">
+      <Filter>Games</Filter>
+    </ClInclude>
+    <ClInclude Include="Carbon.h">
+      <Filter>Games\Carbon</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h">
+      <Filter>Globals</Filter>
+    </ClInclude>
+    <ClInclude Include="MostWanted.h">
+      <Filter>Games\MostWanted</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Carbon.cpp">
+      <Filter>Games\Carbon</Filter>
+    </ClCompile>
     <ClCompile Include="Globals.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Globals</Filter>
+    </ClCompile>
+    <ClCompile Include="GameApi.cpp">
+      <Filter>Games</Filter>
+    </ClCompile>
+    <ClCompile Include="MostWanted.cpp">
+      <Filter>Games\MostWanted</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

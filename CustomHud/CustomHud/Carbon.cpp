@@ -1,6 +1,7 @@
-#pragma once
-#define THEDALMANAGERADDRESS 0x00A8AD30
-#define THEGAMEFLOWMANAGER_ADDRESS 0xA99BBC
+#include <stdlib.h>
+#include "Carbon.h"
+#include "injector/injector.hpp"
+
 bool(__thiscall* DALVehicle_GetRPM)(void* DALVehicle, float* getVal, const int playerNum) = (bool(__thiscall*)(void*, float*, const int))0x004B65F0;
 bool(__thiscall* DALVehicle_GetMaxRPM)(void* DALVehicle, float* getVal, const int playerNum) = (bool(__thiscall*)(void*, float*, const int))0x004B66E0;
 bool(__thiscall* DALVehicle_GetTurbo)(void* DALVehicle, float* getVal, const int playerNum) = (bool(__thiscall*)(void*, float*, const int))0x004B6730;
@@ -35,184 +36,144 @@ bool(__thiscall* DALVehicle_GetSpeedLocalized)(void* DALVehicle, float* getVal, 
 bool(__thiscall* DALVehicle_GetIVehicle)(const int playerNum) = (bool(__thiscall*)(const int))0x004B62B0;
 bool(__thiscall* DALVehicle_GetInt)(void* DALVehicle, const int valueType, int* getVal, const int arg1, const int arg2, const int arg3) = (bool(__thiscall*)(void*, const int, int*, const int, const int, const int))0x004CC1C0;
 bool(__thiscall* DALVehicle_GetFloat)(void* DALVehicle, const int valueType, float* getVal, const int arg1, const int arg2, const int arg3) = (bool(__thiscall*)(void*, const int, float*, const int, const int, const int))0x004CC000;
-
-bool IsHudVisible()
-{
-	int res;
-	bool v = DALVehicle_GetIsHudVisible(NULL, &res, 0);
-	return res != 0 && v;
-}
-
-bool IsInPerfectLaunchRange()
-{
-	int res;
-	DALVehicle_GetInPerfectLaunchRange(NULL, &res, 0);
-	return res != 0;
-}
-
-float GetBoost()
-{
-	float res = 0;
-	if (IsHudVisible())
-	{
-		DALVehicle_GetTurbo(NULL, &res, 0);
-		int max = 20;
-
-		if (res > max)
-		{
-			res = max;
-		}
-
-		if (res < -max)
-		{
-			res = -max;
-		}
-	}
-
-	return res;
-}
-
-bool IsBoostInstalled()
-{
-	float res;
-	return DALVehicle_GetTurbo(NULL, &res, 0);
-}
-
-float GetRPM()
-{
-	float rpm;
-	DALVehicle_GetRPM(NULL, &rpm, 0);
-	if (rpm > 10000)
-	{
-		rpm = 10000;
-	}
-	if (rpm < 0)
-	{
-		rpm = 0;
-	}
-
-	return rpm / 1000.0;
-}
-
-float GetRedline()
-{
-	float rpm;
-	DALVehicle_GetRedLine(NULL, &rpm, 0);
-	if (rpm > 10000)
-	{
-		rpm = 10000;
-	}
-	if (rpm < 0)
-	{
-		rpm = 0;
-	}
-
-	return rpm / 1000;
-}
-
-int GetGear()
-{
-	int gear;
-	DALVehicle_GetGear(NULL, &gear, 0);
-
-	if (gear == 0)
-	{
-		gear = 12;
-	}
-
-	if (gear == 1)
-	{
-		gear = 11;
-	}
-
-	if (gear > 12 || gear < 0)
-	{
-		gear = 0;
-	}
-
-	return gear;
-}
-
-bool IsPlayerControlling()
-{
-	int res;
-	DALVehicle_GetIsPlayerControlling(NULL, &res, 0);
-	return res != 0;
-}
-
 auto Game_GetSpeedoUnits = (char(__stdcall*)(int* getVal))0x004A4550;
-bool IsKMH()
+
+bool showHud = false;
+auto Game_DetermineHudFeatures = (int(__thiscall*)(void* _this, signed int var1))0x005DC4B0;
+int __fastcall DetermineHudFeatures(void* _this, int v1, int v2)
 {
-	int res = 0;
-	if (IsHudVisible())
+	int result = Game_DetermineHudFeatures(_this, v2);
+
+	showHud = GetBit(result, 1);
+
+	ClearBit(result, 1);
+	ClearBit(result, 11);
+	//ClearBit(result, 14); // Heat bar
+	ClearBit(result, 18);
+
+	return result;
+}
+
+namespace Game
+{
+	Carbon::Carbon()
 	{
-		Game_GetSpeedoUnits(&res);
+		injector::MakeCALL(0x005E6F7B, DetermineHudFeatures, true);
 	}
 
-	return res == 1;
-}
-
-int GetSpeed()
-{
-	float speed;
-	DALVehicle_GetSpeedLocalized(NULL, &speed, 0);
-
-	if (speed > 999)
+	int Carbon::Device()
 	{
-		speed = 999;
-	}
-	if (speed < 0)
-	{
-		speed *= -1;
+		return 0x00AB0ABC;
 	}
 
-	return speed;
-}
-
-int GetSpeed0()
-{
-	return GetSpeed() % 10 + 1;
-}
-
-int GetSpeed1()
-{
-	return GetSpeed() / 10 % 10 + 1;
-}
-
-int GetSpeed2()
-{
-	return GetSpeed() / 100 % 10 + 1;
-}
-
-float GetNos()
-{
-	float nos = 0;
-	if (IsHudVisible())
+	float Carbon::GetBoost()
 	{
-		DALVehicle_GetNos(NULL, &nos, 0);
+		float res = 0;
+		if (this->IsHudVisible())
+		{
+			DALVehicle_GetTurbo(NULL, &res, 0);
+		}
+
+		return res;
 	}
 
-	return nos;
-}
+	bool Carbon::IsBoostInstalled()
+	{
+		float res;
+		return DALVehicle_GetTurbo(NULL, &res, 0);
+	}
 
-bool IsNosInstalled()
-{
-	if (IsHudVisible())
+	float Carbon::GetNos()
 	{
 		float nos = 0;
-		return DALVehicle_GetNos(NULL, &nos, 0);
+		if (IsHudVisible())
+		{
+			DALVehicle_GetNos(NULL, &nos, 0);
+		}
+
+		return nos;
 	}
 
-	return false;
-}
-
-float GetSpeedBreaker()
-{
-	float res = 0;
-	if (IsHudVisible())
+	bool Carbon::IsNosInstalled()
 	{
-		DALVehicle_GetSpeedBreaker(NULL, &res, 0);
+		if (IsHudVisible())
+		{
+			float nos = 0;
+			return DALVehicle_GetNos(NULL, &nos, 0);
+		}
+
+		return false;
 	}
 
-	return res;
+	float Carbon::GetSpeedBreaker()
+	{
+		float res = 0;
+		if (IsHudVisible())
+		{
+			DALVehicle_GetSpeedBreaker(NULL, &res, 0);
+		}
+
+		return res;
+	}
+
+	int Carbon::GetSpeed()
+	{
+		float speed = 0.0f;
+		DALVehicle_GetSpeedLocalized(NULL, &speed, 0);
+
+		return speed;
+	}
+
+	bool Carbon::IsHudVisible()
+	{
+		int resHud;
+		bool hud = DALVehicle_GetIsHudVisible(NULL, &resHud, 0);
+
+		int resPl;
+		bool pl = DALVehicle_GetIsPlayerControlling(NULL, &resPl, 0);
+
+		return resHud != 0 && hud && showHud && resPl != 0 && pl;
+	}
+
+	float Carbon::GetRPM()
+	{
+		float rpm = 0.0f;
+		DALVehicle_GetRPM(NULL, &rpm, 0);
+
+		return rpm;
+	}
+
+	float Carbon::GetRedline()
+	{
+		float rpm = 0.0f;
+		DALVehicle_GetRedLine(NULL, &rpm, 0);
+
+		return rpm;
+	}
+
+	int Carbon::GetGear()
+	{
+		int gear = 0;
+		DALVehicle_GetGear(NULL, &gear, 0);
+
+		return gear;
+	}
+
+	bool Carbon::GetUnits()
+	{
+		int res = 0;
+		if (IsHudVisible())
+		{
+			Game_GetSpeedoUnits(&res);
+		}
+
+		return res == 1;
+	}
+
+	bool Carbon::IsInPerfectLaunchRange()
+	{
+		int res;
+		DALVehicle_GetInPerfectLaunchRange(NULL, &res, 0);
+		return res != 0;
+	}
 }

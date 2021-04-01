@@ -69,7 +69,6 @@ public:
 		{
 			for (j = 0; j < w; j++)
 			{
-				color = this->color1;
 				P.x = j;
 				P.y = i;
 				bool inReg = isInRegion(O, A, B, P);
@@ -81,6 +80,10 @@ public:
 				if (inReg)
 				{
 					color = this->color2;
+				}
+				else
+				{
+					color = this->color1;
 				}
 
 				mask[i * w + j] = color;
@@ -99,7 +102,7 @@ public:
 
 private:
 
-	D3DXVECTOR2 GetLineEnd(D3DXVECTOR2 & a, float angle)
+	D3DXVECTOR2 GetLineEnd(D3DXVECTOR2& a, float angle)
 	{
 		angle -= 180;
 

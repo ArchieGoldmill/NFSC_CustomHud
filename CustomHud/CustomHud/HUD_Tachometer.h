@@ -2,7 +2,7 @@
 #include "HUD_Element.h"
 #include "HUD_Gauge.h"
 #include "HUD_Digit.h"
-#include "DALVehicleCarbon.h"
+#include "GameApi.h"
 
 class HUD_Tachometer : HUD_Element
 {
@@ -16,18 +16,18 @@ public:
 	{
 		this->params = params;
 
-		this->params.GaugeParams.GetArrowValue = GetRPM;
-		this->params.GaugeParams.GetMaxValue = GetRedline;
+		this->params.GaugeParams.GetArrowValue = Game::GetRPM;
+		this->params.GaugeParams.GetMaxValue = Game::GetRedline;
 
-		this->params.GaugeParams.GetMaskValue1 = GetRedline;
+		this->params.GaugeParams.GetMaskValue1 = Game::GetRedline;
 		this->params.GaugeParams.GetMaskValue2 = []() { return 10.0f; };
 
 		this->params.GaugeParams.GetArrowMaskValue1 = []() { return 0.0f; };
-		this->params.GaugeParams.GetArrowMaskValue2 = GetRPM;
+		this->params.GaugeParams.GetArrowMaskValue2 = Game::GetRPM;
 
-		this->params.GaugeParams.IsInperfectZone = IsInPerfectLaunchRange;
+		this->params.GaugeParams.IsInperfectZone = Game::IsInPerfectLaunchRange;
 
-		this->params.GearParams.GetNumber = GetGear;
+		this->params.GearParams.GetNumber = Game::GetGear;
 		
 		this->Gauge = new HUD_Gauge(pDevice, this->params.GaugeParams);
 
