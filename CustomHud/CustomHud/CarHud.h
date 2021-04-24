@@ -19,11 +19,12 @@ private:
 	TextureStateManager* tsm;
 
 	HUD_Tachometer* Tachometer = NULL;
-	HUD_Speedometer* Speedometer = NULL;
+	HUD_Speedometer* SpeedometerDigital = NULL;
 	HUD_Gauge* Boost = NULL;
 	HUD_Gauge* Nos = NULL;
 	HUD_Filled* NosFilled = NULL;
 	HUD_Gauge* SpeedBreak = NULL;
+	HUD_Filled* SpeedBreakFilled = NULL;
 
 	ID3DXFont* Font = NULL;
 
@@ -39,12 +40,25 @@ public:
 		{
 			if (Global::HUDParams.Tachometer.GaugeParams.Enabled)
 			{
+				Global::HUDParams.Tachometer.GaugeParams.GetArrowValue = Game::GetRPM;
+				Global::HUDParams.Tachometer.GaugeParams.GetMaxValue = Game::GetRedline;
+
+				Global::HUDParams.Tachometer.GaugeParams.GetMaskValue1 = Game::GetRedline;
+				Global::HUDParams.Tachometer.GaugeParams.GetMaskValue2 = []() { return Global::HUDParams.Tachometer.GaugeParams.Value; };
+
+				Global::HUDParams.Tachometer.GaugeParams.GetArrowMaskValue1 = []() { return 0.0f; };
+				Global::HUDParams.Tachometer.GaugeParams.GetArrowMaskValue2 = Game::GetRPM;
+
+				Global::HUDParams.Tachometer.GaugeParams.IsInperfectZone = Game::IsInPerfectLaunchRange;
+
+				Global::HUDParams.Tachometer.GearParams.GetNumber = Game::GetGear;
+
 				this->Tachometer = new HUD_Tachometer(pDevice, Global::HUDParams.Tachometer);
 			}
 
 			if (Global::HUDParams.Speedometer.Enabled)
 			{
-				this->Speedometer = new HUD_Speedometer(pDevice, Global::HUDParams.Speedometer);
+				this->SpeedometerDigital = new HUD_Speedometer(pDevice, Global::HUDParams.SpeedometerDigital);
 			}
 
 			if (Global::HUDParams.Boost.Enabled)
@@ -77,6 +91,12 @@ public:
 				Global::HUDParams.SpeedBreak.GetArrowValue = Game::GetSpeedBreaker;
 				this->SpeedBreak = new HUD_Gauge(pDevice, Global::HUDParams.SpeedBreak);
 			}
+
+			if (Global::HUDParams.SpeedBreakFilled.Enabled)
+			{
+				Global::HUDParams.SpeedBreakFilled.GetValue = Game::GetSpeedBreaker;
+				this->SpeedBreakFilled = new HUD_Filled(pDevice, Global::HUDParams.SpeedBreakFilled);
+			}
 		}
 		catch (string& s)
 		{
@@ -90,9 +110,7 @@ public:
 		auto start = chrono::steady_clock::now();
 		if (!Game::Current->IsHudVisible())
 		{
-//#ifdef NDEBUG
 			return;
-//#endif
 		}
 
 		for (int i = 0; i < NUM_TEX; i++)
@@ -123,9 +141,9 @@ public:
 			this->Tachometer->Draw();
 		}
 
-		if (this->Speedometer != NULL)
+		if (this->SpeedometerDigital != NULL)
 		{
-			this->Speedometer->Draw();
+			this->SpeedometerDigital->Draw();
 		}
 
 		if (this->Boost != NULL)
@@ -148,6 +166,11 @@ public:
 			this->SpeedBreak->Draw();
 		}
 
+		if (this->SpeedBreakFilled != NULL)
+		{
+			this->SpeedBreakFilled->Draw();
+		}
+
 		if (this->Tachometer != NULL)
 		{
 			this->Tachometer->DrawArrow();
@@ -155,7 +178,10 @@ public:
 
 		this->tsm->Restore();
 
-		//this->DrawDebugInfo();
+		if (Global::HUDParams.ShowDebugInfo)
+		{
+			this->DrawDebugInfo();
+		}
 
 		auto now = chrono::steady_clock::now();
 
@@ -171,9 +197,9 @@ public:
 			delete this->Tachometer;
 		}
 
-		if (this->Speedometer != NULL)
+		if (this->SpeedometerDigital != NULL)
 		{
-			delete this->Speedometer;
+			delete this->SpeedometerDigital;
 		}
 
 		if (this->Boost != NULL)
@@ -195,6 +221,12 @@ public:
 		{
 			delete this->SpeedBreak;
 		}
+
+		if (this->SpeedBreakFilled != NULL)
+		{
+			delete this->SpeedBreakFilled;
+		}
+
 
 		if (this->Font != NULL)
 		{

@@ -17,9 +17,9 @@ public:
 	{
 		this->params = params;
 
-		if (!this->params.Units.TextureUnits.empty())
+		if (!this->params.Units.UnitsTexture.empty())
 		{
-			this->units = new Sprite(pDevice, this->params.Units.TextureUnits);
+			this->units = new Sprite(pDevice, this->params.Units.UnitsTexture, this->params.Units.UnitsTextureBlendMode, D3DXVECTOR2(0, 0));
 		}
 
 		for (int i = 0; i < 3; i++)
@@ -31,18 +31,17 @@ public:
 			{
 				cb = Game::GetSpeed0;
 			}
-			if (i == 1)
+			else if (i == 1)
 			{
 				cb = Game::GetSpeed1;
 			}
-			if (i == 2)
+			else if (i == 2)
 			{
 				cb = Game::GetSpeed2;
 			}
 
 			digitParams.GetNumber = cb;
 
-			digitParams.Position.x = this->params.Position.x + i * (digitParams.Size / 1.55f) + this->params.Distance * i;
 			digitParams.Position.y = this->params.Position.y;
 
 			this->Speed[i] = new HUD_Digit(pDevice, digitParams);
@@ -59,9 +58,16 @@ public:
 	void DrawSpeedometer()
 	{
 		int numCount = 3;
-		if (!this->params.ShowAllDigits)
+		int speed = Game::GetSpeed();
+		if (this->params.DigitsMode == 0)
 		{
-			int speed = Game::GetSpeed();
+			for (int i = 0; i < 3; i++)
+			{
+				this->Speed[i]->SetPositionX(this->params.Position.x + i * this->params.Size + this->params.Distance * i);
+			}
+		}
+		else
+		{
 			if (speed < 10)
 			{
 				numCount = 1;
@@ -69,11 +75,28 @@ public:
 			else if (speed < 100) {
 				numCount = 2;
 			}
+
+			if (this->params.DigitsMode == 1)
+			{
+				for (int i = 0; i < numCount; i++)
+				{
+					this->Speed[i]->SetPositionX(this->params.Position.x + i * this->params.Size + this->params.Distance * i);
+				}
+			}
+			else if (this->params.DigitsMode == 2)
+			{
+				for (int i = 0; i < numCount; i++)
+				{
+					this->Speed[i]->SetPositionX((this->params.Position.x + i * this->params.Size + this->params.Distance * i) +
+						((this->params.Size + this->params.Distance) / 2 * (3 - numCount)));
+				}
+			}
 		}
 
 		for (int i = 0; i < numCount; i++)
 		{
-			this->Speed[i]->Draw();
+			int digit = speed / (int)pow(10, i);
+			this->Speed[i]->Draw(digit != 0 || i == 0);
 		}
 	}
 

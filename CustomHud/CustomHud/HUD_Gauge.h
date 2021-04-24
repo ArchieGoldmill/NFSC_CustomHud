@@ -19,31 +19,29 @@ public:
 		this->pDevice = pDevice;
 		this->params = params;
 
-		if (!this->params.TextureNumbers.empty())
+		if (!this->params.NumbersTexture.empty())
 		{
-			this->numbers = new Sprite(pDevice, this->params.TextureNumbers);
+			this->numbers = new Sprite(pDevice, this->params.NumbersTexture, this->params.NumbersTextureBlendMode, { 0, 0 });
 		}
 
-		if (!this->params.TextureArrow.empty())
+		if (!this->params.ArrowTexture.empty())
 		{
-			this->arrow = new Sprite(pDevice, this->params.TextureArrow);
+			this->arrow = new Sprite(pDevice, this->params.ArrowTexture, this->params.ArrowTextureBlendMode, { 0, 0 });
 		}
 
-		if (!this->params.TextureBackground.empty())
+		if (!this->params.BackgroundTexture.empty())
 		{
-			this->background = new Sprite(pDevice, this->params.TextureBackground);
+			this->background = new Sprite(pDevice, this->params.BackgroundTexture, this->params.BackgroundTextureBlendMode, { 0, 0 });
 		}
 
-		if (!this->params.TextureBackgroundMasked.empty())
+		if (!this->params.NumbersMaskedTexture.empty())
 		{
-			D3DXVECTOR2 maskSize = { this->params.BackgroundMaskedSize, this->params.BackgroundMaskedSize };
-			this->masked = new CircleSprite(pDevice, this->params.TextureBackgroundMasked, &maskSize);
+			this->masked = new CircleSprite(pDevice, this->params.NumbersMaskedTexture, this->params.NumbersMaskedTextureBlendMode, { this->params.NumbersMaskedSize, this->params.NumbersMaskedSize });
 		}
 
-		if (!this->params.TextureArrowMasked.empty())
+		if (!this->params.ArrowMaskedTexture.empty())
 		{
-			D3DXVECTOR2 maskSize = { this->params.ArrowMaskedSize, this->params.ArrowMaskedSize };
-			this->arrowMasked = new CircleSprite(pDevice, this->params.TextureArrowMasked, &maskSize);
+			this->arrowMasked = new CircleSprite(pDevice, this->params.ArrowMaskedTexture, this->params.ArrowMaskedTextureBlendMode, { this->params.ArrowMaskedSize, this->params.ArrowMaskedSize });
 		}
 	}
 
@@ -65,8 +63,8 @@ public:
 	{
 		this->DrawBackground();
 		this->DrawArrowMasked();
-		this->DrawMasked();
 		this->DrawNumbers();
+		this->DrawNumbersMasked();
 		if (drawArrow)
 		{
 			this->DrawArrow();
@@ -151,7 +149,7 @@ private:
 		this->background->Draw(NULL, this->params.BackgroundColor);
 	}
 
-	void DrawMasked()
+	void DrawNumbersMasked()
 	{
 		if (this->masked == NULL)
 		{
@@ -176,9 +174,11 @@ private:
 			swap(a1, a2);
 		}
 
-		this->masked->SetupMask({ 0.5f, 0.5f }, a1, a2, this->params.BackgroundMaskedColor1, this->params.BackgroundMaskedColor2);
+		a2 += this->params.NumbersMaskedMaxOffset;
 
-		this->masked->Draw(NULL, this->params.BackgroundMaskedColor);
+		this->masked->SetupMask({ 0.5f, 0.5f }, a1, a2, this->params.NumbersMaskedColor1, this->params.NumbersMaskedColor2);
+
+		this->masked->Draw(NULL, this->params.NumbersMaskedColor);
 	}
 
 	void DrawArrowMasked()
@@ -197,9 +197,14 @@ private:
 
 		float step = (this->params.ArrowMaxAngle - this->params.ArrowMinAngle) / this->params.Value;
 		float val1 = this->params.GetArrowMaskValue1();
-		float a1 = step * val1 + this->params.ArrowMinAngle;
+		float a1 = step * val1 + this->params.ArrowMinAngle - this->params.ArrowMaskedMinOffset;
 
 		float val2 = this->params.GetArrowMaskValue2();
+		if (val2 > this->params.Value)
+		{
+			val2 = this->params.Value;
+		}
+
 		float a2 = step * val2 + this->params.ArrowMinAngle;
 
 		this->arrowMasked->SetupMask({ 0.5f, 0.5f }, a1, a2, this->params.ArrowMaskedColor1, this->params.ArrowMaskedColor2);
@@ -224,6 +229,10 @@ public:
 		position.y = this->params.Size / 3.13f + this->params.Position.y;
 
 		float val = this->params.GetArrowValue();
+		if (val > this->params.Value)
+		{
+			val = this->params.Value;
+		}
 
 		float step = (this->params.ArrowMaxAngle - this->params.ArrowMinAngle) / this->params.Value;
 		float rotation = step * val + this->params.ArrowMinAngle;
@@ -231,11 +240,11 @@ public:
 		this->Setup(this->arrow, targetRes, { 0.78f, 0.5f }, position, NULL, rotation);
 
 		D3DCOLOR color = this->params.ArrowColor;
-		if (this->params.IsInperfectZone != NULL)
+		if (this->params.IsInperfectZone != NULL && this->params.ArrowPerfectZoneColor)
 		{
 			if (this->params.IsInperfectZone())
 			{
-				color = this->params.PerfectZoneColor;
+				color = this->params.ArrowPerfectZoneColor;
 			}
 		}
 

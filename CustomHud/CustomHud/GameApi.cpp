@@ -70,7 +70,7 @@ namespace Game
 
 	float GetRedline()
 	{
-		float res = Current->GetRedline();
+		float res = Current->GetRedline() - 500.0f;
 
 		return res / 1000.0f;
 	}

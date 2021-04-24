@@ -65,10 +65,14 @@ namespace MWApi
 
 	void __declspec(naked) HideEverySingleHudCave()
 	{
+		static constexpr auto Exit = 0x0057D0F5;
+
 		__asm
 		{
+			mov eax, 0x0092FD94;
+			mov eax, [eax];
 			mov showHud, 0;
-			ret;
+			jmp Exit;
 		}
 	}
 }
@@ -78,7 +82,7 @@ namespace Game
 	MostWanted::MostWanted()
 	{
 		injector::MakeCALL(0x0058CA50, MWApi::DetermineHudFeatures, true);
-		injector::MakeJMP(0x0057D120, MWApi::HideEverySingleHudCave, true);
+		injector::MakeJMP(0x0057D0F0, MWApi::HideEverySingleHudCave, true);
 	}
 
 	int MostWanted::Device()
@@ -186,7 +190,7 @@ namespace Game
 
 	float MostWanted::GetRedline()
 	{
-		float res = 10000;
+		float res = 0;
 		void* ptr = MWApi::GetEnginePtr();
 		if (ptr)
 		{

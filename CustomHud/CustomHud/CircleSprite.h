@@ -19,7 +19,7 @@ private:
 	int color2;
 
 public:
-	CircleSprite(LPDIRECT3DDEVICE9 pDevice, string& path, D3DXVECTOR2* maskSize) : Sprite(pDevice, path, maskSize)
+	CircleSprite(LPDIRECT3DDEVICE9 pDevice, string& path, bool BlendMode, D3DXVECTOR2 maskSize) : Sprite(pDevice, path, BlendMode, maskSize)
 	{
 
 	}

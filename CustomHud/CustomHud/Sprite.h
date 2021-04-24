@@ -19,44 +19,52 @@ private:
 	LPDIRECT3DTEXTURE9 pMaskTexture;
 	bool isReleased;
 	bool useMask;
+	bool BlendMode;
 
-#ifdef _DEBUG
 	string path;
-#endif
 
 protected:
 	D3DXVECTOR2 maskSize;
 
 public:
+	D3DXIMAGE_INFO InfoOriginal;
 	D3DSURFACE_DESC Info;
 
-	Sprite(LPDIRECT3DDEVICE9 pDevice, string& path, D3DXVECTOR2* maskSize = NULL)
+	Sprite(LPDIRECT3DDEVICE9 pDevice, string& path, bool BlendMode, D3DXVECTOR2 maskSize)
 	{
-#ifdef _DEBUG
 		this->path = path;
-#endif
 		this->isReleased = false;
-		this->useMask = useMask;
+		this->BlendMode = BlendMode;
 		this->pDevice = pDevice;
 		this->LoadTexture(path);
 		if (!this->pTexture)
 		{
-			throw "Unable to load texturefrom: \n" + path;
+			throw "Unable to load texture from: \n" + path;
 		}
 
 		this->GetTextureInfo();
 		this->CreateSprite();
-		if (maskSize != NULL)
+		if (maskSize.x != 0 && maskSize.y != 0)
 		{
-			this->maskSize = *maskSize;
+			this->maskSize = maskSize;
 			this->useMask = true;
-			this->pDevice->CreateTexture(maskSize->x, maskSize->y, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &this->pMaskTexture, NULL);
+			this->pDevice->CreateTexture(maskSize.x, maskSize.y, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &this->pMaskTexture, NULL);
 		}
 	}
 
 	void Draw(RECT* rect, D3DCOLOR color)
 	{
 		this->pSprite->Begin(D3DXSPRITE_ALPHABLEND);
+
+		if (this->BlendMode)
+		{
+			pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+		}
+		else
+		{
+			pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+		}
+
 		if (this->useMask)
 		{
 			D3DLOCKED_RECT lockRectMask;
@@ -80,13 +88,13 @@ public:
 
 			this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_TEXCOORDINDEX, 0);
 
-			this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-			this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_COLORARG2, D3DTA_CURRENT);
-			this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_COLOROP, D3DTOP_MODULATE);
+			//this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+			//this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_COLORARG2, D3DTA_CURRENT);
+			//this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_COLOROP, D3DTOP_MODULATE);
 
-			this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-			this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
-			this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_ALPHAOP, D3DTA_TEXTURE);
+			//this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+			//this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+			//this->pDevice->SetTextureStageState(pTextureStage, D3DTSS_ALPHAOP, D3DTA_TEXTURE);
 
 			this->pDevice->SetTextureStageState(pMaskTextureStage, D3DTSS_TEXCOORDINDEX, 0);
 
@@ -101,7 +109,7 @@ public:
 		else
 		{
 			this->pDevice->SetTexture(0, this->pTexture);
-			this->pDevice->SetTexture(1, this->pMaskTexture);
+			//this->pDevice->SetTexture(1, this->pMaskTexture);
 
 			this->pDevice->SetTextureStageState(0, D3DTSS_COLORARG0, D3DTA_TEXTURE);
 			this->pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -110,6 +118,8 @@ public:
 			this->pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG0, D3DTA_TEXTURE);
 			this->pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_CURRENT);
 			this->pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TEXTURE);
+			DWORD a;
+			pDevice->GetRenderState(D3DRS_DESTBLEND, &a);
 
 			this->pDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
 		}
@@ -187,6 +197,7 @@ private:
 
 	void GetTextureInfo()
 	{
+		D3DXGetImageInfoFromFile(path.c_str(), &this->InfoOriginal);
 		this->pTexture->GetLevelDesc(0, &this->Info);
 	}
 };

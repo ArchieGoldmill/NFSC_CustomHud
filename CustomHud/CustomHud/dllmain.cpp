@@ -31,6 +31,16 @@ void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 	{
 		carHud = new HUD(pDevice);
 	}
+	else
+	{
+		if ((GetAsyncKeyState(Global::HUDParams.HotReloadKey) & 1))
+		{
+			delete carHud;
+			Sprite::Reset();
+			Global::Init();
+			carHud = new HUD(pDevice);
+		}
+	}
 
 	carHud->Draw();
 }
@@ -52,7 +62,7 @@ void Init()
 	while (pDevice == NULL)
 	{
 		Sleep(10);
-		pDevice = *(IDirect3DDevice9 * *)Game::Current->Device();
+		pDevice = *(IDirect3DDevice9**)Game::Current->Device();
 	}
 
 	D3D9Extender::AddExtension(D3D9Extender::D3D9Extension::EndScene, hookedEndScene);

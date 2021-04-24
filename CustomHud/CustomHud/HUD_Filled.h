@@ -12,14 +12,14 @@ public:
 	{
 		this->params = params;
 
-		if (!this->params.TextureFilled.empty())
+		if (!this->params.FilledTexture.empty())
 		{
-			this->texture = new Sprite(pDevice, this->params.TextureFilled);
+			this->texture = new Sprite(pDevice, this->params.FilledTexture, this->params.FilledTextureBlendMode, { 0, 0 });
 		}
 
-		if (!this->params.TextureBackground.empty())
+		if (!this->params.BackgroundTexture.empty())
 		{
-			this->background = new Sprite(pDevice, this->params.TextureBackground);
+			this->background = new Sprite(pDevice, this->params.BackgroundTexture, this->params.BackgroundTextureBlendMode, { 0, 0 });
 		}
 	}
 
@@ -87,7 +87,7 @@ public:
 
 		this->Setup(this->texture, size, { 0, 0 }, this->params.Position, &texSize, 0);
 
-		this->texture->Draw(&rect, this->params.Color);
+		this->texture->Draw(&rect, this->params.FilledColor);
 	}
 
 	void Release()
