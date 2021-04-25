@@ -12,8 +12,8 @@ namespace Global
 	extern HUD_Params HUDParams;
 	string GetHudPath();
 	void Init();
-	D3DXVECTOR2 GetRand();
-	void SetRand(bool);
+	bool CarHasHud(string name);
+	extern string CurrentCar;
 };
 
 typedef float(FloatValueCallback)();
@@ -40,16 +40,15 @@ public:
 		}
 	}
 
-	string ReadString(CIniReader& ini, char* category, const char* field)
+	string ReadTexturePath(CIniReader& ini, char* category, const char* field)
 	{
-		string res = "scripts\\";
 		char* str = ini.ReadString(category, (char*)field, "");
 		string tex(str);
 		delete str;
 
 		if (!tex.empty())
 		{
-			return res.append(Global::GetHudPath()).append(tex);
+			return Global::GetHudPath().append(tex);
 		}
 		else
 		{
@@ -71,7 +70,7 @@ public:
 		HUD_Element_Params::Init(ini, category);
 		if (this->Enabled)
 		{
-			this->DigitsTexture = this->ReadString(ini, category, "DigitsTexture");
+			this->DigitsTexture = this->ReadTexturePath(ini, category, "DigitsTexture");
 			this->DigitsTextureBlendMode = ini.ReadInteger(category, (char*)"DigitsTextureBlendMode", 0);
 			this->BackgroundColor = ini.ReadInteger(category, (char*)"BackgroundColor", 0);
 		}
@@ -89,7 +88,7 @@ public:
 		HUD_Element_Params::Init(ini, category);
 		if (this->Enabled)
 		{
-			this->UnitsTexture = this->ReadString(ini, category, "UnitsTexture");
+			this->UnitsTexture = this->ReadTexturePath(ini, category, "UnitsTexture");
 			this->UnitsTextureBlendMode = ini.ReadInteger(category, (char*)"UnitsTextureBlendMode", 0);
 		}
 	}
@@ -119,12 +118,12 @@ public:
 			this->Value = ini.ReadFloat(category, (char*)"Value", 0.0f);
 			this->Direction = ini.ReadInteger(category, (char*)"Direction", 0);
 
-			this->FilledTexture = this->ReadString(ini, category, "FilledTexture");
+			this->FilledTexture = this->ReadTexturePath(ini, category, "FilledTexture");
 			this->FilledColor = ini.ReadInteger(category, (char*)"FilledColor", 0);
 			this->FilledTextureBlendMode = ini.ReadInteger(category, (char*)"FilledTextureBlendMode", 0);
 
 			this->BackgroundColor = ini.ReadInteger(category, (char*)"BackgroundColor", 0);
-			this->BackgroundTexture = this->ReadString(ini, category, "BackgroundTexture");
+			this->BackgroundTexture = this->ReadTexturePath(ini, category, "BackgroundTexture");
 			this->BackgroundTextureBlendMode = ini.ReadInteger(category, (char*)"BackgroundTextureBlendMode", 0);
 		}
 	}
@@ -216,13 +215,13 @@ public:
 			this->ArrowMaskedColor1 = ini.ReadInteger(category, (char*)"ArrowMaskedColor1", 0);
 			this->ArrowMaskedColor2 = ini.ReadInteger(category, (char*)"ArrowMaskedColor2", 0);
 			this->ArrowPerfectZoneColor = ini.ReadInteger(category, (char*)"ArrowPerfectZoneColor", 0);
-			this->ArrowTexture = this->ReadString(ini, category, (char*)"ArrowTexture");
-			this->ArrowMaskedTexture = this->ReadString(ini, category, (char*)"ArrowMaskedTexture");
+			this->ArrowTexture = this->ReadTexturePath(ini, category, (char*)"ArrowTexture");
+			this->ArrowMaskedTexture = this->ReadTexturePath(ini, category, (char*)"ArrowMaskedTexture");
 			this->ArrowTextureBlendMode = ini.ReadInteger(category, (char*)"ArrowTextureBlendMode", 0);
 			this->ArrowMaskedTextureBlendMode = ini.ReadInteger(category, (char*)"ArrowMaskedTextureBlendMode", 0);
 
 			this->NumbersMaxThreshold = ini.ReadFloat(category, (char*)"NumbersMaxThreshold", -1.0f);
-			this->NumbersTexture = this->ReadString(ini, category, (char*)"NumbersTexture");
+			this->NumbersTexture = this->ReadTexturePath(ini, category, (char*)"NumbersTexture");
 			this->NumbersColor = ini.ReadInteger(category, (char*)"NumbersColor", 0);
 			this->NumbersMaxColor = ini.ReadInteger(category, (char*)"NumbersMaxColor", 0);
 			this->NumbersTextureBlendMode = ini.ReadInteger(category, (char*)"NumbersTextureBlendMode", 0);
@@ -230,12 +229,12 @@ public:
 			this->NumbersMaskedColor = ini.ReadInteger(category, (char*)"NumbersMaskedColor", 0);
 			this->NumbersMaskedColor1 = ini.ReadInteger(category, (char*)"NumbersMaskedColor1", 0);
 			this->NumbersMaskedColor2 = ini.ReadInteger(category, (char*)"NumbersMaskedColor2", 0);
-			this->NumbersMaskedTexture = this->ReadString(ini, category, (char*)"NumbersMaskedTexture");
+			this->NumbersMaskedTexture = this->ReadTexturePath(ini, category, (char*)"NumbersMaskedTexture");
 			this->NumbersMaskedSize = ini.ReadFloat(category, (char*)"NumbersMaskedSize", 128.0f);
 			this->NumbersMaskedMaxOffset = ini.ReadFloat(category, (char*)"NumbersMaskedMaxOffset", 0.0f);
 
 			this->BackgroundColor = ini.ReadInteger(category, (char*)"BackgroundColor", 0);
-			this->BackgroundTexture = this->ReadString(ini, category, "BackgroundTexture");
+			this->BackgroundTexture = this->ReadTexturePath(ini, category, "BackgroundTexture");
 			this->BackgroundTextureBlendMode = ini.ReadInteger(category, (char*)"BackgroundTextureBlendMode", 0);
 		}
 	}
@@ -244,13 +243,13 @@ public:
 class HUD_Tachometer_Params
 {
 public:
-	HUD_Digit_Params GearParams;
-	HUD_Gauge_Params GaugeParams;
+	HUD_Digit_Params Gear;
+	HUD_Gauge_Params Gauge;
 
 	void Init(CIniReader& ini)
 	{
-		this->GearParams.Init(ini, (char*)"GEAR");
-		this->GaugeParams.Init(ini, (char*)"TACHOMETER");
+		this->Gear.Init(ini, (char*)"GEAR");
+		this->Gauge.Init(ini, (char*)"TACHOMETER");
 	}
 };
 
@@ -267,11 +266,11 @@ public:
 	HUD_Speedometer_Params SpeedometerDigital;
 
 	float Scale;
+	D3DXVECTOR2 Offset;
 	bool ReplaceDragHud;
 	int HotReloadKey;
 	bool ShowDebugInfo;
-
-	D3DXVECTOR2 Offset;
+	bool CustomCarHUDs;
 
 	void Init(CIniReader& ini)
 	{

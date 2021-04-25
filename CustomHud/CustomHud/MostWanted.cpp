@@ -152,7 +152,7 @@ namespace Game
 		return res;
 	}
 
-	int MostWanted::GetSpeed()
+	float MostWanted::GetSpeed()
 	{
 		float speed = 0.0f;
 		if (*MWApi::PVehicle)
@@ -247,5 +247,17 @@ namespace Game
 		}
 
 		return res;
+	}
+
+	std::string MostWanted::GetCarName()
+	{
+		std::vector<int> offsets{ 0x0092C510, 0x10, 0x1C, 0 };
+		char* str= (char*)GetPtr(offsets);
+		if (str)
+		{
+			return str;
+		}
+
+		return "";
 	}
 }

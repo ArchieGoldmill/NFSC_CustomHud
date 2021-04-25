@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 namespace Game
 {
@@ -13,13 +14,14 @@ namespace Game
 		virtual float GetNos() = 0;
 		virtual bool IsNosInstalled() = 0;
 		virtual float GetSpeedBreaker() = 0;
-		virtual int GetSpeed() = 0;
+		virtual float GetSpeed() = 0;
 		virtual bool IsHudVisible() = 0;
 		virtual float GetRPM() = 0;
 		virtual float GetRedline() = 0;
 		virtual int GetGear() = 0;
 		virtual bool GetUnits() = 0;
 		virtual bool IsInPerfectLaunchRange() = 0;
+		virtual std::string GetCarName() = 0;
 	};
 
 	float GetBoost();
@@ -27,7 +29,7 @@ namespace Game
 	float GetNos();
 	bool IsNosInstalled();
 	float GetSpeedBreaker();
-	int GetSpeed();
+	float GetSpeed();
 	bool IsHudVisible();
 	float GetRPM();
 	float GetRedline();

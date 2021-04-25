@@ -19,6 +19,7 @@ private:
 	TextureStateManager* tsm;
 
 	HUD_Tachometer* Tachometer = NULL;
+	HUD_Gauge* Speedometer = NULL;
 	HUD_Speedometer* SpeedometerDigital = NULL;
 	HUD_Gauge* Boost = NULL;
 	HUD_Gauge* Nos = NULL;
@@ -38,27 +39,33 @@ public:
 
 		try
 		{
-			if (Global::HUDParams.Tachometer.GaugeParams.Enabled)
+			if (Global::HUDParams.Tachometer.Gauge.Enabled)
 			{
-				Global::HUDParams.Tachometer.GaugeParams.GetArrowValue = Game::GetRPM;
-				Global::HUDParams.Tachometer.GaugeParams.GetMaxValue = Game::GetRedline;
+				Global::HUDParams.Tachometer.Gauge.GetArrowValue = Game::GetRPM;
+				Global::HUDParams.Tachometer.Gauge.GetMaxValue = Game::GetRedline;
 
-				Global::HUDParams.Tachometer.GaugeParams.GetMaskValue1 = Game::GetRedline;
-				Global::HUDParams.Tachometer.GaugeParams.GetMaskValue2 = []() { return Global::HUDParams.Tachometer.GaugeParams.Value; };
+				Global::HUDParams.Tachometer.Gauge.GetMaskValue1 = Game::GetRedline;
+				Global::HUDParams.Tachometer.Gauge.GetMaskValue2 = []() { return Global::HUDParams.Tachometer.Gauge.Value; };
 
-				Global::HUDParams.Tachometer.GaugeParams.GetArrowMaskValue1 = []() { return 0.0f; };
-				Global::HUDParams.Tachometer.GaugeParams.GetArrowMaskValue2 = Game::GetRPM;
+				Global::HUDParams.Tachometer.Gauge.GetArrowMaskValue1 = []() { return 0.0f; };
+				Global::HUDParams.Tachometer.Gauge.GetArrowMaskValue2 = Game::GetRPM;
 
-				Global::HUDParams.Tachometer.GaugeParams.IsInperfectZone = Game::IsInPerfectLaunchRange;
+				Global::HUDParams.Tachometer.Gauge.IsInperfectZone = Game::IsInPerfectLaunchRange;
 
-				Global::HUDParams.Tachometer.GearParams.GetNumber = Game::GetGear;
+				Global::HUDParams.Tachometer.Gear.GetNumber = Game::GetGear;
 
 				this->Tachometer = new HUD_Tachometer(pDevice, Global::HUDParams.Tachometer);
 			}
 
-			if (Global::HUDParams.Speedometer.Enabled)
+			if (Global::HUDParams.SpeedometerDigital.Enabled)
 			{
 				this->SpeedometerDigital = new HUD_Speedometer(pDevice, Global::HUDParams.SpeedometerDigital);
+			}
+
+			if (Global::HUDParams.Speedometer.Enabled)
+			{
+				Global::HUDParams.Speedometer.GetArrowValue = Game::GetSpeed;
+				this->Speedometer = new HUD_Gauge(pDevice, Global::HUDParams.Speedometer);
 			}
 
 			if (Global::HUDParams.Boost.Enabled)
@@ -108,10 +115,6 @@ public:
 	void Draw()
 	{
 		auto start = chrono::steady_clock::now();
-		if (!Game::Current->IsHudVisible())
-		{
-			return;
-		}
 
 		for (int i = 0; i < NUM_TEX; i++)
 		{
@@ -139,6 +142,11 @@ public:
 		if (this->Tachometer != NULL)
 		{
 			this->Tachometer->Draw();
+		}
+
+		if (this->Speedometer != NULL)
+		{
+			this->Speedometer->Draw();
 		}
 
 		if (this->SpeedometerDigital != NULL)
@@ -200,6 +208,11 @@ public:
 		if (this->SpeedometerDigital != NULL)
 		{
 			delete this->SpeedometerDigital;
+		}
+		
+		if (this->Speedometer != NULL)
+		{
+			delete this->Speedometer;
 		}
 
 		if (this->Boost != NULL)

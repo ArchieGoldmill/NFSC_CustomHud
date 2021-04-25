@@ -11,47 +11,35 @@ namespace Global
 	}
 
 	HUD_Params HUDParams;
+	string CurrentCar;
 
-	D3DXVECTOR2 rndVec;
-	void SetRand(bool rnd)
+	bool IsFileExist(string path)
 	{
-		if (rnd)
-		{
-			rndVec.x = rand() % 5 + 1;
-			rndVec.y = rand() % 5 + 1;
-		}
-		else
-		{
-			rndVec.x = 0;
-			rndVec.y = 0;
-		}
+		ifstream f(path.c_str());
+		bool isGood = f.good();
+		f.close();
+
+		return isGood;
 	}
 
-	D3DXVECTOR2 GetRand()
+	string GetCarHudPath(string name)
 	{
-		return rndVec;
+		return "CARS\\" + name + "\\CustomHUD\\hud.ini";
 	}
 
-	bool IsFileExist(string& path)
+	bool CarHasHud(string name)
 	{
-		ifstream f(("scripts\\" + path).c_str());
-		return f.good();
+		if (!name.empty())
+		{
+			return IsFileExist(GetCarHudPath(name));
+		}
+
+		return false;
 	}
 
 	void Init()
 	{
-		CIniReader main_ini("CustomHud.ini");
-
-		HUDPath = main_ini.ReadString((char*)"GENERAL", (char*)"HUDpath", "");
-		string iniName = main_ini.ReadString((char*)"GENERAL", (char*)"IniName", "");
-
-		string iniPath = GetHudPath() + iniName;
-		if (!IsFileExist(iniPath))
-		{
-			MessageBoxA(NULL, ("HUD config not found: \n" + iniPath).c_str(), "NFSC - Custom HUD", MB_ICONERROR);
-		}
-
-		CIniReader ini(iniPath.c_str());
+		CIniReader main_ini("scripts\\CustomHud.ini");
 
 		HUDParams = HUD_Params();
 		HUDParams.Scale = main_ini.ReadFloat((char*)"GENERAL", (char*)"Scale", 1.0f);
@@ -59,9 +47,31 @@ namespace Global
 		HUDParams.Offset.y = main_ini.ReadFloat((char*)"GENERAL", (char*)"OffsetY", 0.0f);
 		HUDParams.HotReloadKey = main_ini.ReadInteger((char*)"GENERAL", (char*)"HotReloadKey", 0);
 		HUDParams.ShowDebugInfo = main_ini.ReadInteger((char*)"GENERAL", (char*)"ShowDebugInfo", 0);
+		HUDParams.CustomCarHUDs = main_ini.ReadInteger((char*)"GENERAL", (char*)"CustomCarHUDs", 0);
 
 		HUDParams.ReplaceDragHud = main_ini.ReadInteger((char*)"MOST_WANTED", (char*)"ReplaceDragHud", 0);
 
+		string iniPath;
+		if (HUDParams.CustomCarHUDs && CarHasHud(CurrentCar))
+		{
+			HUDPath = "CARS\\" + CurrentCar + "\\CustomHUD\\";
+			iniPath = HUDPath + "hud.ini";
+		}
+		else
+		{
+			char* hudPathStr = main_ini.ReadString((char*)"GENERAL", (char*)"HUDpath", "");
+			HUDPath = "scripts\\" + string(hudPathStr);
+			delete hudPathStr;
+
+			string iniName = main_ini.ReadString((char*)"GENERAL", (char*)"IniName", "");
+			iniPath = GetHudPath() + iniName;
+			if (!IsFileExist(iniPath))
+			{
+				MessageBoxA(NULL, ("HUD config not found: \n" + iniPath).c_str(), "NFSC - Custom HUD", MB_ICONERROR);
+			}
+		}
+
+		CIniReader ini(iniPath.c_str());
 		HUDParams.Init(ini);
 	}
 };

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "Carbon.h"
 #include "injector/injector.hpp"
+#include <string>
 
 bool(__thiscall* DALVehicle_GetRPM)(void* DALVehicle, float* getVal, const int playerNum) = (bool(__thiscall*)(void*, float*, const int))0x004B65F0;
 bool(__thiscall* DALVehicle_GetMaxRPM)(void* DALVehicle, float* getVal, const int playerNum) = (bool(__thiscall*)(void*, float*, const int))0x004B66E0;
@@ -116,7 +117,7 @@ namespace Game
 		return res;
 	}
 
-	int Carbon::GetSpeed()
+	float Carbon::GetSpeed()
 	{
 		float speed = 0.0f;
 		DALVehicle_GetSpeedLocalized(NULL, &speed, 0);
@@ -175,5 +176,20 @@ namespace Game
 		int res;
 		DALVehicle_GetInPerfectLaunchRange(NULL, &res, 0);
 		return res != 0;
+	}
+
+	std::string Carbon::GetCarName()
+	{
+		if (this->IsHudVisible())
+		{
+			std::vector<int> offsets{ 0x00A9F168, 0x24, 0x20, 0 };
+			char* name = (char*)GetPtr(offsets);
+			if (name)
+			{
+				return name;
+			}
+		}
+
+		return "";
 	}
 }

@@ -164,7 +164,7 @@ public:
     {
         char buffer[MAX_PATH];
         HMODULE hm = NULL;
-        GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR)&ends_with, &hm);
+        GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, NULL, &hm);
         GetModuleFileNameA(hm, buffer, sizeof(buffer));
         std::string modulePath = buffer;
 

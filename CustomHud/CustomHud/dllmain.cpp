@@ -25,34 +25,47 @@ typedef HRESULT(__stdcall* endScene)(IDirect3DDevice9* pDevice);
 endScene pEndScene;
 
 HUD* carHud = NULL;
-void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
-{
-	if (carHud == NULL)
-	{
-		carHud = new HUD(pDevice);
-	}
-	else
-	{
-		if ((GetAsyncKeyState(Global::HUDParams.HotReloadKey) & 1))
-		{
-			delete carHud;
-			Sprite::Reset();
-			Global::Init();
-			carHud = new HUD(pDevice);
-		}
-	}
-
-	carHud->Draw();
-}
-
 void __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPresentationParameters)
 {
 	if (carHud != NULL)
 	{
 		delete carHud;
 		carHud = NULL;
-
 		Sprite::Reset();
+	}
+}
+
+void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
+{
+	if (Game::Current->IsHudVisible())
+	{
+		if ((GetAsyncKeyState(Global::HUDParams.HotReloadKey) & 1))
+		{
+			hookedReset(NULL, NULL);
+			Global::Init();
+		}
+		else if (Global::HUDParams.CustomCarHUDs)
+		{
+			string carName = Game::Current->GetCarName();
+			if (!Global::CarHasHud(carName))
+			{
+				carName = "";
+			}
+
+			if (carName != Global::CurrentCar)
+			{
+				Global::CurrentCar = carName;
+				hookedReset(NULL, NULL);
+				Global::Init();
+			}
+		}
+
+		if (carHud == NULL)
+		{
+			carHud = new HUD(pDevice);
+		}
+
+		carHud->Draw();
 	}
 }
 

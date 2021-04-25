@@ -16,9 +16,9 @@ public:
 	{
 		this->params = params;
 		
-		this->Gauge = new HUD_Gauge(pDevice, this->params.GaugeParams);
+		this->Gauge = new HUD_Gauge(pDevice, this->params.Gauge);
 
-		this->Gear = new HUD_Digit(pDevice, this->params.GearParams);
+		this->Gear = new HUD_Digit(pDevice, this->params.Gear);
 	}
 
 	void Draw()

@@ -44,7 +44,7 @@ namespace Game
 		return Current->GetSpeedBreaker();
 	}
 
-	int GetSpeed()
+	float GetSpeed()
 	{
 		float res = Current->GetSpeed();
 
@@ -109,17 +109,17 @@ namespace Game
 
 	int GetSpeed0()
 	{
-		return GetSpeed() % 10 + 1;
+		return (int)GetSpeed() % 10 + 1;
 	}
 
 	int GetSpeed1()
 	{
-		return GetSpeed() / 10 % 10 + 1;
+		return (int)GetSpeed() / 10 % 10 + 1;
 	}
 
 	int GetSpeed2()
 	{
-		return GetSpeed() / 100 % 10 + 1;
+		return (int)GetSpeed() / 100 % 10 + 1;
 	}
 }
 
