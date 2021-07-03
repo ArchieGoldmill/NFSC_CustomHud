@@ -41,9 +41,6 @@
     <ClInclude Include="HUD_Digit.h">
       <Filter>Header Files\HUD_Elements</Filter>
     </ClInclude>
-    <ClInclude Include="HUD_Tachometer.h">
-      <Filter>Header Files\HUD_Elements</Filter>
-    </ClInclude>
     <ClInclude Include="HUD_Speedometer.h">
       <Filter>Header Files\HUD_Elements</Filter>
     </ClInclude>
@@ -82,6 +79,12 @@
     </ClInclude>
     <ClInclude Include="MostWanted.h">
       <Filter>Games\MostWanted</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD_Units.h">
+      <Filter>Header Files\HUD_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD_ShiftIcon.h">
+      <Filter>Header Files\HUD_Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

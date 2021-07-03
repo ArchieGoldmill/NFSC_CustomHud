@@ -47,27 +47,12 @@ public:
 
 	void Draw()
 	{
-		bool draw = true;
-		if (this->params.IsInstalled)
+		if (this->IsInstalled())
 		{
-			draw = this->params.IsInstalled();
-		}
-
-		if (draw)
-		{
-			this->Draw(true);
-		}
-	}
-
-	void Draw(bool drawArrow)
-	{
-		this->DrawBackground();
-		this->DrawArrowMasked();
-		this->DrawNumbers();
-		this->DrawNumbersMasked();
-		if (drawArrow)
-		{
-			this->DrawArrow();
+			this->DrawBackground();
+			this->DrawArrowMasked();
+			this->DrawNumbers();
+			this->DrawNumbersMasked();
 		}
 	}
 
@@ -106,6 +91,17 @@ public:
 	}
 
 private:
+	bool IsInstalled()
+	{
+		bool draw = true;
+		if (this->params.IsInstalled)
+		{
+			draw = this->params.IsInstalled();
+		}
+
+		return draw;
+	}
+
 	void DrawNumbers()
 	{
 		if (this->numbers == NULL)
@@ -120,17 +116,9 @@ private:
 			redline = this->params.GetMaxValue();
 		}
 
-		D3DCOLOR color;
-		if (redline - rpm < this->params.NumbersMaxThreshold)
-		{
-			//Global::SetRand(true);
-			color = this->params.NumbersMaxColor;
-		}
-		else
-		{
-			//Global::SetRand(false);
-			color = this->params.NumbersColor;
-		}
+		D3DCOLOR color = (this->params.NumbersMaxThreshold > 0.01f) && (redline - rpm < this->params.NumbersMaxThreshold)
+			? this->params.NumbersMaxColor
+			: this->params.NumbersColor;
 
 		this->Setup(this->numbers, { this->params.Size, this->params.Size }, { 0, 0 }, this->params.Position, NULL, 0);
 
@@ -215,18 +203,29 @@ private:
 public:
 	void DrawArrow()
 	{
-		if (this->arrow == NULL)
+		if (this->arrow == NULL || !this->IsInstalled())
 		{
 			return;
 		}
 
+		float arrowCenterOffset = this->params.ArrowCenterOffset;
+		if (arrowCenterOffset > 1)
+		{
+			arrowCenterOffset = 1;
+		}
+
+		if (arrowCenterOffset < 0)
+		{
+			arrowCenterOffset = 0;
+		}
+
 		D3DXVECTOR2 targetRes;
-		targetRes.x = this->params.Size / 1.4f;
-		targetRes.y = this->params.Size / 2.8f;
+		targetRes.x = this->params.Size / 1.4f * this->params.ArrowScale;
+		targetRes.y = this->params.Size / 2.8f * this->params.ArrowScale;
 
 		D3DXVECTOR2 position;
-		position.x = this->params.Size / 2.92f + this->params.Position.x;
-		position.y = this->params.Size / 3.13f + this->params.Position.y;
+		position.x = this->params.Position.x + this->params.Size / 2.0f - targetRes.x * arrowCenterOffset;
+		position.y = this->params.Position.y + this->params.Size / 2.0f - targetRes.y * 0.5;
 
 		float val = this->params.GetArrowValue();
 		if (val > this->params.Value)
@@ -234,10 +233,15 @@ public:
 			val = this->params.Value;
 		}
 
+		if (!this->params.CanBeNegative && val < 0)
+		{
+			val = 0;
+		}
+
 		float step = (this->params.ArrowMaxAngle - this->params.ArrowMinAngle) / this->params.Value;
 		float rotation = step * val + this->params.ArrowMinAngle;
 
-		this->Setup(this->arrow, targetRes, { 0.78f, 0.5f }, position, NULL, rotation);
+		this->Setup(this->arrow, targetRes, { 1.0f - arrowCenterOffset, 0.5f }, position, NULL, rotation);
 
 		D3DCOLOR color = this->params.ArrowColor;
 		if (this->params.IsInperfectZone != NULL && this->params.ArrowPerfectZoneColor)

@@ -12,6 +12,8 @@ namespace Global
 
 	HUD_Params HUDParams;
 	string CurrentCar;
+	bool CarHasHUD = false;
+	float DeltaTime;
 
 	bool IsFileExist(string path)
 	{
@@ -37,6 +39,11 @@ namespace Global
 		return false;
 	}
 
+	bool ShowVanilla()
+	{
+		return Global::HUDParams.CustomCarHUDs == 2 && !Global::CarHasHUD;
+	}
+
 	void Init()
 	{
 		CIniReader main_ini("scripts\\CustomHud.ini");
@@ -52,7 +59,7 @@ namespace Global
 		HUDParams.ReplaceDragHud = main_ini.ReadInteger((char*)"MOST_WANTED", (char*)"ReplaceDragHud", 0);
 
 		string iniPath;
-		if (HUDParams.CustomCarHUDs && CarHasHud(CurrentCar))
+		if (HUDParams.CustomCarHUDs && CarHasHUD)
 		{
 			HUDPath = "CARS\\" + CurrentCar + "\\CustomHUD\\";
 			iniPath = HUDPath + "hud.ini";

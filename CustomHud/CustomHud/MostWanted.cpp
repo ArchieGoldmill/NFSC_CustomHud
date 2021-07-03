@@ -48,9 +48,14 @@ namespace MWApi
 
 		showHud = GetBit(result, 1) && FEngHud_IsHudVisible(_this);
 
-		if (!Global::HUDParams.ReplaceDragHud && IsDragRace())
+		if ((!Global::HUDParams.ReplaceDragHud && IsDragRace()))
 		{
 			showHud = false;
+			return result;
+		}
+
+		if (Global::ShowVanilla())
+		{
 			return result;
 		}
 
@@ -251,11 +256,14 @@ namespace Game
 
 	std::string MostWanted::GetCarName()
 	{
-		std::vector<int> offsets{ 0x0092C510, 0x10, 0x1C, 0 };
-		char* str= (char*)GetPtr(offsets);
-		if (str)
+		if (this->IsHudVisible())
 		{
-			return str;
+			std::vector<int> offsets{ 0x0092C510, 0x10, 0x1C, 0 };
+			char* str = (char*)GetPtr(offsets);
+			if (str)
+			{
+				return str;
+			}
 		}
 
 		return "";

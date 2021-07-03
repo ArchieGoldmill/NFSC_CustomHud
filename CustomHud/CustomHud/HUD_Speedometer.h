@@ -10,17 +10,12 @@ private:
 	HUD_Speedometer_Params params;
 
 	HUD_Digit* Speed[3];
-	Sprite* units = NULL;
+
 
 public:
 	HUD_Speedometer(LPDIRECT3DDEVICE9 pDevice, HUD_Speedometer_Params params) : HUD_Element(pDevice)
 	{
 		this->params = params;
-
-		if (!this->params.Units.UnitsTexture.empty())
-		{
-			this->units = new Sprite(pDevice, this->params.Units.UnitsTexture, this->params.Units.UnitsTextureBlendMode, D3DXVECTOR2(0, 0));
-		}
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -49,13 +44,6 @@ public:
 	}
 
 	void Draw()
-	{
-		this->DrawSpeedometer();
-
-		this->DrawUnits();
-	}
-
-	void DrawSpeedometer()
 	{
 		int numCount = 3;
 		int speed = Game::GetSpeed();
@@ -100,37 +88,6 @@ public:
 		}
 	}
 
-	void DrawUnits()
-	{
-		if (this->units != NULL)
-		{
-			RECT rect;
-			if (Game::GetUnits())
-			{
-				rect.left = this->units->Info.Width / 2.0;
-				rect.right = this->units->Info.Width;
-			}
-			else
-			{
-				rect.left = 0;
-				rect.right = this->units->Info.Width / 2.0;
-			}
-
-			rect.top = 0;
-			rect.bottom = this->units->Info.Height;
-
-			D3DXVECTOR2 size;
-			size.x = this->params.Units.Size * 2;
-			size.y = this->params.Units.Size;
-
-			D3DXVECTOR2 texSize = size;
-			texSize.x *= 2;
-
-			this->Setup(this->units, texSize, { 0, 0 }, this->params.Units.Position, &size, 0);
-			this->units->Draw(&rect, this->params.Units.Color);
-		}
-	}
-
 	void Release()
 	{
 		if (!this->isReleased)
@@ -141,11 +98,6 @@ public:
 				{
 					delete this->Speed[i];
 				}
-			}
-
-			if (this->units != NULL)
-			{
-				delete this->units;
 			}
 
 			this->isReleased = true;

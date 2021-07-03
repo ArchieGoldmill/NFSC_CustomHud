@@ -192,8 +192,9 @@ copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y</Co
     <ClInclude Include="HUD_Element.h" />
     <ClInclude Include="HUD_Filled.h" />
     <ClInclude Include="HUD_Gauge.h" />
+    <ClInclude Include="HUD_ShiftIcon.h" />
     <ClInclude Include="HUD_Speedometer.h" />
-    <ClInclude Include="HUD_Tachometer.h" />
+    <ClInclude Include="HUD_Units.h" />
     <ClInclude Include="MirrorHook\D3D9\D3D9Extender.hpp" />
     <ClInclude Include="MirrorHook\MemoryEditor\MemoryEditor.hpp" />
     <ClInclude Include="MirrorHook\WndProc\WndProcExtender.hpp" />

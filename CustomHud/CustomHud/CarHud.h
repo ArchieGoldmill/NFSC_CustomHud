@@ -5,10 +5,12 @@
 #include <math.h>
 #include "TextureStateManager.h"
 
-#include "HUD_Tachometer.h"
+#include "HUD_Gauge.h"
 #include "HUD_Speedometer.h"
 #include "HUD_Filled.h"
+#include "HUD_Units.h"
 #include "GameApi.h"
+#include "HUD_ShiftIcon.h"
 
 using namespace std;
 
@@ -18,7 +20,7 @@ private:
 	LPDIRECT3DDEVICE9 pDevice;
 	TextureStateManager* tsm;
 
-	HUD_Tachometer* Tachometer = NULL;
+	HUD_Gauge* Tachometer = NULL;
 	HUD_Gauge* Speedometer = NULL;
 	HUD_Speedometer* SpeedometerDigital = NULL;
 	HUD_Gauge* Boost = NULL;
@@ -26,12 +28,11 @@ private:
 	HUD_Filled* NosFilled = NULL;
 	HUD_Gauge* SpeedBreak = NULL;
 	HUD_Filled* SpeedBreakFilled = NULL;
-
-	ID3DXFont* Font = NULL;
+	HUD_Digit* Gear = NULL;
+	HUD_Units* Units = NULL;
+	HUD_ShiftIcon* ShiftIcon = NULL;
 
 public:
-	static bool ShowHUD;
-
 	HUD(LPDIRECT3DDEVICE9 pDevice)
 	{
 		this->pDevice = pDevice;
@@ -39,22 +40,20 @@ public:
 
 		try
 		{
-			if (Global::HUDParams.Tachometer.Gauge.Enabled)
+			if (Global::HUDParams.Tachometer.Enabled)
 			{
-				Global::HUDParams.Tachometer.Gauge.GetArrowValue = Game::GetRPM;
-				Global::HUDParams.Tachometer.Gauge.GetMaxValue = Game::GetRedline;
+				Global::HUDParams.Tachometer.GetArrowValue = Game::GetRPM;
+				Global::HUDParams.Tachometer.GetMaxValue = Game::GetRedline;
 
-				Global::HUDParams.Tachometer.Gauge.GetMaskValue1 = Game::GetRedline;
-				Global::HUDParams.Tachometer.Gauge.GetMaskValue2 = []() { return Global::HUDParams.Tachometer.Gauge.Value; };
+				Global::HUDParams.Tachometer.GetMaskValue1 = Game::GetRedline;
+				Global::HUDParams.Tachometer.GetMaskValue2 = []() { return Global::HUDParams.Tachometer.Value; };
 
-				Global::HUDParams.Tachometer.Gauge.GetArrowMaskValue1 = []() { return 0.0f; };
-				Global::HUDParams.Tachometer.Gauge.GetArrowMaskValue2 = Game::GetRPM;
+				Global::HUDParams.Tachometer.GetArrowMaskValue1 = []() { return 0.0f; };
+				Global::HUDParams.Tachometer.GetArrowMaskValue2 = Game::GetRPM;
 
-				Global::HUDParams.Tachometer.Gauge.IsInperfectZone = Game::IsInPerfectLaunchRange;
+				Global::HUDParams.Tachometer.IsInperfectZone = Game::IsInPerfectLaunchRange;
 
-				Global::HUDParams.Tachometer.Gear.GetNumber = Game::GetGear;
-
-				this->Tachometer = new HUD_Tachometer(pDevice, Global::HUDParams.Tachometer);
+				this->Tachometer = new HUD_Gauge(pDevice, Global::HUDParams.Tachometer);
 			}
 
 			if (Global::HUDParams.SpeedometerDigital.Enabled)
@@ -71,6 +70,8 @@ public:
 			if (Global::HUDParams.Boost.Enabled)
 			{
 				Global::HUDParams.Boost.GetArrowValue = Game::GetBoost;
+				Global::HUDParams.Boost.GetMaskValue1 = []() {return 0.0f; };
+				Global::HUDParams.Boost.GetMaskValue2 = Game::GetBoost;
 				Global::HUDParams.Boost.IsInstalled = Game::IsBoostInstalled;
 				this->Boost = new HUD_Gauge(pDevice, Global::HUDParams.Boost);
 			}
@@ -104,6 +105,22 @@ public:
 				Global::HUDParams.SpeedBreakFilled.GetValue = Game::GetSpeedBreaker;
 				this->SpeedBreakFilled = new HUD_Filled(pDevice, Global::HUDParams.SpeedBreakFilled);
 			}
+
+			if (Global::HUDParams.Gear.Enabled)
+			{
+				Global::HUDParams.Gear.GetNumber = Game::GetGear;
+				this->Gear = new HUD_Digit(pDevice, Global::HUDParams.Gear);
+			}
+
+			if (Global::HUDParams.Units.Enabled)
+			{
+				this->Units = new HUD_Units(pDevice, Global::HUDParams.Units);
+			}
+
+			if (Global::HUDParams.ShiftIcon.Enabled)
+			{
+				this->ShiftIcon = new HUD_ShiftIcon(pDevice, Global::HUDParams.ShiftIcon);
+			}
 		}
 		catch (string& s)
 		{
@@ -111,11 +128,8 @@ public:
 		}
 	}
 
-	int gen = 0;
 	void Draw()
 	{
-		auto start = chrono::steady_clock::now();
-
 		for (int i = 0; i < NUM_TEX; i++)
 		{
 			this->tsm->SetTexture(i);
@@ -139,142 +153,134 @@ public:
 			this->tsm->SetTextureStageState(i, D3DTSS_CONSTANT);
 		}
 
-		if (this->Tachometer != NULL)
+		if (this->Tachometer)
 		{
 			this->Tachometer->Draw();
 		}
 
-		if (this->Speedometer != NULL)
+		if (this->Speedometer)
 		{
 			this->Speedometer->Draw();
 		}
 
-		if (this->SpeedometerDigital != NULL)
+		if (this->SpeedometerDigital)
 		{
 			this->SpeedometerDigital->Draw();
 		}
 
-		if (this->Boost != NULL)
+		if (this->Boost)
 		{
 			this->Boost->Draw();
+			this->Boost->DrawArrow();
 		}
 
-		if (this->Nos != NULL)
+		if (this->Nos)
 		{
 			this->Nos->Draw();
+			this->Nos->DrawArrow();
 		}
 
-		if (this->NosFilled != NULL)
+		if (this->NosFilled)
 		{
 			this->NosFilled->Draw();
 		}
 
-		if (this->SpeedBreak != NULL)
+		if (this->SpeedBreak)
 		{
 			this->SpeedBreak->Draw();
+			this->SpeedBreak->DrawArrow();
 		}
 
-		if (this->SpeedBreakFilled != NULL)
+		if (this->SpeedBreakFilled)
 		{
 			this->SpeedBreakFilled->Draw();
 		}
 
-		if (this->Tachometer != NULL)
+		if (this->Gear)
+		{
+			this->Gear->Draw();
+		}
+
+		if (this->Units)
+		{
+			this->Units->Draw();
+		}
+
+		if (this->ShiftIcon)
+		{
+			this->ShiftIcon->Draw();
+		}
+
+		if (this->Tachometer)
 		{
 			this->Tachometer->DrawArrow();
 		}
 
-		this->tsm->Restore();
-
-		if (Global::HUDParams.ShowDebugInfo)
+		if (this->Speedometer)
 		{
-			this->DrawDebugInfo();
+			this->Speedometer->DrawArrow();
 		}
 
-		auto now = chrono::steady_clock::now();
-
-		int a = chrono::duration_cast<std::chrono::microseconds>(now - start).count();
-
-		gen = (a + gen) / 2;
+		this->tsm->Restore();
 	}
 
 	~HUD()
 	{
-		if (this->Tachometer != NULL)
+		if (this->Tachometer)
 		{
 			delete this->Tachometer;
 		}
 
-		if (this->SpeedometerDigital != NULL)
+		if (this->SpeedometerDigital)
 		{
 			delete this->SpeedometerDigital;
 		}
-		
-		if (this->Speedometer != NULL)
+
+		if (this->Speedometer)
 		{
 			delete this->Speedometer;
 		}
 
-		if (this->Boost != NULL)
+		if (this->Boost)
 		{
 			delete this->Boost;
 		}
 
-		if (this->Nos != NULL)
+		if (this->Nos)
 		{
 			delete this->Nos;
 		}
 
-		if (this->NosFilled != NULL)
+		if (this->NosFilled)
 		{
 			delete this->NosFilled;
 		}
 
-		if (this->SpeedBreak != NULL)
+		if (this->SpeedBreak)
 		{
 			delete this->SpeedBreak;
 		}
 
-		if (this->SpeedBreakFilled != NULL)
+		if (this->SpeedBreakFilled)
 		{
 			delete this->SpeedBreakFilled;
 		}
 
-
-		if (this->Font != NULL)
+		if (this->Gear)
 		{
-			this->Font->Release();
+			delete this->Gear;
+		}
+
+		if (this->Units)
+		{
+			delete this->Units;
+		}
+
+		if (this->ShiftIcon)
+		{
+			delete this->ShiftIcon;
 		}
 
 		delete this->tsm;
 	}
-
-private:
-	void DrawDebugInfo()
-	{
-		this->DrawTextS("RPM=" + std::to_string(Game::GetRPM() * 1000.0f), 0);
-		this->DrawTextS("RedLine=" + std::to_string(Game::GetRedline() * 1000.0f), 1);
-		this->DrawTextS("Speed=" + std::to_string(Game::GetSpeed()), 2);
-		this->DrawTextS("NOS=" + std::to_string(Game::GetNos()), 3);
-		this->DrawTextS("SpeedBreaker=" + std::to_string(Game::GetSpeedBreaker()), 4);
-		this->DrawTextS("Boost=" + std::to_string(Game::GetBoost()), 5);
-		this->DrawTextS("TIME(microsec)=" + std::to_string(gen), 6);
-	}
-
-	void DrawTextS(string str, int line)
-	{
-		if (this->Font == NULL)
-		{
-			D3DXCreateFont(this->pDevice, 22, 0, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial", &this->Font);
-		}
-
-		RECT font_rect;
-		font_rect.left = 10;
-		font_rect.top = 30 * line;
-		font_rect.right = 100;
-		font_rect.bottom = 30 * (line + 1);
-
-		this->Font->DrawText(NULL, str.c_str(), -1, &font_rect, DT_LEFT | DT_NOCLIP, 0xFFFFFFFF);
-	}
 };
-bool HUD::ShowHUD = false;

@@ -2,6 +2,7 @@
 #include "Carbon.h"
 #include "injector/injector.hpp"
 #include <string>
+#include "Globals.h"
 
 bool(__thiscall* DALVehicle_GetRPM)(void* DALVehicle, float* getVal, const int playerNum) = (bool(__thiscall*)(void*, float*, const int))0x004B65F0;
 bool(__thiscall* DALVehicle_GetMaxRPM)(void* DALVehicle, float* getVal, const int playerNum) = (bool(__thiscall*)(void*, float*, const int))0x004B66E0;
@@ -46,6 +47,10 @@ int __fastcall DetermineHudFeatures(void* _this, int v1, int v2)
 	int result = Game_DetermineHudFeatures(_this, v2);
 
 	showHud = GetBit(result, 1);
+	if (Global::ShowVanilla())
+	{
+		return result;
+	}
 
 	ClearBit(result, 1);
 	ClearBit(result, 11);
