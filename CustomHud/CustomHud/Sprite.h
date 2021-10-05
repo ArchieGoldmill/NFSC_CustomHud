@@ -13,18 +13,19 @@ private:
 	static hash<string> stringHasher;
 	static map<int, LPDIRECT3DTEXTURE9> texturesMap;
 
-	LPDIRECT3DDEVICE9 pDevice;
 	LPD3DXSPRITE pSprite;
 	LPDIRECT3DTEXTURE9 pTexture;
-	LPDIRECT3DTEXTURE9 pMaskTexture;
+
 	bool isReleased;
-	bool useMask;
 	bool BlendMode;
 
 	string path;
 
 protected:
+	LPDIRECT3DDEVICE9 pDevice;
 	D3DXVECTOR2 maskSize;
+	LPDIRECT3DTEXTURE9 pMaskTexture;
+	bool useMask;
 
 public:
 	D3DXIMAGE_INFO InfoOriginal;
@@ -44,12 +45,6 @@ public:
 
 		this->GetTextureInfo();
 		this->CreateSprite();
-		if (maskSize.x != 0 && maskSize.y != 0)
-		{
-			this->maskSize = maskSize;
-			this->useMask = true;
-			this->pDevice->CreateTexture(maskSize.x, maskSize.y, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &this->pMaskTexture, NULL);
-		}
 	}
 
 	void Draw(RECT* rect, D3DCOLOR color)

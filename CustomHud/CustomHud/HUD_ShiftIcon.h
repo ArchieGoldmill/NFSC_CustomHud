@@ -96,4 +96,9 @@ public:
 			this->isReleased = true;
 		}
 	}
+
+	~HUD_ShiftIcon()
+	{
+		this->Release();
+	}
 };

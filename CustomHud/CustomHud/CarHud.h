@@ -18,7 +18,7 @@ class HUD
 {
 private:
 	LPDIRECT3DDEVICE9 pDevice;
-	TextureStateManager* tsm;
+	//TextureStateManager* tsm;
 
 	HUD_Gauge* Tachometer = NULL;
 	HUD_Gauge* Speedometer = NULL;
@@ -36,7 +36,7 @@ public:
 	HUD(LPDIRECT3DDEVICE9 pDevice)
 	{
 		this->pDevice = pDevice;
-		this->tsm = new TextureStateManager(pDevice);
+		//this->tsm = new TextureStateManager(pDevice);
 
 		try
 		{
@@ -130,7 +130,7 @@ public:
 
 	void Draw()
 	{
-		for (int i = 0; i < NUM_TEX; i++)
+		/*for (int i = 0; i < NUM_TEX; i++)
 		{
 			this->tsm->SetTexture(i);
 			this->tsm->SetTextureStageState(i, D3DTSS_COLOROP);
@@ -151,7 +151,7 @@ public:
 			this->tsm->SetTextureStageState(i, D3DTSS_ALPHAARG0);
 			this->tsm->SetTextureStageState(i, D3DTSS_RESULTARG);
 			this->tsm->SetTextureStageState(i, D3DTSS_CONSTANT);
-		}
+		}*/
 
 		if (this->Tachometer)
 		{
@@ -221,7 +221,7 @@ public:
 			this->Speedometer->DrawArrow();
 		}
 
-		this->tsm->Restore();
+		//this->tsm->Restore();
 	}
 
 	~HUD()
@@ -281,6 +281,6 @@ public:
 			delete this->ShiftIcon;
 		}
 
-		delete this->tsm;
+		//delete this->tsm;
 	}
 };

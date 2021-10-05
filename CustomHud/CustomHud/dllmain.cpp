@@ -10,6 +10,7 @@
 #include "GameApi.h"
 #include "Carbon.h"
 #include "MostWanted.h"
+#include "Undercover.h"
 using namespace MirrorHookInternals;
 using namespace std;
 
@@ -17,8 +18,7 @@ using namespace std;
 #pragma comment(lib, "d3dx9.lib")
 
 ID3DXFont* Font = NULL;
-IDirect3DDevice9* pDevice;
-void DrawTextS(string str, int line)
+void DrawTextS(string str, int line, IDirect3DDevice9* pDevice)
 {
 	if (Font == NULL)
 	{
@@ -40,16 +40,16 @@ template <typename T> string tostr(const T& t) {
 	return os.str();
 }
 
-void DrawDebugInfo(int hudDrawText)
+void DrawDebugInfo(int hudDrawText, IDirect3DDevice9* pDevice)
 {
-	DrawTextS("RPM=" + std::to_string(Game::GetRPM() * 1000.0f), 0);
-	DrawTextS("RedLine=" + std::to_string(Game::GetRedline() * 1000.0f), 1);
-	DrawTextS("Speed=" + std::to_string(Game::GetSpeed()), 2);
-	DrawTextS("NOS=" + std::to_string(Game::GetNos()), 3);
-	DrawTextS("SpeedBreaker=" + std::to_string(Game::GetSpeedBreaker()), 4);
-	DrawTextS("Boost=" + std::to_string(Game::GetBoost()), 5);
-	DrawTextS("TIME(microsec)=" + std::to_string(hudDrawText), 6);
-	DrawTextS("DeltaTime=" + tostr(Global::DeltaTime), 7);
+	DrawTextS("RPM=" + std::to_string(Game::GetRPM() * 1000.0f), 0, pDevice);
+	DrawTextS("RedLine=" + std::to_string(Game::GetRedline() * 1000.0f), 1, pDevice);
+	DrawTextS("Speed=" + std::to_string(Game::GetSpeed()), 2, pDevice);
+	DrawTextS("NOS=" + std::to_string(Game::GetNos()), 3, pDevice);
+	DrawTextS("SpeedBreaker=" + std::to_string(Game::GetSpeedBreaker()), 4, pDevice);
+	DrawTextS("Boost=" + std::to_string(Game::GetBoost()), 5, pDevice);
+	DrawTextS("TIME(microsec)=" + std::to_string(hudDrawText), 6, pDevice);
+	DrawTextS("DeltaTime=" + tostr(Global::DeltaTime), 7, pDevice);
 }
 
 HINSTANCE DllHandle;
@@ -75,12 +75,10 @@ void __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPr
 		carHud = NULL;
 		Sprite::Reset();
 	}
-
-	pDevice = NULL;
 }
 
 auto start = chrono::steady_clock::now();
-void __stdcall hookedEndScene(IDirect3DDevice9* device)
+void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 {
 	if (!Game::Current->IsHudVisible())
 	{
@@ -88,8 +86,6 @@ void __stdcall hookedEndScene(IDirect3DDevice9* device)
 	}
 
 	auto hudDrawStart = chrono::steady_clock::now();
-
-	pDevice = device;
 
 	if ((GetAsyncKeyState(Global::HUDParams.HotReloadKey) & 1))
 	{
@@ -130,17 +126,17 @@ void __stdcall hookedEndScene(IDirect3DDevice9* device)
 	auto now = chrono::steady_clock::now();
 	Global::DeltaTime = chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1000.0f;
 	start = chrono::steady_clock::now();
-	
+
 	if (Global::HUDParams.ShowDebugInfo)
 	{
 		int hudDrawTime = chrono::duration_cast<std::chrono::microseconds>(now - hudDrawStart).count();
-		DrawDebugInfo(hudDrawTime);
+		DrawDebugInfo(hudDrawTime, pDevice);
 	}
 }
 
 void Init()
 {
-	pDevice = NULL;
+	IDirect3DDevice9* pDevice = NULL;
 	while (pDevice == NULL)
 	{
 		Sleep(10);
@@ -177,6 +173,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		else if (ptr == 0x7C4040)
 		{
 			Game::Current = new Game::MostWanted();
+		}
+		else if (ptr == 0x008aec55 || ptr == 0x014082ed)
+		{
+			Game::Current = new Game::Undercover();
 		}
 		else
 		{

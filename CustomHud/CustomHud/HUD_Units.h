@@ -62,4 +62,9 @@ public:
 			this->isReleased = true;
 		}
 	}
+
+	~HUD_Units()
+	{
+		this->Release();
+	}
 };

@@ -112,7 +112,10 @@
 copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y
 
 copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Most Wanted\scripts"  /y
-copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y</Command>
+copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y
+
+copy "$(TargetDir)*.asi" "E:\Games\Need for Speed Undercover\scripts"  /y
+copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed Undercover\scripts"  /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -159,7 +162,10 @@ copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y</Co
 copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y
 
 copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Most Wanted\scripts"  /y
-copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y</Command>
+copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y
+
+copy "$(TargetDir)*.asi" "E:\Games\Need for Speed Undercover\scripts"  /y
+copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed Undercover\scripts"  /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -201,6 +207,7 @@ copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y</Co
     <ClInclude Include="MostWanted.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextureStateManager.h" />
+    <ClInclude Include="Undercover.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Carbon.cpp" />
@@ -208,6 +215,7 @@ copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y</Co
     <ClCompile Include="GameApi.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="MostWanted.cpp" />
+    <ClCompile Include="Undercover.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

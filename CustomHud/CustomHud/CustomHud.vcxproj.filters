@@ -5,19 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Header Files\HUD_Elements">
-      <UniqueIdentifier>{e2a701d6-3433-4d29-b13a-0673d484c20e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Sprites">
-      <UniqueIdentifier>{40ab7874-a16c-47f6-bbb9-03b1f0d654db}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\MirrorHook">
-      <UniqueIdentifier>{414d04cd-b8f7-4490-a76c-108e3c5eacec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Games">
       <UniqueIdentifier>{644a6d72-8f8e-4a60-9950-0be0eec16d43}</UniqueIdentifier>
     </Filter>
@@ -30,43 +17,59 @@
     <Filter Include="Games\MostWanted">
       <UniqueIdentifier>{79d0a412-7908-4244-be38-cd11fd67d50d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Games\Undercover">
+      <UniqueIdentifier>{093f5aad-d602-445b-a999-e4320e648184}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HUD">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="HUD\HUD_Elements">
+      <UniqueIdentifier>{e2a701d6-3433-4d29-b13a-0673d484c20e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HUD\Sprites">
+      <UniqueIdentifier>{40ab7874-a16c-47f6-bbb9-03b1f0d654db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HUD\MirrorHook">
+      <UniqueIdentifier>{414d04cd-b8f7-4490-a76c-108e3c5eacec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HUD_Gauge.h">
-      <Filter>Header Files\HUD_Elements</Filter>
+      <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Element.h">
-      <Filter>Header Files\HUD_Elements</Filter>
+      <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Digit.h">
-      <Filter>Header Files\HUD_Elements</Filter>
+      <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Speedometer.h">
-      <Filter>Header Files\HUD_Elements</Filter>
+      <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
-      <Filter>Header Files\Sprites</Filter>
+      <Filter>HUD\Sprites</Filter>
     </ClInclude>
     <ClInclude Include="CircleSprite.h">
-      <Filter>Header Files\Sprites</Filter>
+      <Filter>HUD\Sprites</Filter>
     </ClInclude>
     <ClInclude Include="CarHud.h">
-      <Filter>Header Files</Filter>
+      <Filter>HUD</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Filled.h">
-      <Filter>Header Files\HUD_Elements</Filter>
+      <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
     <ClInclude Include="MirrorHook\WndProc\WndProcExtender.hpp">
-      <Filter>Header Files\MirrorHook</Filter>
+      <Filter>HUD\MirrorHook</Filter>
     </ClInclude>
     <ClInclude Include="MirrorHook\MemoryEditor\MemoryEditor.hpp">
-      <Filter>Header Files\MirrorHook</Filter>
+      <Filter>HUD\MirrorHook</Filter>
     </ClInclude>
     <ClInclude Include="MirrorHook\D3D9\D3D9Extender.hpp">
-      <Filter>Header Files\MirrorHook</Filter>
+      <Filter>HUD\MirrorHook</Filter>
     </ClInclude>
     <ClInclude Include="TextureStateManager.h">
-      <Filter>Header Files\Sprites</Filter>
+      <Filter>HUD\Sprites</Filter>
     </ClInclude>
     <ClInclude Include="GameApi.h">
       <Filter>Games</Filter>
@@ -81,10 +84,13 @@
       <Filter>Games\MostWanted</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Units.h">
-      <Filter>Header Files\HUD_Elements</Filter>
+      <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
     <ClInclude Include="HUD_ShiftIcon.h">
-      <Filter>Header Files\HUD_Elements</Filter>
+      <Filter>HUD\HUD_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Undercover.h">
+      <Filter>Games\Undercover</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +108,9 @@
     </ClCompile>
     <ClCompile Include="MostWanted.cpp">
       <Filter>Games\MostWanted</Filter>
+    </ClCompile>
+    <ClCompile Include="Undercover.cpp">
+      <Filter>Games\Undercover</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

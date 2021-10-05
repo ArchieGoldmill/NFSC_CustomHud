@@ -21,7 +21,12 @@ private:
 public:
 	CircleSprite(LPDIRECT3DDEVICE9 pDevice, string& path, bool BlendMode, D3DXVECTOR2 maskSize) : Sprite(pDevice, path, BlendMode, maskSize)
 	{
-
+		if (maskSize.x != 0 && maskSize.y != 0)
+		{
+			this->maskSize = maskSize;
+			this->useMask = true;
+			this->pDevice->CreateTexture(maskSize.x, maskSize.y, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &this->pMaskTexture, NULL);
+		}
 	}
 
 	void SetupMask(D3DXVECTOR2 center, float angle1, float angle2, int color1, int color2)
