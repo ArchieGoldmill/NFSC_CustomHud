@@ -124,7 +124,7 @@ public:
 		}
 		catch (string& s)
 		{
-			MessageBoxA(NULL, s.c_str(), "NFSC - Custom HUD", MB_ICONERROR);
+			MessageBoxA(NULL, s.c_str(), "Custom HUD", MB_ICONERROR);
 		}
 	}
 

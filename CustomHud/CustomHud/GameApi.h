@@ -43,9 +43,12 @@ namespace Game
 
 	int GetSpeed2();
 
+	float LocalizeSpeed(float speed);
+
 	extern Api* Current;
 }
 
-int* GetPtr(std::vector<int>& offsets);
+unsigned int* GetPtr(unsigned int* offsets, int count);
 bool GetBit(int n, int k);
 void ClearBit(int& n, int k);
+void ClearBit(__int64& n, int k);

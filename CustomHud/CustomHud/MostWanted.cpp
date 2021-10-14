@@ -19,13 +19,13 @@ namespace MWApi
 	auto EngineRacer_GetPerfectLaunchRange = (float(__thiscall*)(void*, float*))0x006A02F0;
 	auto IsInZone = (int(__thiscall*)(void*, int))0x6702D0;
 	auto FEngHud_IsHudVisible = (bool(__thiscall*)(void*))0x005A0C20;
-	auto FEngHud_DetermineHudFeatures = (int(__thiscall*)(void* _this, signed int var1))0x0057CA60;
+	auto FEngHud_DetermineHudFeatures = (__int64(__thiscall*)(void* _this, signed int var1))0x0057CA60;
 	auto IsDragRace = (bool(__stdcall*)())0x004D6150;
 
 	void* GetEnginePtr(int offset = 0)
 	{
-		std::vector<int> offsets{ 0x913E80, 0x8, 0x60, offset };
-		return (void*)GetPtr(offsets);
+		unsigned int offsets[] = { 0x913E80, 0x8, 0x60, offset };
+		return (void*)GetPtr(offsets, 4);
 	}
 
 	void* GetEnginePtr2()
@@ -36,15 +36,15 @@ namespace MWApi
 			offset = 0xFC;
 		}
 
-		std::vector<int> offsets{ 0x009352B0, 0x14, offset, 0 };
-		return (void*)GetPtr(offsets);
+		unsigned int offsets[] = { 0x009352B0, 0x14, offset, 0 };
+		return (void*)GetPtr(offsets, 4);
 	}
 
 	bool showHud = true;
 
-	int __fastcall DetermineHudFeatures(void* _this, int v1, int v2)
+	__int64 __fastcall DetermineHudFeatures(void* _this, int v1, int v2)
 	{
-		int result = FEngHud_DetermineHudFeatures(_this, v2);
+		__int64 result = FEngHud_DetermineHudFeatures(_this, v2);
 
 		showHud = GetBit(result, 1) && FEngHud_IsHudVisible(_this);
 
@@ -147,8 +147,8 @@ namespace Game
 	float MostWanted::GetSpeedBreaker()
 	{
 		float res = 0.0f;
-		std::vector<int> offsets{ 0x0092D858, 0x38 };
-		float* ptr = (float*)GetPtr(offsets);
+		unsigned int offsets[] = { 0x0092D858, 0x38 };
+		float* ptr = (float*)GetPtr(offsets, 2);
 		if (ptr)
 		{
 			res = *ptr;
@@ -163,17 +163,10 @@ namespace Game
 		if (*MWApi::PVehicle)
 		{
 			speed = MWApi::PVehicle_GetSpeed(*MWApi::PVehicle);
-			if (this->GetUnits())
-			{
-				speed = speed * 3.5999999f;
-			}
-			else
-			{
-				speed = speed * 2.23699f;
-			}
+			speed = LocalizeSpeed(speed);
 		}
 
-		return (int)speed;
+		return speed;
 	}
 
 	bool MostWanted::IsHudVisible()
@@ -222,8 +215,8 @@ namespace Game
 	{
 		bool res = false;
 
-		std::vector<int> offsets{ MWApi::FEDatabase, 0x10, 0x3b };
-		char* ptr = (char*)GetPtr(offsets);
+		unsigned int offsets[] = { MWApi::FEDatabase, 0x10, 0x3b };
+		char* ptr = (char*)GetPtr(offsets, 3);
 		if (ptr)
 		{
 			res = *ptr == 1;
@@ -235,8 +228,8 @@ namespace Game
 	bool MostWanted::IsInPerfectLaunchRange()
 	{
 		bool res = false;
-		std::vector<int> offsets{ 0x0090DBA4, 0xB1 };
-		char* isRaceStarting = (char*)GetPtr(offsets);
+		unsigned int offsets[] = { 0x0090DBA4, 0xB1 };
+		char* isRaceStarting = (char*)GetPtr(offsets, 2);
 
 		if (isRaceStarting && *isRaceStarting == 1)
 		{
@@ -258,8 +251,8 @@ namespace Game
 	{
 		if (this->IsHudVisible())
 		{
-			std::vector<int> offsets{ 0x0092C510, 0x10, 0x1C, 0 };
-			char* str = (char*)GetPtr(offsets);
+			unsigned int offsets[] = { 0x0092C510, 0x10, 0x1C, 0 };
+			char* str = (char*)GetPtr(offsets, 4);
 			if (str)
 			{
 				return str;

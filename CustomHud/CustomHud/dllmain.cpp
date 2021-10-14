@@ -18,7 +18,7 @@ using namespace std;
 #pragma comment(lib, "d3dx9.lib")
 
 ID3DXFont* Font = NULL;
-void DrawTextS(string str, int line, IDirect3DDevice9* pDevice)
+void DrawTextS(string str, int line, IDirect3DDevice9* pDevice, int color = 0xFFFFFFFF)
 {
 	if (Font == NULL)
 	{
@@ -31,7 +31,7 @@ void DrawTextS(string str, int line, IDirect3DDevice9* pDevice)
 	font_rect.right = 100;
 	font_rect.bottom = 30 * (line + 1);
 
-	Font->DrawText(NULL, str.c_str(), -1, &font_rect, DT_LEFT | DT_NOCLIP, 0xFFFFFFFF);
+	Font->DrawText(NULL, str.c_str(), -1, &font_rect, DT_LEFT | DT_NOCLIP, color);
 }
 
 template <typename T> string tostr(const T& t) {
@@ -51,14 +51,6 @@ void DrawDebugInfo(int hudDrawText, IDirect3DDevice9* pDevice)
 	DrawTextS("TIME(microsec)=" + std::to_string(hudDrawText), 6, pDevice);
 	DrawTextS("DeltaTime=" + tostr(Global::DeltaTime), 7, pDevice);
 }
-
-HINSTANCE DllHandle;
-
-typedef HRESULT(__stdcall* reset)(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPresentationParameters);
-reset pReset;
-
-typedef HRESULT(__stdcall* endScene)(IDirect3DDevice9* pDevice);
-endScene pEndScene;
 
 HUD* carHud = NULL;
 void __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPresentationParameters)
@@ -132,6 +124,9 @@ void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 		int hudDrawTime = chrono::duration_cast<std::chrono::microseconds>(now - hudDrawStart).count();
 		DrawDebugInfo(hudDrawTime, pDevice);
 	}
+
+	//DrawTextS("TEST UC CUSTOM HUD - BY ARCHIE / NOT FOR PUBLIC USE", 0, pDevice);
+	//DrawTextS("TEST UC CUSTOM HUD - BY ARCHIE / NOT FOR PUBLIC USE", 1, pDevice, 0xFF000000);
 }
 
 void Init()
@@ -144,7 +139,7 @@ void Init()
 	}
 
 	D3D9Extender::AddExtension(D3D9Extender::D3D9Extension::EndScene, hookedEndScene);
-	D3D9Extender::AddExtension(D3D9Extender::D3D9Extension::AfterReset, hookedReset);
+	D3D9Extender::AddExtension(D3D9Extender::D3D9Extension::BeforeReset, hookedReset);
 
 	if (!D3D9Extender::Init(&pDevice))
 	{
@@ -174,13 +169,15 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		{
 			Game::Current = new Game::MostWanted();
 		}
-		else if (ptr == 0x008aec55 || ptr == 0x014082ed)
-		{
-			Game::Current = new Game::Undercover();
-		}
+		//else if (ptr == 0x008aec55 || ptr == 0x014082ed)
+		//{
+		//	Game::Current = new Game::Undercover();
+		//}
 		else
 		{
-			MessageBoxA(NULL, "This .exe is not supported.", "Custom HUD", MB_ICONERROR);
+			char buf[100];
+			sprintf(buf, "This .exe is not supported. Ptr=%x", ptr);
+			MessageBoxA(NULL, buf, "Custom HUD", MB_ICONERROR);
 			return FALSE;
 		}
 

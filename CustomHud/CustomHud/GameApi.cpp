@@ -121,19 +121,33 @@ namespace Game
 	{
 		return (int)GetSpeed() / 100 % 10 + 1;
 	}
+
+	float LocalizeSpeed(float speed)
+	{
+		if (GetUnits())
+		{
+			speed = speed * 3.5999999f;
+		}
+		else
+		{
+			speed = speed * 2.23699f;
+		}
+
+		return speed;
+	}
 }
 
-int* GetPtr(std::vector<int>& offsets)
+unsigned int* GetPtr(unsigned int * offsets, int count)
 {
-	int* ptr = (int*)offsets[0];
-	for (int i = 1, size = offsets.size(); i < size; i++)
+	auto ptr = (unsigned int*)offsets[0];
+	for (int i = 1, size = count; i < size; i++)
 	{
 		if (ptr == NULL || *ptr == 0)
 		{
 			return 0;
 		}
 
-		ptr = (int*)(*ptr + offsets[i]);
+		ptr = (unsigned int*)(*ptr + offsets[i]);
 	}
 
 	return ptr;
@@ -145,6 +159,11 @@ bool GetBit(int n, int k)
 }
 
 void ClearBit(int& n, int k)
+{
+	n &= ~(1 << k);
+}
+
+void ClearBit(__int64& n, int k)
 {
 	n &= ~(1 << k);
 }

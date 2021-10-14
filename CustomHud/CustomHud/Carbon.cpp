@@ -54,7 +54,6 @@ int __fastcall DetermineHudFeatures(void* _this, int v1, int v2)
 
 	ClearBit(result, 1);
 	ClearBit(result, 11);
-	//ClearBit(result, 14); // Heat bar
 	ClearBit(result, 18);
 
 	return result;
@@ -187,8 +186,8 @@ namespace Game
 	{
 		if (this->IsHudVisible())
 		{
-			std::vector<int> offsets{ 0x00A9F168, 0x24, 0x20, 0 };
-			char* name = (char*)GetPtr(offsets);
+			unsigned int offsets[] = { 0x00A9F168, 0x24, 0x20, 0 };
+			char* name = (char*)GetPtr(offsets, 4);
 			if (name)
 			{
 				return name;

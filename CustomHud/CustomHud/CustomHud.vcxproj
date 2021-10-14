@@ -108,14 +108,14 @@
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Carbon\scripts"  /y
-copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y
+      <Command>copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Carbon\scripts"  /y
+copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Carbon\scripts"  /y
 
-copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Most Wanted\scripts"  /y
-copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y
+copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
+copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
 
-copy "$(TargetDir)*.asi" "E:\Games\Need for Speed Undercover\scripts"  /y
-copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed Undercover\scripts"  /y</Command>
+copy "$(TargetDir)*.asi" "D:\Games\Need for Speed Undercover\scripts"  /y
+copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -158,14 +158,14 @@ copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed Undercover\scripts"  /y</Comma
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Carbon\scripts"  /y
-copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Carbon\scripts"  /y
+      <Command>copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Carbon\scripts"  /y
+copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Carbon\scripts"  /y
 
-copy "$(TargetDir)*.asi" "E:\Games\Need for Speed - Most Wanted\scripts"  /y
-copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed - Most Wanted\scripts"  /y
+copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
+copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
 
-copy "$(TargetDir)*.asi" "E:\Games\Need for Speed Undercover\scripts"  /y
-copy "$(TargetDir)*.pdb" "E:\Games\Need for Speed Undercover\scripts"  /y</Command>
+copy "$(TargetDir)*.asi" "D:\Games\Need for Speed Undercover\scripts"  /y
+copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

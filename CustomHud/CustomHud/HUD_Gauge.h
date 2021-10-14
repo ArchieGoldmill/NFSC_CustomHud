@@ -51,8 +51,8 @@ public:
 		{
 			this->DrawBackground();
 			this->DrawArrowMasked();
-			this->DrawNumbersMasked();
 			this->DrawNumbers();
+			this->DrawNumbersMasked();
 		}
 	}
 

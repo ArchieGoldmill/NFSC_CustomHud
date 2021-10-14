@@ -24,7 +24,7 @@ public:
 	}
 
 protected:
-	void Setup(Sprite* texture, D3DXVECTOR2 targetRes, D3DXVECTOR2 centerPercent, D3DXVECTOR2 positionOffset, D3DXVECTOR2* rect, float rotation)
+	void Setup(Sprite* sprite, D3DXVECTOR2 targetRes, D3DXVECTOR2 centerPercent, D3DXVECTOR2 positionOffset, D3DXVECTOR2* rect, float rotation)
 	{
 		D3DVIEWPORT9 wndSize = GetWindowSize();
 		float wscale = wndSize.Height / 1080.0f * Global::HUDParams.Scale;
@@ -36,8 +36,8 @@ protected:
 		positionOffset.y *= wscale;
 
 		D3DXVECTOR2 scale;
-		scale.x = targetRes.x / texture->Info.Width;
-		scale.y = targetRes.y / texture->Info.Height;
+		scale.x = targetRes.x / sprite->Info.Width;
+		scale.y = targetRes.y / sprite->Info.Height;
 
 		D3DXVECTOR2 center;
 		center.x = targetRes.x * centerPercent.x;
@@ -61,7 +61,7 @@ protected:
 
 		D3DXMATRIX matrix;
 		D3DXMatrixTransformation2D(&matrix, NULL, NULL, &scale, &center, degToRad(rotation), &position);
-		texture->SetTransform(matrix);
+		sprite->SetTransform(matrix);
 	}
 
 private:
