@@ -6,14 +6,15 @@ namespace UndercoverApi
 	bool ShowHud = false;
 	bool* IsPaused = (bool*)0x00D8E238;
 	int* GameState = (int*)0x00DA57B8;
+	int* HudCount = (int*)0x01278FF8;
 
 	auto FEngHud_DetermineHudFeatures = (__int64(__thiscall*)(void* _this, signed int var1))0x005CA090;
 
-	__int64 __fastcall DetermineHudFeatures(void* _this, int v1, int v2)
+	__int64 __fastcall DetermineHudFeatures(int* _this, int v1, int v2)
 	{
 		int result = FEngHud_DetermineHudFeatures(_this, v2);
 
-		ShowHud = GetBit(result, 0);
+		ShowHud = GetBit(result, 0) && _this[0xA9];
 		ClearBit(result, 0);
 		ClearBit(result, 2);
 		ClearBit(result, 3);
@@ -37,12 +38,12 @@ namespace Game
 	}
 	float Undercover::GetBoost()
 	{
-		//unsigned int offsets[] = { UC_PVehicle, 0x3C, 0x1E0 };
-		//auto ptr = (float*)GetPtr(offsets, 3);
-		//if (ptr)
-		//{
-		//	return *ptr;
-		//}
+		unsigned int offsets[] = { UC_PVehicle, 0x3C, 0x1C4 };
+		auto ptr = (float*)GetPtr(offsets, 3);
+		if (ptr)
+		{
+			return *ptr;
+		}
 
 		return 0;
 	}
@@ -89,9 +90,10 @@ namespace Game
 	}
 	bool Undercover::IsHudVisible()
 	{
-		return UndercoverApi::ShowHud && 
-			!*UndercoverApi::IsPaused && 
-			*UndercoverApi::GameState == 6;
+		return UndercoverApi::ShowHud &&
+			!*UndercoverApi::IsPaused &&
+			*UndercoverApi::GameState == 6 &&
+			*UndercoverApi::HudCount != 0;
 	}
 	float Undercover::GetRPM()
 	{
@@ -128,8 +130,8 @@ namespace Game
 	}
 	bool Undercover::GetUnits()
 	{
-		unsigned int offsets[] = { 0x01333EA4, 0x20, 0x14 };
-		auto ptr = (int*)GetPtr(offsets, 3);
+		unsigned int offsets[] = { 0x01284610, 0x4, 0x60, 0x14 };
+		auto ptr = (int*)GetPtr(offsets, 4);
 		if (ptr)
 		{
 			return *ptr;
@@ -143,6 +145,16 @@ namespace Game
 	}
 	std::string Undercover::GetCarName()
 	{
+		if (this->IsHudVisible())
+		{
+			unsigned int offsets[] = { UC_PVehicle, 0x50, 0x1C, 0x64, 0x30 };
+			auto ptr = (char*)GetPtr(offsets, 5);
+			if (ptr)
+			{
+				return ptr;
+			}
+		}
+
 		return std::string();
 	}
 }

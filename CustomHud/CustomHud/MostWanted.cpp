@@ -259,6 +259,6 @@ namespace Game
 			}
 		}
 
-		return "";
+		return std::string();
 	}
 }
