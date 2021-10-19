@@ -17,9 +17,6 @@
     <Filter Include="Games\MostWanted">
       <UniqueIdentifier>{79d0a412-7908-4244-be38-cd11fd67d50d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Games\Undercover">
-      <UniqueIdentifier>{093f5aad-d602-445b-a999-e4320e648184}</UniqueIdentifier>
-    </Filter>
     <Filter Include="HUD">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
@@ -89,9 +86,6 @@
     <ClInclude Include="HUD_ShiftIcon.h">
       <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
-    <ClInclude Include="Undercover.h">
-      <Filter>Games\Undercover</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -108,9 +102,6 @@
     </ClCompile>
     <ClCompile Include="MostWanted.cpp">
       <Filter>Games\MostWanted</Filter>
-    </ClCompile>
-    <ClCompile Include="Undercover.cpp">
-      <Filter>Games\Undercover</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -207,7 +207,6 @@ copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Comma
     <ClInclude Include="MostWanted.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextureStateManager.h" />
-    <ClInclude Include="Undercover.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Carbon.cpp" />
@@ -215,7 +214,6 @@ copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Comma
     <ClCompile Include="GameApi.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="MostWanted.cpp" />
-    <ClCompile Include="Undercover.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
