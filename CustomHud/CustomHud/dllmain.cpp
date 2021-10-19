@@ -10,9 +10,9 @@
 #include "GameApi.h"
 #include "Carbon.h"
 #include "MostWanted.h"
-#include "Undercover.h"
+//#include "Undercover.h"
+
 using namespace MirrorHookInternals;
-using namespace std;
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
@@ -124,9 +124,6 @@ void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 		int hudDrawTime = chrono::duration_cast<std::chrono::microseconds>(now - hudDrawStart).count();
 		DrawDebugInfo(hudDrawTime, pDevice);
 	}
-
-	DrawTextS("TEST UC CUSTOM HUD - BY ARCHIE / NOT FOR PUBLIC USE", 8, pDevice);
-	DrawTextS("TEST UC CUSTOM HUD - BY ARCHIE / NOT FOR PUBLIC USE", 9, pDevice, 0xFF000000);
 }
 
 void Init()
@@ -169,10 +166,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		{
 			Game::Current = new Game::MostWanted();
 		}
-		else if (ptr == 0x008aec55 || ptr == 0x014082ed)
-		{
-			Game::Current = new Game::Undercover();
-		}
+		//else if (ptr == 0x008aec55 || ptr == 0x014082ed)
+		//{
+		//	Game::Current = new Game::Undercover();
+		//}
 		else
 		{
 			char buf[100];
