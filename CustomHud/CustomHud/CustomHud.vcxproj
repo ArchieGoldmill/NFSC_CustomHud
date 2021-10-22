@@ -195,11 +195,13 @@ copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Comma
     <ClInclude Include="GameApi.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="HUD_Digit.h" />
+    <ClInclude Include="HUD_Digital.h" />
     <ClInclude Include="HUD_Element.h" />
-    <ClInclude Include="HUD_Filled.h" />
+    <ClInclude Include="HUD_Liniar.h" />
     <ClInclude Include="HUD_Gauge.h" />
     <ClInclude Include="HUD_ShiftIcon.h" />
-    <ClInclude Include="HUD_Speedometer.h" />
+    <ClInclude Include="HUD_SpeedometerDigital.h" />
+    <ClInclude Include="HUD_TachometerDigital.h" />
     <ClInclude Include="HUD_Units.h" />
     <ClInclude Include="MirrorHook\D3D9\D3D9Extender.hpp" />
     <ClInclude Include="MirrorHook\MemoryEditor\MemoryEditor.hpp" />

@@ -70,7 +70,7 @@ namespace Game
 
 	float GetRedline()
 	{
-		float res = Current->GetRedline() - 500.0f;
+		float res = Current->GetRedline();
 
 		return res / 1000.0f;
 	}
@@ -120,6 +120,26 @@ namespace Game
 	int GetSpeed2()
 	{
 		return (int)GetSpeed() / 100 % 10 + 1;
+	}
+
+	int GetRPM0()
+	{
+		return (int)(GetRPM() * 1000) % 10 + 1;
+	}
+
+	int GetRPM1()
+	{
+		return (int)(GetRPM() * 1000) / 10 % 10 + 1;
+	}
+
+	int GetRPM2()
+	{
+		return (int)(GetRPM() * 1000) / 100 % 10 + 1;
+	}
+
+	int GetRPM3()
+	{
+		return (int)(GetRPM() * 1000) / 1000 % 10 + 1;
 	}
 
 	float LocalizeSpeed(float speed)

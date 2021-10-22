@@ -1,14 +1,14 @@
 #pragma once
 #include "HUD_Element.h"
 
-class HUD_Filled : HUD_Element
+class HUD_Liniar : HUD_Element
 {
-	HUD_Filled_Params params;
+	HUD_Liniar_Params params;
 	Sprite* texture = NULL;
 	Sprite* background = NULL;
 
 public:
-	HUD_Filled(LPDIRECT3DDEVICE9 pDevice, HUD_Filled_Params& params) : HUD_Element(pDevice)
+	HUD_Liniar(LPDIRECT3DDEVICE9 pDevice, HUD_Liniar_Params& params) : HUD_Element(pDevice)
 	{
 		this->params = params;
 
@@ -108,7 +108,7 @@ public:
 		}
 	}
 
-	~HUD_Filled()
+	~HUD_Liniar()
 	{
 		this->Release();
 	}

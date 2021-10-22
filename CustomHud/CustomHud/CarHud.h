@@ -6,8 +6,9 @@
 #include "TextureStateManager.h"
 
 #include "HUD_Gauge.h"
-#include "HUD_Speedometer.h"
-#include "HUD_Filled.h"
+#include "HUD_SpeedometerDigital.h"
+#include "HUD_TachometerDigital.h"
+#include "HUD_Liniar.h"
 #include "HUD_Units.h"
 #include "GameApi.h"
 #include "HUD_ShiftIcon.h"
@@ -18,16 +19,18 @@ class HUD
 {
 private:
 	LPDIRECT3DDEVICE9 pDevice;
-	//TextureStateManager* tsm;
+	TextureStateManager* tsm;
 
-	HUD_Gauge* Tachometer = NULL;
-	HUD_Gauge* Speedometer = NULL;
-	HUD_Speedometer* SpeedometerDigital = NULL;
-	HUD_Gauge* Boost = NULL;
-	HUD_Gauge* Nos = NULL;
-	HUD_Filled* NosFilled = NULL;
-	HUD_Gauge* SpeedBreak = NULL;
-	HUD_Filled* SpeedBreakFilled = NULL;
+	HUD_Gauge* TachometerGauge = NULL;
+	HUD_TachometerDigital* TachometerDigital = NULL;
+	HUD_Liniar* TachometerLiniar = NULL;
+	HUD_Gauge* SpeedometerGauge = NULL;
+	HUD_SpeedometerDigital* SpeedometerDigital = NULL;
+	HUD_Gauge* BoostGauge = NULL;
+	HUD_Gauge* NosGauge = NULL;
+	HUD_Liniar* NosLiniar = NULL;
+	HUD_Gauge* SpeedBreakGauge = NULL;
+	HUD_Liniar* SpeedBreakLiniar = NULL;
 	HUD_Digit* Gear = NULL;
 	HUD_Units* Units = NULL;
 	HUD_ShiftIcon* ShiftIcon = NULL;
@@ -36,74 +39,85 @@ public:
 	HUD(LPDIRECT3DDEVICE9 pDevice)
 	{
 		this->pDevice = pDevice;
-		//this->tsm = new TextureStateManager(pDevice);
+		this->tsm = new TextureStateManager(pDevice);
 
 		try
 		{
-			if (Global::HUDParams.Tachometer.Enabled)
+			if (Global::HUDParams.TachometerGauge.Enabled)
 			{
-				Global::HUDParams.Tachometer.GetArrowValue = Game::GetRPM;
-				Global::HUDParams.Tachometer.GetMaxValue = Game::GetRedline;
+				Global::HUDParams.TachometerGauge.GetArrowValue = Game::GetRPM;
+				Global::HUDParams.TachometerGauge.GetMaxValue = Game::GetRedline;
 
-				Global::HUDParams.Tachometer.GetMaskValue1 = Game::GetRedline;
-				Global::HUDParams.Tachometer.GetMaskValue2 = []() { return Global::HUDParams.Tachometer.Value; };
+				Global::HUDParams.TachometerGauge.GetMaskValue1 = Game::GetRedline;
+				Global::HUDParams.TachometerGauge.GetMaskValue2 = []() { return Global::HUDParams.TachometerGauge.Value; };
 
-				Global::HUDParams.Tachometer.GetArrowMaskValue1 = []() { return 0.0f; };
-				Global::HUDParams.Tachometer.GetArrowMaskValue2 = Game::GetRPM;
+				Global::HUDParams.TachometerGauge.GetArrowMaskValue1 = []() { return 0.0f; };
+				Global::HUDParams.TachometerGauge.GetArrowMaskValue2 = Game::GetRPM;
 
-				Global::HUDParams.Tachometer.IsInperfectZone = Game::IsInPerfectLaunchRange;
+				Global::HUDParams.TachometerGauge.IsInperfectZone = Game::IsInPerfectLaunchRange;
 
-				this->Tachometer = new HUD_Gauge(pDevice, Global::HUDParams.Tachometer);
+				this->TachometerGauge = new HUD_Gauge(pDevice, Global::HUDParams.TachometerGauge);
+			}
+
+			if (Global::HUDParams.TachometerDigital.Enabled)
+			{
+				this->TachometerDigital = new HUD_TachometerDigital(pDevice, Global::HUDParams.TachometerDigital);
+			}
+
+			if (Global::HUDParams.TachometerLiniar.Enabled)
+			{
+				Global::HUDParams.TachometerLiniar.GetValue = Game::GetRPM;
+				this->TachometerLiniar = new HUD_Liniar(pDevice, Global::HUDParams.TachometerLiniar);
 			}
 
 			if (Global::HUDParams.SpeedometerDigital.Enabled)
 			{
-				this->SpeedometerDigital = new HUD_Speedometer(pDevice, Global::HUDParams.SpeedometerDigital);
+				this->SpeedometerDigital = new HUD_SpeedometerDigital(pDevice, Global::HUDParams.SpeedometerDigital);
 			}
 
-			if (Global::HUDParams.Speedometer.Enabled)
+			if (Global::HUDParams.SpeedometerGauge.Enabled)
 			{
-				Global::HUDParams.Speedometer.GetArrowValue = Game::GetSpeed;
-				this->Speedometer = new HUD_Gauge(pDevice, Global::HUDParams.Speedometer);
+				Global::HUDParams.SpeedometerGauge.GetArrowValue = Game::GetSpeed;
+				this->SpeedometerGauge = new HUD_Gauge(pDevice, Global::HUDParams.SpeedometerGauge);
 			}
 
-			if (Global::HUDParams.Boost.Enabled)
+			if (Global::HUDParams.BoostGauge.Enabled)
 			{
-				Global::HUDParams.Boost.GetArrowValue = Game::GetBoost;
-				Global::HUDParams.Boost.GetMaskValue1 = []() {return 0.0f; };
-				Global::HUDParams.Boost.GetMaskValue2 = Game::GetBoost;
-				Global::HUDParams.Boost.IsInstalled = Game::IsBoostInstalled;
-				this->Boost = new HUD_Gauge(pDevice, Global::HUDParams.Boost);
+				Global::HUDParams.BoostGauge.GetArrowValue = Game::GetBoost;
+				Global::HUDParams.BoostGauge.GetArrowMaskValue1 = []() {return 0.0f; };
+				Global::HUDParams.BoostGauge.GetArrowMaskValue2 = Game::GetBoost;
+				Global::HUDParams.BoostGauge.IsInstalled = Game::IsBoostInstalled;
+				this->BoostGauge = new HUD_Gauge(pDevice, Global::HUDParams.BoostGauge);
 			}
 
-			if (Global::HUDParams.Nos.Enabled)
+			if (Global::HUDParams.NosGauge.Enabled)
 			{
-				Global::HUDParams.Nos.GetMaskValue1 = []() {return 0.0f; };
-				Global::HUDParams.Nos.GetMaskValue2 = Game::GetNos;
-				Global::HUDParams.Nos.GetArrowValue = Game::GetNos;
-				Global::HUDParams.Nos.IsInstalled = Game::IsNosInstalled;
-				this->Nos = new HUD_Gauge(pDevice, Global::HUDParams.Nos);
+				Global::HUDParams.NosGauge.GetMaskValue1 = []() {return 0.0f; };
+				Global::HUDParams.NosGauge.GetMaskValue2 = Game::GetNos;
+				Global::HUDParams.NosGauge.GetArrowValue = Game::GetNos;
+				Global::HUDParams.NosGauge.IsInstalled = Game::IsNosInstalled;
+				this->NosGauge = new HUD_Gauge(pDevice, Global::HUDParams.NosGauge);
 			}
 
-			if (Global::HUDParams.NosFilled.Enabled)
+			if (Global::HUDParams.NosLiniar.Enabled)
 			{
-				Global::HUDParams.NosFilled.GetValue = Game::GetNos;
-				Global::HUDParams.NosFilled.IsInstalled = Game::IsNosInstalled;
-				this->NosFilled = new HUD_Filled(pDevice, Global::HUDParams.NosFilled);
+				Global::HUDParams.NosLiniar.GetValue = Game::GetNos;
+				Global::HUDParams.NosLiniar.IsInstalled = Game::IsNosInstalled;
+				this->NosLiniar = new HUD_Liniar(pDevice, Global::HUDParams.NosLiniar);
 			}
 
-			if (Global::HUDParams.SpeedBreak.Enabled)
+			if (Global::HUDParams.SpeedBreakGauge.Enabled)
 			{
-				Global::HUDParams.SpeedBreak.GetMaskValue1 = []() {return 0.0f; };
-				Global::HUDParams.SpeedBreak.GetMaskValue2 = Game::GetSpeedBreaker;
-				Global::HUDParams.SpeedBreak.GetArrowValue = Game::GetSpeedBreaker;
-				this->SpeedBreak = new HUD_Gauge(pDevice, Global::HUDParams.SpeedBreak);
+				Global::HUDParams.SpeedBreakGauge.GetMaskValue1 = []() {return 0.0f; };
+				Global::HUDParams.SpeedBreakGauge.GetMaskValue2 = Game::GetSpeedBreaker;
+				Global::HUDParams.SpeedBreakGauge.GetArrowValue = Game::GetSpeedBreaker;
+				this->SpeedBreakGauge = new HUD_Gauge(pDevice, Global::HUDParams.SpeedBreakGauge);
 			}
 
-			if (Global::HUDParams.SpeedBreakFilled.Enabled)
+			if (Global::HUDParams.SpeedBreakLiniar.Enabled)
 			{
-				Global::HUDParams.SpeedBreakFilled.GetValue = Game::GetSpeedBreaker;
-				this->SpeedBreakFilled = new HUD_Filled(pDevice, Global::HUDParams.SpeedBreakFilled);
+				Global::HUDParams.SpeedBreakLiniar.GetValue = Game::GetSpeedBreaker;
+				this->SpeedBreakLiniar = new HUD_Liniar(pDevice, Global::HUDParams.SpeedBreakLiniar);
 			}
 
 			if (Global::HUDParams.Gear.Enabled)
@@ -130,7 +144,7 @@ public:
 
 	void Draw()
 	{
-		/*for (int i = 0; i < NUM_TEX; i++)
+		for (int i = 0; i < NUM_TEX; i++)
 		{
 			this->tsm->SetTexture(i);
 			this->tsm->SetTextureStageState(i, D3DTSS_COLOROP);
@@ -151,16 +165,26 @@ public:
 			this->tsm->SetTextureStageState(i, D3DTSS_ALPHAARG0);
 			this->tsm->SetTextureStageState(i, D3DTSS_RESULTARG);
 			this->tsm->SetTextureStageState(i, D3DTSS_CONSTANT);
-		}*/
-
-		if (this->Tachometer)
-		{
-			this->Tachometer->Draw();
 		}
 
-		if (this->Speedometer)
+		if (this->TachometerGauge)
 		{
-			this->Speedometer->Draw();
+			this->TachometerGauge->Draw();
+		}
+		
+		if (this->TachometerDigital)
+		{
+			this->TachometerDigital->Draw();
+		}
+		
+		if (this->TachometerLiniar)
+		{
+			this->TachometerLiniar->Draw();
+		}
+
+		if (this->SpeedometerGauge)
+		{
+			this->SpeedometerGauge->Draw();
 		}
 
 		if (this->SpeedometerDigital)
@@ -168,32 +192,32 @@ public:
 			this->SpeedometerDigital->Draw();
 		}
 
-		if (this->Boost)
+		if (this->BoostGauge)
 		{
-			this->Boost->Draw();
-			this->Boost->DrawArrow();
+			this->BoostGauge->Draw();
+			this->BoostGauge->DrawArrow();
 		}
 
-		if (this->Nos)
+		if (this->NosGauge)
 		{
-			this->Nos->Draw();
-			this->Nos->DrawArrow();
+			this->NosGauge->Draw();
+			this->NosGauge->DrawArrow();
 		}
 
-		if (this->NosFilled)
+		if (this->NosLiniar)
 		{
-			this->NosFilled->Draw();
+			this->NosLiniar->Draw();
 		}
 
-		if (this->SpeedBreak)
+		if (this->SpeedBreakGauge)
 		{
-			this->SpeedBreak->Draw();
-			this->SpeedBreak->DrawArrow();
+			this->SpeedBreakGauge->Draw();
+			this->SpeedBreakGauge->DrawArrow();
 		}
 
-		if (this->SpeedBreakFilled)
+		if (this->SpeedBreakLiniar)
 		{
-			this->SpeedBreakFilled->Draw();
+			this->SpeedBreakLiniar->Draw();
 		}
 
 		if (this->Gear)
@@ -211,24 +235,39 @@ public:
 			this->ShiftIcon->Draw();
 		}
 
-		if (this->Tachometer)
+		if (this->TachometerGauge)
 		{
-			this->Tachometer->DrawArrow();
+			this->TachometerGauge->DrawArrow();
 		}
 
-		if (this->Speedometer)
+		if (this->SpeedometerGauge)
 		{
-			this->Speedometer->DrawArrow();
+			this->SpeedometerGauge->DrawArrow();
 		}
 
-		//this->tsm->Restore();
+		this->tsm->Restore();
 	}
 
 	~HUD()
 	{
-		if (this->Tachometer)
+		if (this->TachometerGauge)
 		{
-			delete this->Tachometer;
+			delete this->TachometerGauge;
+		}
+		
+		if (this->TachometerDigital)
+		{
+			delete this->TachometerDigital;
+		}
+		
+		if (this->TachometerLiniar)
+		{
+			delete this->TachometerLiniar;
+		}
+
+		if (this->SpeedometerGauge)
+		{
+			delete this->SpeedometerGauge;
 		}
 
 		if (this->SpeedometerDigital)
@@ -236,34 +275,29 @@ public:
 			delete this->SpeedometerDigital;
 		}
 
-		if (this->Speedometer)
+		if (this->BoostGauge)
 		{
-			delete this->Speedometer;
+			delete this->BoostGauge;
 		}
 
-		if (this->Boost)
+		if (this->NosGauge)
 		{
-			delete this->Boost;
+			delete this->NosGauge;
 		}
 
-		if (this->Nos)
+		if (this->NosLiniar)
 		{
-			delete this->Nos;
+			delete this->NosLiniar;
 		}
 
-		if (this->NosFilled)
+		if (this->SpeedBreakGauge)
 		{
-			delete this->NosFilled;
+			delete this->SpeedBreakGauge;
 		}
 
-		if (this->SpeedBreak)
+		if (this->SpeedBreakLiniar)
 		{
-			delete this->SpeedBreak;
-		}
-
-		if (this->SpeedBreakFilled)
-		{
-			delete this->SpeedBreakFilled;
+			delete this->SpeedBreakLiniar;
 		}
 
 		if (this->Gear)
@@ -281,6 +315,6 @@ public:
 			delete this->ShiftIcon;
 		}
 
-		//delete this->tsm;
+		delete this->tsm;
 	}
 };

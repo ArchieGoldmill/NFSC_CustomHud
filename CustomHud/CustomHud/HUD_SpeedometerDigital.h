@@ -4,16 +4,15 @@
 #include "Globals.h"
 #include "GameApi.h"
 
-class HUD_Speedometer : HUD_Element
+class HUD_SpeedometerDigital : public HUD_Element
 {
 private:
-	HUD_Speedometer_Params params;
+	HUD_Digital_Params params;
 
 	HUD_Digit* Speed[3];
 
-
 public:
-	HUD_Speedometer(LPDIRECT3DDEVICE9 pDevice, HUD_Speedometer_Params params) : HUD_Element(pDevice)
+	HUD_SpeedometerDigital(LPDIRECT3DDEVICE9 pDevice, HUD_Digital_Params params) : HUD_Element(pDevice)
 	{
 		this->params = params;
 
@@ -29,10 +28,18 @@ public:
 			else if (i == 1)
 			{
 				cb = Game::GetSpeed1;
+				if (!this->params.DigitsTexture1.empty())
+				{
+					digitParams.DigitsTexture = this->params.DigitsTexture1;
+				}
 			}
 			else if (i == 2)
 			{
 				cb = Game::GetSpeed2;
+				if (!this->params.DigitsTexture2.empty())
+				{
+					digitParams.DigitsTexture = this->params.DigitsTexture2;
+				}
 			}
 
 			digitParams.GetNumber = cb;
@@ -104,7 +111,7 @@ public:
 		}
 	}
 
-	~HUD_Speedometer()
+	~HUD_SpeedometerDigital()
 	{
 		this->Release();
 	}

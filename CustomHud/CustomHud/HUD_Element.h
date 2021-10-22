@@ -13,8 +13,6 @@ protected:
 	bool isReleased;
 
 public:
-	virtual void Draw() = 0;
-
 	virtual void Release() = 0;
 
 	HUD_Element(LPDIRECT3DDEVICE9 pDevice)

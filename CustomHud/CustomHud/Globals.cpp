@@ -4,18 +4,18 @@ using namespace std;
 
 namespace Global
 {
-	string HUDPath;
-	string GetHudPath()
+	std::string HUDPath;
+	std::string GetHudPath()
 	{
 		return HUDPath;
 	}
 
 	HUD_Params HUDParams;
-	string CurrentCar;
+	std::string CurrentCar;
 	bool CarHasHUD = false;
 	float DeltaTime;
 
-	bool IsFileExist(string path)
+	bool IsFileExist(std::string path)
 	{
 		ifstream f(path.c_str());
 		bool isGood = f.good();
@@ -24,12 +24,12 @@ namespace Global
 		return isGood;
 	}
 
-	string GetCarHudPath(string name)
+	std::string GetCarHudPath(std::string name)
 	{
 		return "CARS\\" + name + "\\CustomHUD\\hud.ini";
 	}
 
-	bool CarHasHud(string name)
+	bool CarHasHud(std::string name)
 	{
 		if (!name.empty())
 		{
@@ -58,7 +58,7 @@ namespace Global
 
 		HUDParams.ReplaceDragHud = main_ini.ReadInteger((char*)"MOST_WANTED", (char*)"ReplaceDragHud", 0);
 
-		string iniPath;
+		std::string iniPath;
 		if (HUDParams.CustomCarHUDs && CarHasHUD)
 		{
 			HUDPath = "CARS\\" + CurrentCar + "\\CustomHUD\\";
@@ -67,10 +67,10 @@ namespace Global
 		else
 		{
 			char* hudPathStr = main_ini.ReadString((char*)"GENERAL", (char*)"HUDpath", "");
-			HUDPath = "scripts\\" + string(hudPathStr);
+			HUDPath = "scripts\\" + std::string(hudPathStr);
 			delete hudPathStr;
 
-			string iniName = main_ini.ReadString((char*)"GENERAL", (char*)"IniName", "");
+			std::string iniName = main_ini.ReadString((char*)"GENERAL", (char*)"IniName", "");
 			iniPath = GetHudPath() + iniName;
 			if (!IsFileExist(iniPath))
 			{

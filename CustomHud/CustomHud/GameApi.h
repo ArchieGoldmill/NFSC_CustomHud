@@ -38,10 +38,13 @@ namespace Game
 	bool IsInPerfectLaunchRange();
 
 	int GetSpeed0();
-
 	int GetSpeed1();
-
 	int GetSpeed2();
+
+	int GetRPM0();
+	int GetRPM1();
+	int GetRPM2();
+	int GetRPM3();
 
 	float LocalizeSpeed(float speed);
 

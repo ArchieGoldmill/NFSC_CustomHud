@@ -4,17 +4,15 @@
 #include "ini/IniReader.h"
 #include <string.h>
 
-using namespace std;
-
 class HUD_Params;
 namespace Global
 {
 	extern HUD_Params HUDParams;
-	string GetHudPath();
+	std::string GetHudPath();
 	void Init();
-	bool CarHasHud(string name);
+	bool CarHasHud(std::string name);
 	bool ShowVanilla();
-	extern string CurrentCar;
+	extern std::string CurrentCar;
 	extern bool CarHasHUD;
 	extern float DeltaTime;
 };
@@ -43,10 +41,10 @@ public:
 		}
 	}
 
-	string ReadTexturePath(CIniReader& ini, char* category, const char* field)
+	std::string ReadTexturePath(CIniReader& ini, char* category, const char* field)
 	{
 		char* str = ini.ReadString(category, (char*)field, "");
-		string tex(str);
+		std::string tex(str);
 		delete str;
 
 		if (!tex.empty())
@@ -62,9 +60,8 @@ public:
 
 class HUD_ShiftIcon_Params : public HUD_Element_Params
 {
-
 public:
-	string IconTexture;
+	std::string IconTexture;
 	int BlinkMode;
 	bool IconTexturBlendMode;
 
@@ -81,7 +78,7 @@ class HUD_Digit_Params : public HUD_Element_Params
 {
 public:
 	IntValueCallback* GetNumber;
-	string DigitsTexture;
+	std::string DigitsTexture;
 	bool DigitsTextureBlendMode;
 	D3DCOLOR BackgroundColor;
 
@@ -100,7 +97,7 @@ public:
 class HUD_Units_Params : public HUD_Element_Params
 {
 public:
-	string UnitsTexture;
+	std::string UnitsTexture;
 	bool UnitsTextureBlendMode;
 
 	void Init(CIniReader& ini, char* category)
@@ -114,15 +111,15 @@ public:
 	}
 };
 
-class HUD_Filled_Params : public HUD_Element_Params
+class HUD_Liniar_Params : public HUD_Element_Params
 {
 public:
-	string FilledTexture;
+	std::string FilledTexture;
 	D3DCOLOR FilledColor;
 	bool FilledTextureBlendMode;
 
 	D3DCOLOR BackgroundColor;
-	string BackgroundTexture;
+	std::string BackgroundTexture;
 	bool BackgroundTextureBlendMode;
 
 	float Value;
@@ -149,9 +146,11 @@ public:
 	}
 };
 
-class HUD_Speedometer_Params : public HUD_Digit_Params
+class HUD_Digital_Params : public HUD_Digit_Params
 {
 public:
+	std::string DigitsTexture1;
+	std::string DigitsTexture2;
 
 	float Distance;
 	int DigitsMode;
@@ -163,6 +162,9 @@ public:
 		{
 			this->Distance = ini.ReadFloat(category, (char*)"Distance", 0.0f);
 			this->DigitsMode = ini.ReadInteger(category, (char*)"DigitsMode", 0);
+
+			this->DigitsTexture1 = this->ReadTexturePath(ini, category, "DigitsTexture1");
+			this->DigitsTexture2 = this->ReadTexturePath(ini, category, "DigitsTexture2");
 		}
 	}
 };
@@ -180,31 +182,33 @@ public:
 	float ArrowCenterOffset;
 	D3DCOLOR ArrowColor;
 	D3DCOLOR ArrowMaskedColor;
+	D3DCOLOR ArrowMaskedMaxColor;
+	float ArrowMaskedMaxThreshold;
 	D3DCOLOR ArrowMaskedColor1;
 	D3DCOLOR ArrowMaskedColor2;
-	string ArrowTexture;
-	string ArrowMaskedTexture;
+	std::string ArrowTexture;
+	std::string ArrowMaskedTexture;
 	D3DCOLOR ArrowPerfectZoneColor;
 	bool ArrowTextureBlendMode;
 	bool ArrowMaskedTextureBlendMode;
 	float ArrowMaskedMinOffset;
 
 	D3DCOLOR BackgroundColor;
-	string BackgroundTexture;
+	std::string BackgroundTexture;
 	bool BackgroundTextureBlendMode;
 
 	float NumbersMaskedSize;
 	float NumbersMaxThreshold;
 	D3DCOLOR NumbersColor;
 	D3DCOLOR NumbersMaxColor;
-	string NumbersTexture;
+	std::string NumbersTexture;
 	bool NumbersTextureBlendMode;
 	bool NumbersMaskedTextureBlendMode;
 	D3DCOLOR NumbersMaskedColor;
 	D3DCOLOR NumbersMaskedColor1;
 	D3DCOLOR NumbersMaskedColor2;
 	float NumbersMaskedMaxOffset;
-	string NumbersMaskedTexture;
+	std::string NumbersMaskedTexture;
 
 	FloatValueCallback* GetArrowValue;
 	FloatValueCallback* GetMaxValue;
@@ -232,7 +236,9 @@ public:
 			this->ArrowScale = ini.ReadFloat(category, (char*)"ArrowScale", 1.0f);
 			this->ArrowCenterOffset = ini.ReadFloat(category, (char*)"ArrowCenterOffset", 0.22f);
 			this->ArrowMaskedMinOffset = ini.ReadFloat(category, (char*)"ArrowMaskedMinOffset", 0.0f);
+			this->ArrowMaskedMaxThreshold = ini.ReadFloat(category, (char*)"ArrowMaskedMaxThreshold", 0.0f);
 			this->ArrowMaskedColor = ini.ReadInteger(category, (char*)"ArrowMaskedColor", 0);
+			this->ArrowMaskedMaxColor = ini.ReadInteger(category, (char*)"ArrowMaskedMaxColor", 0);
 			this->ArrowMaskedColor1 = ini.ReadInteger(category, (char*)"ArrowMaskedColor1", 0);
 			this->ArrowMaskedColor2 = ini.ReadInteger(category, (char*)"ArrowMaskedColor2", 0);
 			this->ArrowPerfectZoneColor = ini.ReadInteger(category, (char*)"ArrowPerfectZoneColor", 0);
@@ -266,16 +272,18 @@ public:
 class HUD_Params
 {
 public:
-	HUD_Gauge_Params Tachometer;
-	HUD_Gauge_Params Speedometer;
-	HUD_Gauge_Params Nos;
-	HUD_Gauge_Params Boost;
-	HUD_Gauge_Params SpeedBreak;
+	HUD_Gauge_Params TachometerGauge;
+	HUD_Gauge_Params SpeedometerGauge;
+	HUD_Gauge_Params NosGauge;
+	HUD_Gauge_Params BoostGauge;
+	HUD_Gauge_Params SpeedBreakGauge;
 
-	HUD_Filled_Params NosFilled;
-	HUD_Filled_Params SpeedBreakFilled;
+	HUD_Liniar_Params TachometerLiniar;
+	HUD_Liniar_Params NosLiniar;
+	HUD_Liniar_Params SpeedBreakLiniar;
 
-	HUD_Speedometer_Params SpeedometerDigital;
+	HUD_Digital_Params SpeedometerDigital;
+	HUD_Digital_Params TachometerDigital;
 	HUD_Units_Params Units;
 	HUD_Digit_Params Gear;
 	HUD_ShiftIcon_Params ShiftIcon;
@@ -289,14 +297,16 @@ public:
 
 	void Init(CIniReader& ini)
 	{
-		this->Tachometer.Init(ini, (char*)"TACHOMETER");
-		this->Speedometer.Init(ini, (char*)"SPEEDOMETER_GAUGE");
-		this->SpeedometerDigital.Init(ini, (char*)"SPEEDOMETER");
-		this->Nos.Init(ini, (char*)"NOS_GAUGE");
-		this->NosFilled.Init(ini, (char*)"NOS_LINIAR");
-		this->Boost.Init(ini, (char*)"BOOST_GAUGE");
-		this->SpeedBreak.Init(ini, (char*)"SPEEDBREAK_GAUGE");
-		this->SpeedBreakFilled.Init(ini, (char*)"SPEEDBREAK_LINIAR");
+		this->TachometerGauge.Init(ini, (char*)"TACHOMETER_GAUGE");
+		this->TachometerDigital.Init(ini, (char*)"TACHOMETER_DIGITAL");
+		this->TachometerLiniar.Init(ini, (char*)"TACHOMETER_LINIAR");
+		this->SpeedometerGauge.Init(ini, (char*)"SPEEDOMETER_GAUGE");
+		this->SpeedometerDigital.Init(ini, (char*)"SPEEDOMETER_DIGITAL");
+		this->NosGauge.Init(ini, (char*)"NOS_GAUGE");
+		this->NosLiniar.Init(ini, (char*)"NOS_LINIAR");
+		this->BoostGauge.Init(ini, (char*)"BOOST_GAUGE");
+		this->SpeedBreakGauge.Init(ini, (char*)"SPEEDBREAK_GAUGE");
+		this->SpeedBreakLiniar.Init(ini, (char*)"SPEEDBREAK_LINIAR");
 		this->Units.Init(ini, (char*)"UNITS");
 		this->Gear.Init(ini, (char*)"GEAR");
 		this->ShiftIcon.Init(ini, (char*)"SHIFT_ICON");

@@ -41,7 +41,7 @@
     <ClInclude Include="HUD_Digit.h">
       <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
-    <ClInclude Include="HUD_Speedometer.h">
+    <ClInclude Include="HUD_SpeedometerDigital.h">
       <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
@@ -53,7 +53,7 @@
     <ClInclude Include="CarHud.h">
       <Filter>HUD</Filter>
     </ClInclude>
-    <ClInclude Include="HUD_Filled.h">
+    <ClInclude Include="HUD_Liniar.h">
       <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
     <ClInclude Include="MirrorHook\WndProc\WndProcExtender.hpp">
@@ -84,6 +84,12 @@
       <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
     <ClInclude Include="HUD_ShiftIcon.h">
+      <Filter>HUD\HUD_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD_TachometerDigital.h">
+      <Filter>HUD\HUD_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD_Digital.h">
       <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
   </ItemGroup>

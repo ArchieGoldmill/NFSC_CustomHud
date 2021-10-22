@@ -109,20 +109,9 @@ private:
 			return;
 		}
 
-		float rpm = this->params.GetArrowValue();
-		float redline = rpm;
-		if (this->params.GetMaxValue != NULL)
-		{
-			redline = this->params.GetMaxValue();
-		}
-
-		D3DCOLOR color = (this->params.NumbersMaxThreshold > 0.01f) && (redline - rpm < this->params.NumbersMaxThreshold)
-			? this->params.NumbersMaxColor
-			: this->params.NumbersColor;
-
 		this->Setup(this->numbers, { this->params.Size, this->params.Size }, { 0, 0 }, this->params.Position, NULL, 0);
 
-		this->numbers->Draw(NULL, color);
+		this->numbers->Draw(NULL, this->RedLineColor(this->params.NumbersColor, this->params.NumbersMaxColor, this->params.NumbersMaxThreshold));
 	}
 
 	void DrawBackground()
@@ -193,11 +182,35 @@ private:
 			val2 = this->params.Value;
 		}
 
+		if (!this->params.CanBeNegative && val2 < 0)
+		{
+			val2 = 0;
+		}
+
 		float a2 = step * val2 + this->params.ArrowMinAngle;
+
+		if (a1 > a2)
+		{
+			swap(a1, a2);
+		}
 
 		this->arrowMasked->SetupMask({ 0.5f, 0.5f }, a1, a2, this->params.ArrowMaskedColor1, this->params.ArrowMaskedColor2);
 
-		this->arrowMasked->Draw(NULL, this->params.ArrowMaskedColor);
+		this->arrowMasked->Draw(NULL, this->RedLineColor(this->params.ArrowMaskedColor, this->params.ArrowMaskedMaxColor, this->params.ArrowMaskedMaxThreshold));
+	}
+
+	D3DCOLOR RedLineColor(D3DCOLOR originalColor, D3DCOLOR redlineColor, float threshold)
+	{
+		float rpm = this->params.GetArrowValue();
+		float redline = rpm;
+		if (this->params.GetMaxValue != NULL)
+		{
+			redline = this->params.GetMaxValue();
+		}
+
+		return (threshold > 0) && (redline - rpm < threshold)
+			? redlineColor
+			: originalColor;
 	}
 
 public:
