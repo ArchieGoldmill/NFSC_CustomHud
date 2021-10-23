@@ -1,9 +1,9 @@
 #pragma once
-#include "GameApi.h"
+#include "BaseGame.h"
 
 namespace Game
 {
-	class Carbon : public Api
+	class Carbon : public BaseGame
 	{
 	public:
 		Carbon();

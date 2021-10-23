@@ -12,6 +12,7 @@ namespace Global
 	void Init();
 	bool CarHasHud(std::string name);
 	bool ShowVanilla();
+	bool IsFileExist(std::string path);
 	extern std::string CurrentCar;
 	extern bool CarHasHUD;
 	extern float DeltaTime;

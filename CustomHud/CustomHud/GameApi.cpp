@@ -39,6 +39,11 @@ namespace Game
 		return Current->IsNosInstalled();
 	}
 
+	bool IsSpeedBreakerInstalled()
+	{
+		return Current->IsSpeedBreakerInstalled();
+	}
+
 	float GetSpeedBreaker()
 	{
 		return Current->GetSpeedBreaker();

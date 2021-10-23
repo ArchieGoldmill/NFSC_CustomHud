@@ -30,6 +30,15 @@
     <Filter Include="HUD\MirrorHook">
       <UniqueIdentifier>{414d04cd-b8f7-4490-a76c-108e3c5eacec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Games\MostWantedOnline">
+      <UniqueIdentifier>{a6e6509f-f6d5-41a8-a8b8-a1a3f38ba2ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\BaseGame">
+      <UniqueIdentifier>{380de0f4-101c-497b-85d4-41b5ab33d8f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hooks">
+      <UniqueIdentifier>{e63e7e17-9e4d-4013-8b99-972e5bb7dd23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HUD_Gauge.h">
@@ -92,6 +101,15 @@
     <ClInclude Include="HUD_Digital.h">
       <Filter>HUD\HUD_Elements</Filter>
     </ClInclude>
+    <ClInclude Include="MostWantedOnline.h">
+      <Filter>Games\MostWantedOnline</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseGame.h">
+      <Filter>Games\BaseGame</Filter>
+    </ClInclude>
+    <ClInclude Include="Hooks.h">
+      <Filter>Hooks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -108,6 +126,15 @@
     </ClCompile>
     <ClCompile Include="MostWanted.cpp">
       <Filter>Games\MostWanted</Filter>
+    </ClCompile>
+    <ClCompile Include="MostWantedOnline.cpp">
+      <Filter>Games\MostWantedOnline</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseGame.cpp">
+      <Filter>Games\BaseGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Hooks.cpp">
+      <Filter>Hooks</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

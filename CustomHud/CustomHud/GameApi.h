@@ -8,11 +8,13 @@ namespace Game
 	{
 	public:
 		virtual int Device() = 0;
+		virtual void Detour() = 0;
 
 		virtual float GetBoost() = 0;
 		virtual bool IsBoostInstalled() = 0;
 		virtual float GetNos() = 0;
 		virtual bool IsNosInstalled() = 0;
+		virtual bool IsSpeedBreakerInstalled() = 0;
 		virtual float GetSpeedBreaker() = 0;
 		virtual float GetSpeed() = 0;
 		virtual bool IsHudVisible() = 0;
@@ -28,6 +30,7 @@ namespace Game
 	bool IsBoostInstalled();
 	float GetNos();
 	bool IsNosInstalled();
+	bool IsSpeedBreakerInstalled();
 	float GetSpeedBreaker();
 	float GetSpeed();
 	bool IsHudVisible();

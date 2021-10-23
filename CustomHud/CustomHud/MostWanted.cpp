@@ -2,7 +2,7 @@
 #include "injector/injector.hpp"
 #include "Globals.h"
 
-namespace MWApi
+namespace Game::MostWantedApi
 {
 	void** PVehicle = (void**)0x0092CD28;
 	int FEDatabase = 0x0091CF90;
@@ -40,17 +40,13 @@ namespace MWApi
 		return (void*)GetPtr(offsets, 4);
 	}
 
-	bool showHud = true;
-
-	__int64 __fastcall DetermineHudFeatures(void* _this, int v1, int v2)
+	__int64 __fastcall AfterDetermineHudFeatures(void* _this, int param, __int64 result)
 	{
-		__int64 result = FEngHud_DetermineHudFeatures(_this, v2);
-
-		showHud = GetBit(result, 1) && FEngHud_IsHudVisible(_this);
+		MostWanted::ShowHud = GetBit(result, 1) && FEngHud_IsHudVisible(_this);
 
 		if ((!Global::HUDParams.ReplaceDragHud && IsDragRace()))
 		{
-			showHud = false;
+			MostWanted::ShowHud = false;
 			return result;
 		}
 
@@ -68,6 +64,13 @@ namespace MWApi
 		return result;
 	}
 
+	__int64 __fastcall DetermineHudFeatures(void* _this, int param, int v2)
+	{
+		__int64 result = FEngHud_DetermineHudFeatures(_this, v2);
+
+		return AfterDetermineHudFeatures(_this, param, result);
+	}
+
 	void __declspec(naked) HideEverySingleHudCave()
 	{
 		static constexpr auto Exit = 0x0057D0F5;
@@ -76,7 +79,7 @@ namespace MWApi
 		{
 			mov eax, 0x0092FD94;
 			mov eax, [eax];
-			mov showHud, 0;
+			mov MostWanted::ShowHud, 0;
 			jmp Exit;
 		}
 	}
@@ -86,8 +89,13 @@ namespace Game
 {
 	MostWanted::MostWanted()
 	{
-		injector::MakeCALL(0x0058CA50, MWApi::DetermineHudFeatures, true);
-		injector::MakeJMP(0x0057D0F0, MWApi::HideEverySingleHudCave, true);
+		injector::MakeCALL(0x0058CA50, MostWantedApi::DetermineHudFeatures, true);
+		this->HookHideEverySingleHud();
+	}
+
+	void MostWanted::HookHideEverySingleHud()
+	{
+		injector::MakeJMP(0x0057D0F0, MostWantedApi::HideEverySingleHudCave, true);
 	}
 
 	int MostWanted::Device()
@@ -98,10 +106,10 @@ namespace Game
 	float MostWanted::GetBoost()
 	{
 		float res = 0.0f;
-		void* ptr = MWApi::GetEnginePtr2();
+		void* ptr = MostWantedApi::GetEnginePtr2();
 		if (ptr)
 		{
-			res = MWApi::EngineRacer_GetInductionPSI(ptr);
+			res = MostWantedApi::EngineRacer_GetInductionPSI(ptr);
 		}
 
 		return res;
@@ -111,10 +119,10 @@ namespace Game
 	{
 		bool res = false;
 
-		void* ptr = MWApi::GetEnginePtr2();
+		void* ptr = MostWantedApi::GetEnginePtr2();
 		if (ptr)
 		{
-			res = MWApi::EngineRacer_InductionType(ptr) > 0;
+			res = MostWantedApi::EngineRacer_InductionType(ptr) > 0;
 		}
 
 		return res;
@@ -123,10 +131,10 @@ namespace Game
 	float MostWanted::GetNos()
 	{
 		float res = 0;
-		auto ptr = (char*)MWApi::GetEnginePtr();
+		auto ptr = (char*)MostWantedApi::GetEnginePtr();
 		if (ptr)
 		{
-			res = MWApi::EngineRacer_GetNOSCapacity(ptr);
+			res = MostWantedApi::EngineRacer_GetNOSCapacity(ptr);
 		}
 
 		return res;
@@ -135,10 +143,10 @@ namespace Game
 	bool MostWanted::IsNosInstalled()
 	{
 		bool res = false;
-		void* ptr = MWApi::GetEnginePtr();
+		void* ptr = MostWantedApi::GetEnginePtr();
 		if (ptr)
 		{
-			return MWApi::EngineRacer_HasNOS(ptr);
+			return MostWantedApi::EngineRacer_HasNOS(ptr);
 		}
 
 		return res;
@@ -160,9 +168,9 @@ namespace Game
 	float MostWanted::GetSpeed()
 	{
 		float speed = 0.0f;
-		if (*MWApi::PVehicle)
+		if (*MostWantedApi::PVehicle)
 		{
-			speed = MWApi::PVehicle_GetSpeed(*MWApi::PVehicle);
+			speed = MostWantedApi::PVehicle_GetSpeed(*MostWantedApi::PVehicle);
 			speed = LocalizeSpeed(speed);
 		}
 
@@ -171,16 +179,16 @@ namespace Game
 
 	bool MostWanted::IsHudVisible()
 	{
-		return MWApi::showHud && *MWApi::HudTable;
+		return MostWanted::ShowHud && *MostWantedApi::HudTable;
 	}
 
 	float MostWanted::GetRPM()
 	{
 		float res = 0;
-		void* ptr = MWApi::GetEnginePtr();
+		void* ptr = MostWantedApi::GetEnginePtr();
 		if (ptr)
 		{
-			res = MWApi::EngineRacer_GetRPM(ptr);
+			res = MostWantedApi::EngineRacer_GetRPM(ptr);
 		}
 
 		return res;
@@ -189,10 +197,10 @@ namespace Game
 	float MostWanted::GetRedline()
 	{
 		float res = 0;
-		void* ptr = MWApi::GetEnginePtr();
+		void* ptr = MostWantedApi::GetEnginePtr();
 		if (ptr)
 		{
-			res = MWApi::EngineRacer_GetRedline(ptr);
+			res = MostWantedApi::EngineRacer_GetRedline(ptr);
 		}
 
 		return res;
@@ -202,10 +210,10 @@ namespace Game
 	{
 		int gear = 0;
 
-		auto ptr = (char*)MWApi::GetEnginePtr(-8);
+		auto ptr = (char*)MostWantedApi::GetEnginePtr(-8);
 		if (ptr)
 		{
-			gear = MWApi::EngineRacer_GetGear(ptr);
+			gear = MostWantedApi::EngineRacer_GetGear(ptr);
 		}
 
 		return gear;
@@ -215,7 +223,7 @@ namespace Game
 	{
 		bool res = false;
 
-		unsigned int offsets[] = { MWApi::FEDatabase, 0x10, 0x3b };
+		unsigned int offsets[] = { MostWantedApi::FEDatabase, 0x10, 0x3b };
 		char* ptr = (char*)GetPtr(offsets, 3);
 		if (ptr)
 		{
@@ -233,11 +241,11 @@ namespace Game
 
 		if (isRaceStarting && *isRaceStarting == 1)
 		{
-			auto ptr = (char*)MWApi::GetEnginePtr(0x1C);
+			auto ptr = (char*)MostWantedApi::GetEnginePtr(0x1C);
 			if (ptr)
 			{
 				float range;
-				float min = MWApi::EngineRacer_GetPerfectLaunchRange(ptr, &range);
+				float min = MostWantedApi::EngineRacer_GetPerfectLaunchRange(ptr, &range);
 				float max = min + range;
 				float rpm = this->GetRPM();
 				res = rpm >= min && rpm <= max;

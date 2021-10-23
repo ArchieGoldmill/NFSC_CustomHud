@@ -114,8 +114,8 @@ copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Carbon\scripts"  /y
 copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
 copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
 
-copy "$(TargetDir)*.asi" "D:\Games\Need for Speed Undercover\scripts"  /y
-copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Command>
+copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Most Wanted Online\scripts"  /y
+copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Most Wanted Online\scripts"  /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -164,8 +164,8 @@ copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Carbon\scripts"  /y
 copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
 copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
 
-copy "$(TargetDir)*.asi" "D:\Games\Need for Speed Undercover\scripts"  /y
-copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Command>
+copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Most Wanted Online\scripts"  /y
+copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Most Wanted Online\scripts"  /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -189,11 +189,13 @@ copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Comma
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BaseGame.h" />
     <ClInclude Include="Carbon.h" />
     <ClInclude Include="CarHud.h" />
     <ClInclude Include="CircleSprite.h" />
     <ClInclude Include="GameApi.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Hooks.h" />
     <ClInclude Include="HUD_Digit.h" />
     <ClInclude Include="HUD_Digital.h" />
     <ClInclude Include="HUD_Element.h" />
@@ -207,15 +209,19 @@ copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Comma
     <ClInclude Include="MirrorHook\MemoryEditor\MemoryEditor.hpp" />
     <ClInclude Include="MirrorHook\WndProc\WndProcExtender.hpp" />
     <ClInclude Include="MostWanted.h" />
+    <ClInclude Include="MostWantedOnline.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextureStateManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BaseGame.cpp" />
     <ClCompile Include="Carbon.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="GameApi.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="MostWanted.cpp" />
+    <ClCompile Include="MostWantedOnline.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

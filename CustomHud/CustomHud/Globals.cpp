@@ -17,6 +17,14 @@ namespace Global
 
 	bool IsFileExist(std::string path)
 	{
+		char buffer[MAX_PATH];
+		HMODULE hm = NULL;
+		GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, NULL, &hm);
+		GetModuleFileNameA(hm, buffer, sizeof(buffer));
+
+		std::string modulePath = buffer;
+		path = modulePath.substr(0, modulePath.rfind('\\') + 1) + path;
+
 		ifstream f(path.c_str());
 		bool isGood = f.good();
 		f.close();

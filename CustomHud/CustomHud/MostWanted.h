@@ -1,10 +1,17 @@
 #pragma once
-#include "GameApi.h"
+#include "BaseGame.h"
+
+namespace Game::MostWantedApi
+{
+	__int64 __fastcall AfterDetermineHudFeatures(void* _this, int param, __int64 result);
+}
 
 namespace Game
 {
-	class MostWanted : public Api
+	class MostWanted : public BaseGame
 	{
+	protected:
+		void HookHideEverySingleHud();
 	public:
 		MostWanted();
 
