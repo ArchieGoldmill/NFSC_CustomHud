@@ -10,6 +10,7 @@ namespace Game
 		virtual int Device() = 0;
 		virtual void Detour() = 0;
 
+		virtual float GetShake() = 0;
 		virtual float GetBoost() = 0;
 		virtual bool IsBoostInstalled() = 0;
 		virtual float GetNos() = 0;
@@ -26,6 +27,7 @@ namespace Game
 		virtual std::string GetCarName() = 0;
 	};
 
+	float GetShake();
 	float GetBoost();
 	bool IsBoostInstalled();
 	float GetNos();

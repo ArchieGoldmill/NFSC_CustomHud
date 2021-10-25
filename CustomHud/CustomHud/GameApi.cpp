@@ -5,6 +5,11 @@ namespace Game
 {
 	Api* Current;
 
+	float GetShake()
+	{
+		return Current->GetShake();
+	}
+
 	float GetBoost()
 	{
 		float res = Current->GetBoost();

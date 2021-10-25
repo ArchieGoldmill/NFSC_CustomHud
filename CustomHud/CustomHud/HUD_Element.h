@@ -2,6 +2,7 @@
 #include <string>
 #include "Sprite.h"
 #include "Globals.h"
+#include "GameApi.h"
 
 #define degToRad(angleDegrees) ((angleDegrees) * M_PI / 180.0)
 #define radToDeg(angleRadians) ((angleRadians) * 180.0 / M_PI)
@@ -57,6 +58,8 @@ protected:
 		position.x = wndSize.Width - offset.x - positionOffset.x - Global::HUDParams.Offset.x;
 		position.y = wndSize.Height - offset.y - positionOffset.y - Global::HUDParams.Offset.y;
 
+		this->ApplyShake(position);
+
 		D3DXMATRIX matrix;
 		D3DXMatrixTransformation2D(&matrix, NULL, NULL, &scale, &center, degToRad(rotation), &position);
 		sprite->SetTransform(matrix);
@@ -69,5 +72,19 @@ private:
 		this->pDevice->GetViewport(&viewprot);
 
 		return viewprot;
+	}
+
+	void ApplyShake(D3DXVECTOR2& position)
+	{
+		if (Global::HUDParams.ShakeAmount)
+		{
+			float shake = Game::GetShake();
+			if (shake)
+			{
+				shake *= Global::HUDParams.ShakeAmount;
+				position.x += shake;
+				position.y += shake;
+			}
+		}
 	}
 };

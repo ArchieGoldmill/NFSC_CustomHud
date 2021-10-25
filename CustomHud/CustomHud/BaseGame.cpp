@@ -29,6 +29,11 @@ namespace Game
 		}
 	}
 
+	float BaseGame::GetShake()
+	{
+		return 0;
+	}
+
 	bool BaseGame::IsSpeedBreakerInstalled()
 	{
 		return true;

@@ -9,6 +9,7 @@ namespace Game
 		Carbon();
 
 		int Device();
+		float GetShake();
 		float GetBoost();
 		bool IsBoostInstalled();
 		float GetNos();

@@ -59,6 +59,15 @@ namespace Game::CarbonApi
 
 		return result;
 	}
+
+	double Shake = 0;
+	auto Game_FEngHud_UpdateShake = (double(__thiscall*)(void* _this, float a2))0x005D53A0;
+	double __fastcall FEngHud_UpdateShake(void* _this, int param, float a2)
+	{
+		Shake = Game_FEngHud_UpdateShake(_this, a2);
+
+		return Shake;
+	}
 }
 
 namespace Game
@@ -66,11 +75,17 @@ namespace Game
 	Carbon::Carbon()
 	{
 		injector::MakeCALL(0x005E6F7B, CarbonApi::DetermineHudFeatures, true);
+		injector::MakeCALL(0x005E6FC6, CarbonApi::FEngHud_UpdateShake, true);
 	}
 
 	int Carbon::Device()
 	{
 		return 0x00AB0ABC;
+	}
+
+	float Carbon::GetShake()
+	{
+		return 1.0 - CarbonApi::Shake;
 	}
 
 	float Carbon::GetBoost()

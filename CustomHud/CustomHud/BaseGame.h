@@ -8,6 +8,7 @@ namespace Game
 	public:
 		static bool ShowHud;
 
+		float GetShake();
 		void Detour();
 		bool IsSpeedBreakerInstalled();
 	};

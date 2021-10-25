@@ -64,6 +64,8 @@ namespace Global
 		HUDParams.ShowDebugInfo = main_ini.ReadInteger((char*)"GENERAL", (char*)"ShowDebugInfo", 0);
 		HUDParams.CustomCarHUDs = main_ini.ReadInteger((char*)"GENERAL", (char*)"CustomCarHUDs", 0);
 
+		HUDParams.ShakeAmount = main_ini.ReadFloat((char*)"CARBON", (char*)"ShakeAmount", 0);
+
 		HUDParams.ReplaceDragHud = main_ini.ReadInteger((char*)"MOST_WANTED", (char*)"ReplaceDragHud", 0);
 
 		std::string iniPath;

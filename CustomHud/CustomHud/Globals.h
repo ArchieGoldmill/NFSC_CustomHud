@@ -295,6 +295,7 @@ public:
 	int HotReloadKey;
 	bool ShowDebugInfo;
 	int CustomCarHUDs;
+	float ShakeAmount;
 
 	void Init(CIniReader& ini)
 	{
