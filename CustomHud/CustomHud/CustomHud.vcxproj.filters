@@ -110,6 +110,9 @@
     <ClInclude Include="Hooks.h">
       <Filter>Hooks</Filter>
     </ClInclude>
+    <ClInclude Include="HUD_Static.h">
+      <Filter>HUD\HUD_Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

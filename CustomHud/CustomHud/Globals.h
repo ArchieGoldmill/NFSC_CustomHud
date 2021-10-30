@@ -59,18 +59,32 @@ public:
 	}
 };
 
+class HUD_Static_Params : public HUD_Element_Params
+{
+public:
+	std::string Texture;
+	bool TextureBlendMode;
+
+	void Init(CIniReader& ini, char* category)
+	{
+		HUD_Element_Params::Init(ini, category);
+		this->Texture = this->ReadTexturePath(ini, category, "Texture");
+		this->TextureBlendMode = ini.ReadInteger(category, (char*)"TextureBlendMode", 0);
+	}
+};
+
 class HUD_ShiftIcon_Params : public HUD_Element_Params
 {
 public:
 	std::string IconTexture;
 	int BlinkMode;
-	bool IconTexturBlendMode;
+	bool IconTextureBlendMode;
 
 	void Init(CIniReader& ini, char* category)
 	{
 		HUD_Element_Params::Init(ini, category);
 		this->IconTexture = this->ReadTexturePath(ini, category, "IconTexture");
-		this->IconTexturBlendMode = ini.ReadInteger(category, (char*)"IconTexturBlendMode", 0);
+		this->IconTextureBlendMode = ini.ReadInteger(category, (char*)"IconTextureBlendMode", 0);
 		this->BlinkMode = ini.ReadInteger(category, (char*)"BlinkMode", 0);
 	}
 };
@@ -124,7 +138,7 @@ public:
 	bool BackgroundTextureBlendMode;
 
 	float Value;
-	bool Direction;
+	int Direction;
 	FloatValueCallback* GetValue;
 	BoolValueCallback* IsInstalled;
 
@@ -273,6 +287,7 @@ public:
 class HUD_Params
 {
 public:
+	HUD_Static_Params Background;
 	HUD_Gauge_Params TachometerGauge;
 	HUD_Gauge_Params SpeedometerGauge;
 	HUD_Gauge_Params NosGauge;
@@ -299,6 +314,7 @@ public:
 
 	void Init(CIniReader& ini)
 	{
+		this->Background.Init(ini, (char*)"BACKGROUND");
 		this->TachometerGauge.Init(ini, (char*)"TACHOMETER_GAUGE");
 		this->TachometerDigital.Init(ini, (char*)"TACHOMETER_DIGITAL");
 		this->TachometerLiniar.Init(ini, (char*)"TACHOMETER_LINIAR");

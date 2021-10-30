@@ -203,6 +203,7 @@ copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Most Wanted Online\scripts" 
     <ClInclude Include="HUD_Gauge.h" />
     <ClInclude Include="HUD_ShiftIcon.h" />
     <ClInclude Include="HUD_SpeedometerDigital.h" />
+    <ClInclude Include="HUD_Static.h" />
     <ClInclude Include="HUD_TachometerDigital.h" />
     <ClInclude Include="HUD_Units.h" />
     <ClInclude Include="MirrorHook\D3D9\D3D9Extender.hpp" />

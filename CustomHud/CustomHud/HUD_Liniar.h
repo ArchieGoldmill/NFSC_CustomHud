@@ -65,20 +65,25 @@ public:
 
 		D3DXVECTOR2 texSize = size;
 		RECT rect;
-		if (this->params.Direction)
+		float fill = val / this->params.Value;
+		if (this->params.Direction == 2)
 		{
-			float fill = val / this->params.Value;
-
+			rect.left = this->texture->Info.Width * (this->params.Value - fill);
+			rect.bottom = this->texture->Info.Height;
+			rect.right = this->texture->Info.Width;
+			rect.top = 0;
+			texSize.x *= fill;
+		}
+		else if (this->params.Direction == 1)
+		{
 			rect.left = 0;
 			rect.bottom = this->texture->Info.Height;
 			rect.right = this->texture->Info.Width;
-			rect.top = this->texture->Info.Height * (1.0f - fill);
+			rect.top = this->texture->Info.Height * (this->params.Value - fill);
 			texSize.y *= fill;
 		}
 		else
 		{
-			float fill = val / this->params.Value;
-
 			rect.left = 0;
 			rect.bottom = this->texture->Info.Height;
 			rect.right = this->texture->Info.Width * fill;

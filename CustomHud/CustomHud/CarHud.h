@@ -12,6 +12,7 @@
 #include "HUD_Units.h"
 #include "GameApi.h"
 #include "HUD_ShiftIcon.h"
+#include "HUD_Static.h"
 
 using namespace std;
 
@@ -21,6 +22,7 @@ private:
 	LPDIRECT3DDEVICE9 pDevice;
 	TextureStateManager* tsm;
 
+	HUD_Static* Background = NULL;
 	HUD_Gauge* TachometerGauge = NULL;
 	HUD_TachometerDigital* TachometerDigital = NULL;
 	HUD_Liniar* TachometerLiniar = NULL;
@@ -43,6 +45,11 @@ public:
 
 		try
 		{
+			if (Global::HUDParams.TachometerGauge.Enabled)
+			{
+				this->Background = new HUD_Static(pDevice, Global::HUDParams.Background);
+			}
+
 			if (Global::HUDParams.TachometerGauge.Enabled)
 			{
 				Global::HUDParams.TachometerGauge.GetArrowValue = Game::GetRPM;
@@ -169,6 +176,11 @@ public:
 			this->tsm->SetTextureStageState(i, D3DTSS_CONSTANT);
 		}
 
+		if (this->Background)
+		{
+			this->Background->Draw();
+		}
+
 		if (this->TachometerGauge)
 		{
 			this->TachometerGauge->Draw();
@@ -252,6 +264,11 @@ public:
 
 	~HUD()
 	{
+		if (this->Background)
+		{
+			delete this->Background;
+		}
+
 		if (this->TachometerGauge)
 		{
 			delete this->TachometerGauge;

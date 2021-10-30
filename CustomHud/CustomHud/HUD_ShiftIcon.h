@@ -21,8 +21,7 @@ public:
 
 		if (!this->params.IconTexture.empty())
 		{
-			this->texture = new Sprite(pDevice, this->params.IconTexture, this->params.IconTexturBlendMode, D3DXVECTOR2(0, 0));
-			this->Setup(this->texture, { this->params.Size, this->params.Size }, { 0, 0 }, this->params.Position, NULL, 0);
+			this->texture = new Sprite(pDevice, this->params.IconTexture, this->params.IconTextureBlendMode, D3DXVECTOR2(0, 0));
 		}
 	}
 
@@ -32,6 +31,8 @@ public:
 		{
 			return;
 		}
+
+		this->Setup(this->texture, { this->params.Size, this->params.Size }, { 0, 0 }, this->params.Position, NULL, 0);
 
 		if (Game::GetRPM() + 0.5f >= Game::GetRedline())
 		{
