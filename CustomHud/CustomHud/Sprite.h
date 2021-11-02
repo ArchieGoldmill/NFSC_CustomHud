@@ -7,6 +7,11 @@
 
 using namespace std;
 
+union _D3DCOLOR {
+	D3DCOLOR Color;
+	unsigned char Bytes[4];
+};
+
 class Sprite
 {
 private:

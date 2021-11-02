@@ -2,13 +2,8 @@
 #include "HUD_Element.h"
 #include "GameApi.h"
 
-union _D3DCOLOR {
-	D3DCOLOR Color;
-	unsigned char Bytes[4];
-};
-
-class HUD_ShiftIcon : HUD_Element {
-
+class HUD_ShiftIcon : HUD_Element
+{
 private:
 	HUD_ShiftIcon_Params params;
 	Sprite* texture = NULL;
@@ -47,30 +42,30 @@ public:
 
 				if (this->params.BlinkMode == 1)
 				{
-					if (this->counter > 1000)
+					if (this->counter > 1)
 					{
 						this->counter = 0;
 					}
 
-					if (this->counter > 500)
+					if (this->counter > 0.5f)
 					{
 						this->texture->Draw(NULL, this->params.Color);
 					}
 				}
 				else if (this->params.BlinkMode == 2)
 				{
-					if (this->counter > 500)
+					if (this->counter > 0.5f)
 					{
 						this->counter = 0;
 					}
 
-					int val = this->counter;
-					if (val > 250)
+					float val = this->counter;
+					if (val > 0.25f)
 					{
-						val = 500 - val;
+						val = 0.5f - val;
 					}
 
-					char alpha = val / 500.0f * 256;
+					char alpha = val / 0.5f * 256;
 
 					_D3DCOLOR color;
 					color.Color = this->params.Color;

@@ -1,8 +1,9 @@
 #pragma once
 #include "HUD_Element.h"
+#include "HUD_Hidable.h"
 #include "CircleSprite.h"
 
-class HUD_Gauge : HUD_Element
+class HUD_Gauge : HUD_Element, HUD_Hidable
 {
 private:
 	Sprite* numbers = NULL;
@@ -14,7 +15,7 @@ private:
 	HUD_Gauge_Params params;
 
 public:
-	HUD_Gauge(LPDIRECT3DDEVICE9 pDevice, HUD_Gauge_Params& params) : HUD_Element(pDevice)
+	HUD_Gauge(LPDIRECT3DDEVICE9 pDevice, HUD_Gauge_Params& params) : HUD_Element(pDevice), HUD_Hidable(params.GetArrowValue, !params.HideOnMaxValue, params.Value)
 	{
 		this->pDevice = pDevice;
 		this->params = params;
@@ -49,6 +50,11 @@ public:
 	{
 		if (this->IsInstalled())
 		{
+			if (this->params.HideOnMaxValue)
+			{
+				this->CalculateOpacity();
+			}
+
 			this->DrawBackground();
 			this->DrawArrowMasked();
 			this->DrawNumbers();
@@ -111,7 +117,7 @@ private:
 
 		this->Setup(this->numbers, { this->params.Size, this->params.Size }, { 0, 0 }, this->params.Position, NULL, 0);
 
-		this->numbers->Draw(NULL, this->RedLineColor(this->params.NumbersColor, this->params.NumbersMaxColor, this->params.NumbersMaxThreshold));
+		this->numbers->Draw(NULL, this->SetOpacity(this->RedLineColor(this->params.NumbersColor, this->params.NumbersMaxColor, this->params.NumbersMaxThreshold)));
 	}
 
 	void DrawBackground()
@@ -123,7 +129,7 @@ private:
 
 		this->Setup(this->background, { this->params.Size, this->params.Size }, { 0, 0 }, this->params.Position, NULL, 0);
 
-		this->background->Draw(NULL, this->params.BackgroundColor);
+		this->background->Draw(NULL, this->SetOpacity(this->params.BackgroundColor));
 	}
 
 	void DrawNumbersMasked()
@@ -155,7 +161,7 @@ private:
 
 		this->masked->SetupMask({ 0.5f, 0.5f }, a1, a2, this->params.NumbersMaskedColor1, this->params.NumbersMaskedColor2);
 
-		this->masked->Draw(NULL, this->params.NumbersMaskedColor);
+		this->masked->Draw(NULL, this->SetOpacity(this->params.NumbersMaskedColor));
 	}
 
 	void DrawArrowMasked()
@@ -196,7 +202,7 @@ private:
 
 		this->arrowMasked->SetupMask({ 0.5f, 0.5f }, a1, a2, this->params.ArrowMaskedColor1, this->params.ArrowMaskedColor2);
 
-		this->arrowMasked->Draw(NULL, this->RedLineColor(this->params.ArrowMaskedColor, this->params.ArrowMaskedMaxColor, this->params.ArrowMaskedMaxThreshold));
+		this->arrowMasked->Draw(NULL, this->SetOpacity(this->RedLineColor(this->params.ArrowMaskedColor, this->params.ArrowMaskedMaxColor, this->params.ArrowMaskedMaxThreshold)));
 	}
 
 	D3DCOLOR RedLineColor(D3DCOLOR originalColor, D3DCOLOR redlineColor, float threshold)
@@ -265,6 +271,6 @@ public:
 			}
 		}
 
-		this->arrow->Draw(NULL, color);
+		this->arrow->Draw(NULL, this->SetOpacity(color));
 	}
 };

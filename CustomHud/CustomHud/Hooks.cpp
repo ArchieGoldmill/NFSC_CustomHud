@@ -100,7 +100,7 @@ void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 	}
 
 	auto now = chrono::steady_clock::now();
-	Global::DeltaTime = chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1000.0f;
+	Global::DeltaTime = chrono::duration_cast<std::chrono::milliseconds>(now - start).count() / 1000.0f;
 	start = chrono::steady_clock::now();
 
 	if (Global::HUDParams.ShowDebugInfo)

@@ -190,6 +190,8 @@ public:
 	float Value;
 	bool CanBeNegative;
 
+	bool HideOnMaxValue;
+
 	float ArrowMinAngle;
 	float ArrowMaxAngle;
 	float ArrowMaskedSize;
@@ -280,6 +282,7 @@ public:
 			this->BackgroundTextureBlendMode = ini.ReadInteger(category, (char*)"BackgroundTextureBlendMode", 0);
 
 			this->CanBeNegative = ini.ReadInteger(category, (char*)"CanBeNegative", 1);
+			this->HideOnMaxValue = ini.ReadInteger(category, (char*)"HideOnMaxValue", 0) == 1;
 		}
 	}
 };

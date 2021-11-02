@@ -99,8 +99,8 @@ public:
 
 			if (Global::HUDParams.NosGauge.Enabled)
 			{
-				Global::HUDParams.NosGauge.GetMaskValue1 = []() {return 0.0f; };
-				Global::HUDParams.NosGauge.GetMaskValue2 = Game::GetNos;
+				Global::HUDParams.NosGauge.GetArrowMaskValue1 = []() {return 0.0f; };
+				Global::HUDParams.NosGauge.GetArrowMaskValue2 = Game::GetNos;
 				Global::HUDParams.NosGauge.GetArrowValue = Game::GetNos;
 				Global::HUDParams.NosGauge.IsInstalled = Game::IsNosInstalled;
 				this->NosGauge = new HUD_Gauge(pDevice, Global::HUDParams.NosGauge);
@@ -115,8 +115,8 @@ public:
 
 			if (Global::HUDParams.SpeedBreakGauge.Enabled)
 			{
-				Global::HUDParams.SpeedBreakGauge.GetMaskValue1 = []() {return 0.0f; };
-				Global::HUDParams.SpeedBreakGauge.GetMaskValue2 = Game::GetSpeedBreaker;
+				Global::HUDParams.SpeedBreakGauge.GetArrowMaskValue1 = []() {return 0.0f; };
+				Global::HUDParams.SpeedBreakGauge.GetArrowMaskValue2 = Game::GetSpeedBreaker;
 				Global::HUDParams.SpeedBreakGauge.GetArrowValue = Game::GetSpeedBreaker;
 				Global::HUDParams.SpeedBreakGauge.IsInstalled = Game::IsSpeedBreakerInstalled;
 				this->SpeedBreakGauge = new HUD_Gauge(pDevice, Global::HUDParams.SpeedBreakGauge);

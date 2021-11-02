@@ -21,9 +21,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="HUD\HUD_Elements">
-      <UniqueIdentifier>{e2a701d6-3433-4d29-b13a-0673d484c20e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="HUD\Sprites">
       <UniqueIdentifier>{40ab7874-a16c-47f6-bbb9-03b1f0d654db}</UniqueIdentifier>
     </Filter>
@@ -39,19 +36,28 @@
     <Filter Include="Hooks">
       <UniqueIdentifier>{e63e7e17-9e4d-4013-8b99-972e5bb7dd23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HUD\Types">
+      <UniqueIdentifier>{2c31dcbe-4f8a-41be-8578-d54585e3471e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HUD\Elements">
+      <UniqueIdentifier>{e2a701d6-3433-4d29-b13a-0673d484c20e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\Undercover">
+      <UniqueIdentifier>{e1b0dda5-16be-4c05-b085-0a52c12feb05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HUD_Gauge.h">
-      <Filter>HUD\HUD_Elements</Filter>
+      <Filter>HUD\Elements</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Element.h">
-      <Filter>HUD\HUD_Elements</Filter>
+      <Filter>HUD\Elements</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Digit.h">
-      <Filter>HUD\HUD_Elements</Filter>
+      <Filter>HUD\Elements</Filter>
     </ClInclude>
     <ClInclude Include="HUD_SpeedometerDigital.h">
-      <Filter>HUD\HUD_Elements</Filter>
+      <Filter>HUD\Elements</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>HUD\Sprites</Filter>
@@ -63,7 +69,7 @@
       <Filter>HUD</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Liniar.h">
-      <Filter>HUD\HUD_Elements</Filter>
+      <Filter>HUD\Elements</Filter>
     </ClInclude>
     <ClInclude Include="MirrorHook\WndProc\WndProcExtender.hpp">
       <Filter>HUD\MirrorHook</Filter>
@@ -90,16 +96,16 @@
       <Filter>Games\MostWanted</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Units.h">
-      <Filter>HUD\HUD_Elements</Filter>
+      <Filter>HUD\Elements</Filter>
     </ClInclude>
     <ClInclude Include="HUD_ShiftIcon.h">
-      <Filter>HUD\HUD_Elements</Filter>
+      <Filter>HUD\Elements</Filter>
     </ClInclude>
     <ClInclude Include="HUD_TachometerDigital.h">
-      <Filter>HUD\HUD_Elements</Filter>
+      <Filter>HUD\Elements</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Digital.h">
-      <Filter>HUD\HUD_Elements</Filter>
+      <Filter>HUD\Elements</Filter>
     </ClInclude>
     <ClInclude Include="MostWantedOnline.h">
       <Filter>Games\MostWantedOnline</Filter>
@@ -111,7 +117,13 @@
       <Filter>Hooks</Filter>
     </ClInclude>
     <ClInclude Include="HUD_Static.h">
-      <Filter>HUD\HUD_Elements</Filter>
+      <Filter>HUD\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD_Hidable.h">
+      <Filter>HUD\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Undercover.h">
+      <Filter>Games\Undercover</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +150,9 @@
     </ClCompile>
     <ClCompile Include="Hooks.cpp">
       <Filter>Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="Undercover.cpp">
+      <Filter>Games\Undercover</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

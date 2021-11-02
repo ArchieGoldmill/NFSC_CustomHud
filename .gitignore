@@ -339,6 +339,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-**/Undercover.*
-
 *.rar

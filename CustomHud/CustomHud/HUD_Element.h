@@ -28,11 +28,15 @@ protected:
 		D3DVIEWPORT9 wndSize = GetWindowSize();
 		float wscale = wndSize.Height / 1080.0f * Global::HUDParams.Scale;
 
+		D3DXVECTOR2 offset = rect != NULL ? *rect : targetRes;
+
+		D3DXVECTOR2 position;
+		position.x = wndSize.Width - (offset.x + positionOffset.x + Global::HUDParams.Offset.x) * wscale;
+		position.y = wndSize.Height - (offset.y + positionOffset.y + Global::HUDParams.Offset.y) * wscale;
+		this->ApplyShake(position, wscale);
+
 		targetRes.x *= wscale;
 		targetRes.y *= wscale;
-
-		positionOffset.x *= wscale;
-		positionOffset.y *= wscale;
 
 		D3DXVECTOR2 scale;
 		scale.x = targetRes.x / sprite->Info.Width;
@@ -41,24 +45,6 @@ protected:
 		D3DXVECTOR2 center;
 		center.x = targetRes.x * centerPercent.x;
 		center.y = targetRes.y * centerPercent.y;
-
-		D3DXVECTOR2 offset;
-		if (rect != NULL)
-		{
-			offset.x = rect->x * wscale;
-			offset.y = rect->y * wscale;
-		}
-		else
-		{
-			offset.x = targetRes.x;
-			offset.y = targetRes.y;
-		}
-
-		D3DXVECTOR2 position;
-		position.x = wndSize.Width - offset.x - positionOffset.x - Global::HUDParams.Offset.x;
-		position.y = wndSize.Height - offset.y - positionOffset.y - Global::HUDParams.Offset.y;
-
-		this->ApplyShake(position);
 
 		D3DXMATRIX matrix;
 		D3DXMatrixTransformation2D(&matrix, NULL, NULL, &scale, &center, degToRad(rotation), &position);
@@ -70,15 +56,14 @@ private:
 	{
 		D3DVIEWPORT9 viewprot;
 		this->pDevice->GetViewport(&viewprot);
-
 		return viewprot;
 	}
 
-	void ApplyShake(D3DXVECTOR2& position)
+	void ApplyShake(D3DXVECTOR2& position, float scale)
 	{
 		if (Global::HUDParams.ShakeAmount)
 		{
-			float shake = Game::GetShake();
+			float shake = Game::GetShake() * scale;
 			if (shake)
 			{
 				shake *= Global::HUDParams.ShakeAmount;
