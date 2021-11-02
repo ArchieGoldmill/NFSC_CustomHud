@@ -1,8 +1,9 @@
 Need for Speed - Custom HUD
 
 Games supported:
-- MostWanted
+- MostWanted (+MWO)
 - Carbon
+- Undercover
 
 Replaces original in-game tachometer, speedometer and some other HUD elements.
 
@@ -11,7 +12,7 @@ Installation:
 - Use CustomHud.ini to change HUD style(note available stlyles in "scripts\CustomHUD" folder or try creating your own).
 
 Original idea goes to SpeedyHeart.
-Thanks to SpeedyHeart, berkayylmao, rx, Red_Fire and MrAdam for help.
+Thanks to SpeedyHeart, berkayylmao, rx, Red_Fire, MrAdam, elaymm4 and Tekizyte for help.
 
 Made by Archie
 
