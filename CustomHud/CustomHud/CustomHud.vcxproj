@@ -75,6 +75,7 @@
     <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetExt>.asi</TargetExt>
+    <OutDir>..\..\..\..\..\Games\Need for Speed - Carbon\_game\scripts</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -84,6 +85,7 @@
     <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetExt>.asi</TargetExt>
+    <OutDir>..\..\..\..\..\Games\Need for Speed - Carbon\_game\scripts</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -108,17 +110,8 @@
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Carbon\scripts"  /y
-copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Carbon\scripts"  /y
-
-copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
-copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
-
-copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Most Wanted Online\scripts"  /y
-copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Most Wanted Online\scripts"  /y
-
-copy "$(TargetDir)*.asi" "D:\Games\Need for Speed Undercover\scripts"  /y
-copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -161,17 +154,8 @@ copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Comma
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Carbon\scripts"  /y
-copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Carbon\scripts"  /y
-
-copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
-copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Most Wanted\scripts"  /y
-
-copy "$(TargetDir)*.asi" "D:\Games\Need for Speed - Most Wanted Online\scripts"  /y
-copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed - Most Wanted Online\scripts"  /y
-
-copy "$(TargetDir)*.asi" "D:\Games\Need for Speed Undercover\scripts"  /y
-copy "$(TargetDir)*.pdb" "D:\Games\Need for Speed Undercover\scripts"  /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

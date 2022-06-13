@@ -56,8 +56,8 @@ public:
 			}
 
 			this->DrawBackground();
-			this->DrawArrowMasked();
 			this->DrawNumbers();
+			this->DrawArrowMasked();
 			this->DrawNumbersMasked();
 		}
 	}
@@ -233,10 +233,10 @@ public:
 			arrowCenterOffset = 1;
 		}
 
-		if (arrowCenterOffset < 0)
-		{
-			arrowCenterOffset = 0;
-		}
+		//if (arrowCenterOffset < 0)
+		//{
+		//	arrowCenterOffset = 0;
+		//}
 
 		D3DXVECTOR2 targetRes;
 		targetRes.x = this->params.Size / 1.4f * this->params.ArrowScale;

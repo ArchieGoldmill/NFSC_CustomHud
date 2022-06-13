@@ -16,7 +16,7 @@ namespace Game
 		IDirect3DDevice9* pDevice = NULL;
 		while (pDevice == NULL)
 		{
-			Sleep(10);
+			Sleep(1000);
 			pDevice = *(IDirect3DDevice9**)Game::Current->Device();
 		}
 

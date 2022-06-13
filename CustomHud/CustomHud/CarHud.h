@@ -20,7 +20,7 @@ class HUD
 {
 private:
 	LPDIRECT3DDEVICE9 pDevice;
-	TextureStateManager* tsm;
+	//TextureStateManager* tsm;
 
 	HUD_Static* Background = NULL;
 	HUD_Gauge* TachometerGauge = NULL;
@@ -41,11 +41,11 @@ public:
 	HUD(LPDIRECT3DDEVICE9 pDevice)
 	{
 		this->pDevice = pDevice;
-		this->tsm = new TextureStateManager(pDevice);
+		//this->tsm = new TextureStateManager(pDevice);
 
 		try
 		{
-			if (Global::HUDParams.TachometerGauge.Enabled)
+			if (Global::HUDParams.Background.Enabled)
 			{
 				this->Background = new HUD_Static(pDevice, Global::HUDParams.Background);
 			}
@@ -153,28 +153,28 @@ public:
 
 	void Draw()
 	{
-		for (int i = 0; i < NUM_TEX; i++)
-		{
-			this->tsm->SetTexture(i);
-			this->tsm->SetTextureStageState(i, D3DTSS_COLOROP);
-			this->tsm->SetTextureStageState(i, D3DTSS_COLORARG1);
-			this->tsm->SetTextureStageState(i, D3DTSS_COLORARG2);
-			this->tsm->SetTextureStageState(i, D3DTSS_ALPHAOP);
-			this->tsm->SetTextureStageState(i, D3DTSS_ALPHAARG1);
-			this->tsm->SetTextureStageState(i, D3DTSS_ALPHAARG2);
-			this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT00);
-			this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT01);
-			this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT10);
-			this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT11);
-			this->tsm->SetTextureStageState(i, D3DTSS_TEXCOORDINDEX);
-			this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVLSCALE);
-			this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVLOFFSET);
-			this->tsm->SetTextureStageState(i, D3DTSS_TEXTURETRANSFORMFLAGS);
-			this->tsm->SetTextureStageState(i, D3DTSS_COLORARG0);
-			this->tsm->SetTextureStageState(i, D3DTSS_ALPHAARG0);
-			this->tsm->SetTextureStageState(i, D3DTSS_RESULTARG);
-			this->tsm->SetTextureStageState(i, D3DTSS_CONSTANT);
-		}
+		//for (int i = 0; i < NUM_TEX; i++)
+		//{
+		//	this->tsm->SetTexture(i);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_COLOROP);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_COLORARG1);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_COLORARG2);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_ALPHAOP);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_ALPHAARG1);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_ALPHAARG2);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT00);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT01);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT10);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT11);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_TEXCOORDINDEX);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVLSCALE);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVLOFFSET);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_TEXTURETRANSFORMFLAGS);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_COLORARG0);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_ALPHAARG0);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_RESULTARG);
+		//	this->tsm->SetTextureStageState(i, D3DTSS_CONSTANT);
+		//}
 
 		if (this->Background)
 		{
@@ -259,7 +259,7 @@ public:
 			this->SpeedometerGauge->DrawArrow();
 		}
 
-		this->tsm->Restore();
+		//this->tsm->Restore();
 	}
 
 	~HUD()
@@ -334,6 +334,6 @@ public:
 			delete this->ShiftIcon;
 		}
 
-		delete this->tsm;
+		//delete this->tsm;
 	}
 };
