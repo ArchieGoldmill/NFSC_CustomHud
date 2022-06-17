@@ -4,69 +4,39 @@
 
 namespace Game::MostWantedApi
 {
-	void** PVehicle = (void**)0x0092CD28;
 	int FEDatabase = 0x0091CF90;
-	int EnginePtr = 0x913E80;
 	char* HudTable = (char*)0x0092FD94;
-	auto PVehicle_GetSpeed = (float(__thiscall*)(void*))0x006881B0;
-	auto EngineRacer_HasNOS = (bool(__thiscall*)(void*))0x006A0430;
-	auto EngineRacer_GetInductionPSI = (float(__thiscall*)(void*))0x006A0520;
-	auto EngineRacer_GetGear = (int(__thiscall*)(void*))0x006A0590;
-	auto EngineRacer_GetRPM = (float(__thiscall*)(void*))0x006A03A0;
-	auto EngineRacer_GetNOSCapacity = (float(__thiscall*)(void*))0x006A03F0;
-	auto EngineRacer_GetRedline = (float(__thiscall*)(void*))0x006A03D0;
-	auto EngineRacer_InductionType = (char(__thiscall*)(void*))0x006A0510;
-	auto EngineRacer_GetPerfectLaunchRange = (float(__thiscall*)(void*, float*))0x006A02F0;
-	auto IsInZone = (int(__thiscall*)(void*, int))0x6702D0;
 	auto FEngHud_IsHudVisible = (bool(__thiscall*)(void*))0x005A0C20;
 	auto FEngHud_DetermineHudFeatures = (__int64(__thiscall*)(void* _this, signed int var1))0x0057CA60;
 	auto IsDragRace = (bool(__stdcall*)())0x004D6150;
 
-	void* GetEnginePtr(int offset = 0)
+	bool IsHudEnabled = false;
+	bool IsNosInstalled = false;
+	bool IsBoostInstalled = false;
+
+	unsigned __int64 __fastcall AfterDetermineHudFeatures(void* _this, int param, unsigned __int64 result)
 	{
-		unsigned int offsets[] = { 0x913E80, 0x8, 0x60, offset };
-		return (void*)GetPtr(offsets, 4);
-	}
+		IsHudEnabled = false;
 
-	void* GetEnginePtr2()
-	{
-		int offset = 0xF4;
-		if (IsDragRace())
+		if (!IsDragRace())
 		{
-			offset = 0xFC;
+			IsHudEnabled = GetBit64(result, 1) && FEngHud_IsHudVisible(_this);
+			IsNosInstalled = GetBit64(result, 11);
+			IsBoostInstalled = GetBit64(result, 17);
+
+			ClearBit64(result, 1);
+			ClearBit64(result, 11); // NOS
+			ClearBit64(result, 17); // Boost
+			ClearBit64(result, 18);
+			ClearBit64(result, 27);
 		}
-
-		unsigned int offsets[] = { 0x009352B0, 0x14, offset, 0 };
-		return (void*)GetPtr(offsets, 4);
-	}
-
-	__int64 __fastcall AfterDetermineHudFeatures(void* _this, int param, __int64 result)
-	{
-		MostWanted::ShowHud = GetBit(result, 1) && FEngHud_IsHudVisible(_this);
-
-		if ((!Global::HUDParams.ReplaceDragHud && IsDragRace()))
-		{
-			MostWanted::ShowHud = false;
-			return result;
-		}
-
-		if (Global::ShowVanilla())
-		{
-			return result;
-		}
-
-		ClearBit(result, 1);
-		ClearBit(result, 11);
-		ClearBit(result, 17);
-		ClearBit(result, 18);
-		ClearBit(result, 27);
 
 		return result;
 	}
 
 	__int64 __fastcall DetermineHudFeatures(void* _this, int param, int v2)
 	{
-		__int64 result = FEngHud_DetermineHudFeatures(_this, v2);
+		unsigned __int64 result = FEngHud_DetermineHudFeatures(_this, v2);
 
 		return AfterDetermineHudFeatures(_this, param, result);
 	}
@@ -79,7 +49,7 @@ namespace Game::MostWantedApi
 		{
 			mov eax, 0x0092FD94;
 			mov eax, [eax];
-			mov MostWanted::ShowHud, 0;
+			mov IsHudEnabled, 0;
 			jmp Exit;
 		}
 	}
@@ -105,154 +75,125 @@ namespace Game
 
 	float MostWanted::GetBoost()
 	{
-		float res = 0.0f;
-		void* ptr = MostWantedApi::GetEnginePtr2();
+		unsigned int offsets[] = { 0x0092FD98, 0x2dc, 0x3c };
+		auto ptr = (float*)GetPtr(offsets, 3);
 		if (ptr)
 		{
-			res = MostWantedApi::EngineRacer_GetInductionPSI(ptr);
+			return *ptr;
 		}
 
-		return res;
+		return 0;
 	}
 
 	bool MostWanted::IsBoostInstalled()
 	{
-		bool res = false;
-
-		void* ptr = MostWantedApi::GetEnginePtr2();
-		if (ptr)
-		{
-			res = MostWantedApi::EngineRacer_InductionType(ptr) > 0;
-		}
-
-		return res;
+		return MostWantedApi::IsBoostInstalled;
 	}
 
 	float MostWanted::GetNos()
 	{
-		float res = 0;
-		auto ptr = (char*)MostWantedApi::GetEnginePtr();
+		unsigned int offsets[] = { 0x0092FD98, 0x2e4, 0x38 };
+		auto ptr = (float*)GetPtr(offsets, 3);
 		if (ptr)
 		{
-			res = MostWantedApi::EngineRacer_GetNOSCapacity(ptr);
+			return *ptr;
 		}
 
-		return res;
+		return 0;
 	}
 
 	bool MostWanted::IsNosInstalled()
 	{
-		bool res = false;
-		void* ptr = MostWantedApi::GetEnginePtr();
-		if (ptr)
-		{
-			return MostWantedApi::EngineRacer_HasNOS(ptr);
-		}
-
-		return res;
+		return MostWantedApi::IsNosInstalled;
 	}
 
 	float MostWanted::GetSpeedBreaker()
 	{
-		float res = 0.0f;
-		unsigned int offsets[] = { 0x0092D858, 0x38 };
-		float* ptr = (float*)GetPtr(offsets, 2);
+		unsigned int offsets[] = { 0x0092FD98, 0x2e8, 0x38 };
+		auto ptr = (float*)GetPtr(offsets, 3);
 		if (ptr)
 		{
-			res = *ptr;
+			return *ptr;
 		}
 
-		return res;
+		return 0;
 	}
 
 	float MostWanted::GetSpeed()
 	{
-		float speed = 0.0f;
-		if (*MostWantedApi::PVehicle)
+		unsigned int offsets[] = { 0x0092FD98, 0x2c0, 0x48 };
+		auto ptr = (float*)GetPtr(offsets, 3);
+		if (ptr)
 		{
-			speed = MostWantedApi::PVehicle_GetSpeed(*MostWantedApi::PVehicle);
-			speed = LocalizeSpeed(speed);
+			return LocalizeSpeed(*ptr);
 		}
 
-		return speed;
+		return 0;
 	}
 
 	bool MostWanted::IsHudVisible()
 	{
-		return MostWanted::ShowHud && *MostWantedApi::HudTable;
+		return MostWantedApi::IsHudEnabled && *MostWantedApi::HudTable;
 	}
 
 	float MostWanted::GetRPM()
 	{
-		float res = 0;
-		void* ptr = MostWantedApi::GetEnginePtr();
+		unsigned int offsets[] = { 0x0092FD98, 0x2c4, 0x54 };
+		auto ptr = (float*)GetPtr(offsets, 3);
 		if (ptr)
 		{
-			res = MostWantedApi::EngineRacer_GetRPM(ptr);
+			return *ptr;
 		}
 
-		return res;
+		return 0;
 	}
 
 	float MostWanted::GetRedline()
 	{
-		float res = 0;
-		void* ptr = MostWantedApi::GetEnginePtr();
+		unsigned int offsets[] = { 0x0092FD98, 0x2c4, 0x58 };
+		auto ptr = (float*)GetPtr(offsets, 3);
 		if (ptr)
 		{
-			res = MostWantedApi::EngineRacer_GetRedline(ptr);
+			return *ptr;
 		}
 
-		return res;
+		return 0;
 	}
 
 	int MostWanted::GetGear()
 	{
-		int gear = 0;
-
-		auto ptr = (char*)MostWantedApi::GetEnginePtr(-8);
+		unsigned int offsets[] = { 0x0092FD98, 0x2c4, 0x60 };
+		auto ptr = (int*)GetPtr(offsets, 3);
 		if (ptr)
 		{
-			gear = MostWantedApi::EngineRacer_GetGear(ptr);
+			return *ptr;
 		}
 
-		return gear;
+		return 0;
 	}
 
 	bool MostWanted::GetUnits()
 	{
-		bool res = false;
-
 		unsigned int offsets[] = { MostWantedApi::FEDatabase, 0x10, 0x3b };
-		char* ptr = (char*)GetPtr(offsets, 3);
+		auto ptr = (bool*)GetPtr(offsets, 3);
 		if (ptr)
 		{
-			res = *ptr == 1;
+			return *ptr;
 		}
 
-		return res;
+		return false;
 	}
 
 	bool MostWanted::IsInPerfectLaunchRange()
 	{
-		bool res = false;
-		unsigned int offsets[] = { 0x0090DBA4, 0xB1 };
-		char* isRaceStarting = (char*)GetPtr(offsets, 2);
-
-		if (isRaceStarting && *isRaceStarting == 1)
+		unsigned int offsets[] = { 0x0092FD98, 0x2c4, 0x65 };
+		auto ptr = (bool*)GetPtr(offsets, 3);
+		if (ptr)
 		{
-			auto ptr = (char*)MostWantedApi::GetEnginePtr(0x1C);
-			if (ptr)
-			{
-				float range;
-				float min = MostWantedApi::EngineRacer_GetPerfectLaunchRange(ptr, &range);
-				float max = min + range;
-				float rpm = this->GetRPM();
-				res = rpm >= min && rpm <= max;
-			}
+			return *ptr;
 		}
 
-		return res;
+		return 0;
 	}
 
 	std::string MostWanted::GetCarName()

@@ -9,8 +9,6 @@ using namespace MirrorHookInternals;
 
 namespace Game
 {
-	bool BaseGame::ShowHud = 0;
-
 	void BaseGame::Detour()
 	{
 		IDirect3DDevice9* pDevice = NULL;

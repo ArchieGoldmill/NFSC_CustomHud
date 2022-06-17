@@ -183,17 +183,22 @@ unsigned int* GetPtr(unsigned int * offsets, int count)
 	return ptr;
 }
 
-bool GetBit(int n, int k)
+bool GetBit(unsigned int n, int k)
 {
 	return (n & (1 << k)) >> k;
 }
 
-void ClearBit(int& n, int k)
+bool GetBit64(unsigned __int64 n, int k)
+{
+	return (n & (1ull << k)) >> k;
+}
+
+void ClearBit(unsigned int& n, int k)
 {
 	n &= ~(1 << k);
 }
 
-void ClearBit(__int64& n, int k)
+void ClearBit64(unsigned __int64& n, int k)
 {
-	n &= ~(1 << k);
+	n &= ~(1ull << k);
 }

@@ -3,7 +3,7 @@
 
 namespace Game::MostWantedApi
 {
-	__int64 __fastcall AfterDetermineHudFeatures(void* _this, int param, __int64 result);
+	unsigned __int64 __fastcall AfterDetermineHudFeatures(void* _this, int param, unsigned __int64 result);
 }
 
 namespace Game

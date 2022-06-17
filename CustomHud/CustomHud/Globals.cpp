@@ -66,8 +66,6 @@ namespace Global
 
 		HUDParams.ShakeAmount = main_ini.ReadFloat((char*)"CARBON", (char*)"ShakeAmount", 0);
 
-		HUDParams.ReplaceDragHud = main_ini.ReadInteger((char*)"MOST_WANTED", (char*)"ReplaceDragHud", 0);
-
 		std::string iniPath;
 		if (HUDParams.CustomCarHUDs && CarHasHUD)
 		{
@@ -84,7 +82,7 @@ namespace Global
 			iniPath = GetHudPath() + iniName;
 			if (!IsFileExist(iniPath))
 			{
-				MessageBoxA(NULL, ("HUD config not found: \n" + iniPath).c_str(), "NFSC - Custom HUD", MB_ICONERROR);
+				MessageBoxA(NULL, ("HUD config not found: \n" + iniPath).c_str(), "Custom HUD", MB_ICONERROR);
 			}
 		}
 

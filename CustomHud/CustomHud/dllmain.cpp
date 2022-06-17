@@ -6,9 +6,11 @@
 #include <chrono>
 #include <thread>
 #include "Globals.h"
-#include "Carbon.h"
-#include "MostWanted.h"
+
+#include "Underground.h"
+#include "Underground2.h"
 #include "MostWantedOnline.h"
+#include "Carbon.h"
 #include "Undercover.h"
 
 #pragma comment(lib, "d3d9.lib")
@@ -17,7 +19,6 @@
 void Init()
 {
 	Game::Current->Detour();
-	Global::Init();	
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
@@ -50,6 +51,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		{
 			Game::Current = new Game::Undercover();
 		}
+		else if (ptr == 0x0075BCC7)
+		{
+			Game::Current = new Game::Underground2();
+		}
+		else if (ptr == 0x00670CB5)
+		{
+			Game::Current = new Game::Underground();
+		}
 		else
 		{
 			char buf[100];
@@ -57,6 +66,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 			MessageBoxA(NULL, buf, "Custom HUD", MB_ICONERROR);
 			return FALSE;
 		}
+
+		Global::Init();
 
 		DisableThreadLibraryCalls(hModule);
 		std::thread(Init).detach();

@@ -57,6 +57,9 @@ namespace Game
 }
 
 unsigned int* GetPtr(unsigned int* offsets, int count);
-bool GetBit(int n, int k);
-void ClearBit(int& n, int k);
-void ClearBit(__int64& n, int k);
+
+bool GetBit(unsigned int n, int k);
+bool GetBit64(unsigned __int64 n, int k);
+
+void ClearBit(unsigned int& n, int k);
+void ClearBit64(unsigned __int64& n, int k);

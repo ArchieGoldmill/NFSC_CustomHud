@@ -56,7 +56,7 @@ void __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPr
 auto start = chrono::steady_clock::now();
 void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 {
-	if (!Game::Current->IsHudVisible())
+	if (!Game::Current->IsHudVisible() || Global::ShowVanilla())
 	{
 		return;
 	}
@@ -99,12 +99,12 @@ void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 		carHud->Draw();
 	}
 
-	auto now = chrono::steady_clock::now();
-	Global::DeltaTime = chrono::duration_cast<std::chrono::milliseconds>(now - start).count() / 1000.0f;
-	start = chrono::steady_clock::now();
-
 	if (Global::HUDParams.ShowDebugInfo)
 	{
+		auto now = chrono::steady_clock::now();
+		Global::DeltaTime = chrono::duration_cast<std::chrono::milliseconds>(now - start).count() / 1000.0f;
+		start = chrono::steady_clock::now();
+
 		int hudDrawTime = chrono::duration_cast<std::chrono::microseconds>(now - hudDrawStart).count();
 		DrawDebugInfo(hudDrawTime, pDevice);
 	}

@@ -3,21 +3,21 @@
 
 namespace UndercoverApi
 {
-	bool ShowHud = false;
+	bool IsHudEnabled = false;
 	bool* IsPaused = (bool*)0x00D8E238;
 	int* GameState = (int*)0x00DA57B8;
 	int* HudCount = (int*)0x01278FF8;
 
-	auto FEngHud_DetermineHudFeatures = (__int64(__thiscall*)(void* _this, signed int var1))0x005CA090;
+	auto FEngHud_DetermineHudFeatures = (unsigned __int64(__thiscall*)(void* _this, signed int var1))0x005CA090;
 
 	__int64 __fastcall DetermineHudFeatures(int* _this, int v1, int v2)
 	{
-		int result = FEngHud_DetermineHudFeatures(_this, v2);
+		auto result = FEngHud_DetermineHudFeatures(_this, v2);
 
-		ShowHud = GetBit(result, 0) && _this[0xA9];
-		ClearBit(result, 0);
-		ClearBit(result, 2);
-		ClearBit(result, 3);
+		IsHudEnabled = GetBit(result, 0) && _this[0xA9];
+		ClearBit64(result, 0);
+		ClearBit64(result, 2);
+		ClearBit64(result, 3);
 
 		return result;
 	}
@@ -92,10 +92,10 @@ namespace Game
 	{
 		if (*UndercoverApi::IsPaused || *UndercoverApi::GameState != 6 || *UndercoverApi::HudCount == 0)
 		{
-			UndercoverApi::ShowHud = false;
+			UndercoverApi::IsHudEnabled = false;
 		}
 
-		return UndercoverApi::ShowHud;
+		return UndercoverApi::IsHudEnabled;
 	}
 	float Undercover::GetRPM()
 	{

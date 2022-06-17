@@ -45,6 +45,12 @@
     <Filter Include="Games\Undercover">
       <UniqueIdentifier>{e1b0dda5-16be-4c05-b085-0a52c12feb05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Games\Underground2">
+      <UniqueIdentifier>{4ea5df77-16b6-42f4-a176-de2ab548882c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\Underground">
+      <UniqueIdentifier>{4b41abe9-c55e-499c-8b9b-2911ad01e605}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HUD_Gauge.h">
@@ -125,6 +131,12 @@
     <ClInclude Include="Undercover.h">
       <Filter>Games\Undercover</Filter>
     </ClInclude>
+    <ClInclude Include="Underground2.h">
+      <Filter>Games\Underground2</Filter>
+    </ClInclude>
+    <ClInclude Include="Underground.h">
+      <Filter>Games\Underground</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -153,6 +165,12 @@
     </ClCompile>
     <ClCompile Include="Undercover.cpp">
       <Filter>Games\Undercover</Filter>
+    </ClCompile>
+    <ClCompile Include="Underground2.cpp">
+      <Filter>Games\Underground2</Filter>
+    </ClCompile>
+    <ClCompile Include="Underground.cpp">
+      <Filter>Games\Underground</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -74,8 +74,8 @@ public:
 
 			this->pMaskTexture->UnlockRect(0);
 
-			int pTextureStage = 0;
-			int pMaskTextureStage = 1;
+			const int pTextureStage = 0;
+			const int pMaskTextureStage = 1;
 
 			this->pDevice->SetTexture(pTextureStage, this->pTexture);
 			this->pDevice->SetTexture(pMaskTextureStage, this->pMaskTexture);

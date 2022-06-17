@@ -42,16 +42,14 @@ namespace Game::CarbonApi
 	bool(__thiscall* DALVehicle_GetFloat)(void* DALVehicle, const int valueType, float* getVal, const int arg1, const int arg2, const int arg3) = (bool(__thiscall*)(void*, const int, float*, const int, const int, const int))0x004CC000;
 	auto Game_GetSpeedoUnits = (char(__stdcall*)(int* getVal))0x004A4550;
 
-	auto Game_DetermineHudFeatures = (int(__thiscall*)(void* _this, signed int var1))0x005DC4B0;
+	bool IsHudEnabled = false;
+
+	auto Game_DetermineHudFeatures = (unsigned int(__thiscall*)(void* _this, signed int var1))0x005DC4B0;
 	int __fastcall DetermineHudFeatures(void* _this, int v1, int v2)
 	{
-		int result = Game_DetermineHudFeatures(_this, v2);
+		auto result = Game_DetermineHudFeatures(_this, v2);
 
-		Carbon::ShowHud = GetBit(result, 1);
-		if (Global::ShowVanilla())
-		{
-			return result;
-		}
+		IsHudEnabled = GetBit(result, 1);
 
 		ClearBit(result, 1);
 		ClearBit(result, 11);
@@ -154,7 +152,7 @@ namespace Game
 		int resPl;
 		bool pl = CarbonApi::DALVehicle_GetIsPlayerControlling(NULL, &resPl, 0);
 
-		return resHud != 0 && hud && Carbon::ShowHud && resPl != 0 && pl;
+		return resHud != 0 && hud && CarbonApi::IsHudEnabled && resPl != 0 && pl;
 	}
 
 	float Carbon::GetRPM()

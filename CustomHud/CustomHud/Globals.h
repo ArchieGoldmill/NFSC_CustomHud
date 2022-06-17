@@ -309,7 +309,6 @@ public:
 
 	float Scale;
 	D3DXVECTOR2 Offset;
-	bool ReplaceDragHud;
 	int HotReloadKey;
 	bool ShowDebugInfo;
 	int CustomCarHUDs;
