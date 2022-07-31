@@ -1,7 +1,7 @@
 Need for Speed - Custom HUD
 
 Games supported:
-- Undergroud
+- Underground
 - Underground 2
 - MostWanted (+MWO)
 - Carbon

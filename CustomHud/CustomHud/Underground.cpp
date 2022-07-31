@@ -14,19 +14,14 @@ namespace Game::UndergroundApi
 		return *(bool*)0x0078A344 || *(bool*)0x007361A8;
 	}
 
-	float GetBoost(void* ptr, bool* res)
+	// Wrap usercall to get boost function
+	float __declspec(naked) __fastcall GetBoost(void*, void*)
 	{
-		void* ptr1;
-		bool* res1;
-
-		ptr1 = ptr;
-		res1 = res;
-
 		__asm
 		{
-			mov eax, ptr1;
-			mov ecx, res1;
+			mov eax, edx;
 			call Game_GetBoost;
+			ret;
 		}
 	}
 
@@ -72,7 +67,7 @@ namespace Game
 		if (ptr)
 		{
 			bool result;
-			return UndergroundApi::GetBoost(ptr, &result) * 20.0f;
+			return UndergroundApi::GetBoost(&result, ptr) * 20.0f;
 		}
 
 		return 0;
@@ -85,7 +80,7 @@ namespace Game
 		if (ptr)
 		{
 			bool result;
-			UndergroundApi::GetBoost(ptr, &result);
+			UndergroundApi::GetBoost(&result, ptr);
 			return result;
 		}
 
