@@ -36,6 +36,7 @@ namespace Game
 	{
 		return 0x00EA0110;
 	}
+
 	float Undercover::GetBoost()
 	{
 		unsigned int offsets[] = { UC_PVehicle, 0x3C, 0x1C4 };
@@ -47,10 +48,12 @@ namespace Game
 
 		return 0;
 	}
+
 	bool Undercover::IsBoostInstalled()
 	{
 		return true;
 	}
+
 	float Undercover::GetNos()
 	{
 		unsigned int offsets[] = { UC_PVehicle, 0x3C, 0xB4 };
@@ -62,10 +65,12 @@ namespace Game
 
 		return 0;
 	}
+
 	bool Undercover::IsNosInstalled()
 	{
 		return true;
 	}
+
 	float Undercover::GetSpeedBreaker()
 	{
 		unsigned int offsets[] = { 0x00DE99B8, 0x34 };
@@ -77,6 +82,7 @@ namespace Game
 
 		return 0;
 	}
+
 	float Undercover::GetSpeed()
 	{
 		unsigned int offsets[] = { UC_PVehicle, 0x68 };
@@ -88,6 +94,7 @@ namespace Game
 
 		return 0;
 	}
+
 	bool Undercover::IsHudVisible()
 	{
 		if (*UndercoverApi::IsPaused || *UndercoverApi::GameState != 6 || *UndercoverApi::HudCount == 0)
@@ -97,6 +104,7 @@ namespace Game
 
 		return UndercoverApi::IsHudEnabled;
 	}
+
 	float Undercover::GetRPM()
 	{
 		unsigned int offsets[] = { UC_PVehicle, 0x3C, 0xEC };
@@ -108,6 +116,7 @@ namespace Game
 
 		return 0;
 	}
+
 	float Undercover::GetRedline()
 	{
 		unsigned int offsets[] = { UC_PVehicle, 0x3C, 0xE0, 0xADC };
@@ -119,6 +128,7 @@ namespace Game
 
 		return 0;
 	}
+
 	int Undercover::GetGear()
 	{
 		unsigned int offsets[] = { UC_PVehicle, 0x3C, 0x38 };
@@ -130,6 +140,7 @@ namespace Game
 
 		return 0;
 	}
+
 	bool Undercover::GetUnits()
 	{
 		unsigned int offsets[] = { 0x01284610, 0x4, 0x60, 0x14 };
@@ -141,10 +152,12 @@ namespace Game
 
 		return 0;
 	}
+
 	bool Undercover::IsInPerfectLaunchRange()
 	{
 		return false;
 	}
+
 	std::string Undercover::GetCarName()
 	{
 		if (this->IsHudVisible())
