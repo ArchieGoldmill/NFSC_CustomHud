@@ -51,6 +51,9 @@
     <Filter Include="Games\Underground">
       <UniqueIdentifier>{4b41abe9-c55e-499c-8b9b-2911ad01e605}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Games\ProStreet">
+      <UniqueIdentifier>{7cab6ddc-d505-4344-90f7-33fe42957e0f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HUD_Gauge.h">
@@ -85,9 +88,6 @@
     </ClInclude>
     <ClInclude Include="MirrorHook\D3D9\D3D9Extender.hpp">
       <Filter>HUD\MirrorHook</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureStateManager.h">
-      <Filter>HUD\Sprites</Filter>
     </ClInclude>
     <ClInclude Include="GameApi.h">
       <Filter>Games</Filter>
@@ -137,6 +137,9 @@
     <ClInclude Include="Underground.h">
       <Filter>Games\Underground</Filter>
     </ClInclude>
+    <ClInclude Include="ProStreet.h">
+      <Filter>Games\ProStreet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -171,6 +174,9 @@
     </ClCompile>
     <ClCompile Include="Underground.cpp">
       <Filter>Games\Underground</Filter>
+    </ClCompile>
+    <ClCompile Include="ProStreet.cpp">
+      <Filter>Games\ProStreet</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

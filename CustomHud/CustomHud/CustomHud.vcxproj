@@ -75,7 +75,7 @@
     <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetExt>.asi</TargetExt>
-    <OutDir>..\..\..\..\..\Games\Need for Speed Carbon\_game\scripts</OutDir>
+    <OutDir>D:\Games\Need for Speed - ProStreet\scripts\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -202,8 +202,8 @@
     <ClInclude Include="MirrorHook\WndProc\WndProcExtender.hpp" />
     <ClInclude Include="MostWanted.h" />
     <ClInclude Include="MostWantedOnline.h" />
+    <ClInclude Include="ProStreet.h" />
     <ClInclude Include="Sprite.h" />
-    <ClInclude Include="TextureStateManager.h" />
     <ClInclude Include="Undercover.h" />
     <ClInclude Include="Underground.h" />
     <ClInclude Include="Underground2.h" />
@@ -217,6 +217,7 @@
     <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="MostWanted.cpp" />
     <ClCompile Include="MostWantedOnline.cpp" />
+    <ClCompile Include="ProStreet.cpp" />
     <ClCompile Include="Undercover.cpp" />
     <ClCompile Include="Underground.cpp" />
     <ClCompile Include="Underground2.cpp" />

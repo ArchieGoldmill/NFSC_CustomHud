@@ -199,10 +199,18 @@ private:
 		{
 			swap(a1, a2);
 		}
-
+		
 		this->arrowMasked->SetupMask({ 0.5f, 0.5f }, a1, a2, this->params.ArrowMaskedColor1, this->params.ArrowMaskedColor2);
 
-		this->arrowMasked->Draw(NULL, this->SetOpacity(this->RedLineColor(this->params.ArrowMaskedColor, this->params.ArrowMaskedMaxColor, this->params.ArrowMaskedMaxThreshold)));
+		D3DCOLOR color = this->params.ArrowMaskedColor;
+		if (this->params.IsInperfectZone != NULL && this->params.ArrowMaskedPerfectZoneColor)
+		{
+			if (this->params.IsInperfectZone())
+			{
+				color = this->params.ArrowMaskedPerfectZoneColor;
+			}
+		}
+		this->arrowMasked->Draw(NULL, this->SetOpacity(this->RedLineColor(color, this->params.ArrowMaskedMaxColor, this->params.ArrowMaskedMaxThreshold)));
 	}
 
 	D3DCOLOR RedLineColor(D3DCOLOR originalColor, D3DCOLOR redlineColor, float threshold)
@@ -232,11 +240,6 @@ public:
 		{
 			arrowCenterOffset = 1;
 		}
-
-		//if (arrowCenterOffset < 0)
-		//{
-		//	arrowCenterOffset = 0;
-		//}
 
 		D3DXVECTOR2 targetRes;
 		targetRes.x = this->params.Size / 1.4f * this->params.ArrowScale;

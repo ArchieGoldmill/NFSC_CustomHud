@@ -93,6 +93,7 @@ class HUD_Digit_Params : public HUD_Element_Params
 {
 public:
 	IntValueCallback* GetNumber;
+	BoolValueCallback* IsInstalled;
 	std::string DigitsTexture;
 	bool DigitsTextureBlendMode;
 	D3DCOLOR BackgroundColor;
@@ -131,6 +132,7 @@ class HUD_Liniar_Params : public HUD_Element_Params
 public:
 	std::string FilledTexture;
 	D3DCOLOR FilledColor;
+	D3DCOLOR FilledPerfectZoneColor;
 	bool FilledTextureBlendMode;
 
 	D3DCOLOR BackgroundColor;
@@ -141,6 +143,7 @@ public:
 	int Direction;
 	FloatValueCallback* GetValue;
 	BoolValueCallback* IsInstalled;
+	BoolValueCallback* IsInperfectZone;
 
 	void Init(CIniReader& ini, char* category)
 	{
@@ -152,6 +155,7 @@ public:
 
 			this->FilledTexture = this->ReadTexturePath(ini, category, "FilledTexture");
 			this->FilledColor = ini.ReadInteger(category, (char*)"FilledColor", 0);
+			this->FilledPerfectZoneColor = ini.ReadInteger(category, (char*)"FilledPerfectZoneColor", 0);
 			this->FilledTextureBlendMode = ini.ReadInteger(category, (char*)"FilledTextureBlendMode", 0);
 
 			this->BackgroundColor = ini.ReadInteger(category, (char*)"BackgroundColor", 0);
@@ -206,6 +210,7 @@ public:
 	std::string ArrowTexture;
 	std::string ArrowMaskedTexture;
 	D3DCOLOR ArrowPerfectZoneColor;
+	D3DCOLOR ArrowMaskedPerfectZoneColor;
 	bool ArrowTextureBlendMode;
 	bool ArrowMaskedTextureBlendMode;
 	float ArrowMaskedMinOffset;
@@ -259,6 +264,7 @@ public:
 			this->ArrowMaskedColor1 = ini.ReadInteger(category, (char*)"ArrowMaskedColor1", 0);
 			this->ArrowMaskedColor2 = ini.ReadInteger(category, (char*)"ArrowMaskedColor2", 0);
 			this->ArrowPerfectZoneColor = ini.ReadInteger(category, (char*)"ArrowPerfectZoneColor", 0);
+			this->ArrowMaskedPerfectZoneColor = ini.ReadInteger(category, (char*)"ArrowMaskedPerfectZoneColor", 0);
 			this->ArrowTexture = this->ReadTexturePath(ini, category, (char*)"ArrowTexture");
 			this->ArrowMaskedTexture = this->ReadTexturePath(ini, category, (char*)"ArrowMaskedTexture");
 			this->ArrowTextureBlendMode = ini.ReadInteger(category, (char*)"ArrowTextureBlendMode", 0);
@@ -305,6 +311,7 @@ public:
 	HUD_Digital_Params TachometerDigital;
 	HUD_Units_Params Units;
 	HUD_Digit_Params Gear;
+	HUD_Digit_Params NosCount;
 	HUD_ShiftIcon_Params ShiftIcon;
 
 	float Scale;
@@ -329,6 +336,7 @@ public:
 		this->SpeedBreakLiniar.Init(ini, (char*)"SPEEDBREAK_LINIAR");
 		this->Units.Init(ini, (char*)"UNITS");
 		this->Gear.Init(ini, (char*)"GEAR");
+		this->NosCount.Init(ini, (char*)"NOS_COUNT");
 		this->ShiftIcon.Init(ini, (char*)"SHIFT_ICON");
 	}
 };

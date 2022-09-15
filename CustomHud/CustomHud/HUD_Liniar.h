@@ -92,7 +92,15 @@ public:
 
 		this->Setup(this->texture, size, { 0, 0 }, this->params.Position, &texSize, 0);
 
-		this->texture->Draw(&rect, this->params.FilledColor);
+		D3DCOLOR color = this->params.FilledColor;
+		if (this->params.IsInperfectZone != NULL && this->params.FilledPerfectZoneColor)
+		{
+			if (this->params.IsInperfectZone())
+			{
+				color = this->params.FilledPerfectZoneColor;
+			}
+		}
+		this->texture->Draw(&rect, color);
 	}
 
 	void Release()

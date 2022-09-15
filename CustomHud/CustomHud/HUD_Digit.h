@@ -25,6 +25,17 @@ public:
 
 	void Draw()
 	{
+		bool draw = true;
+		if (this->params.IsInstalled)
+		{
+			draw = this->params.IsInstalled();
+		}
+
+		if (!draw)
+		{
+			return;
+		}
+
 		if (this->params.BackgroundColor)
 		{
 			this->DrawDigit(9, this->params.BackgroundColor);

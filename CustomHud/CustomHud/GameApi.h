@@ -14,6 +14,8 @@ namespace Game
 		virtual float GetBoost() = 0;
 		virtual bool IsBoostInstalled() = 0;
 		virtual float GetNos() = 0;
+		virtual int GetNosCount() = 0;
+		virtual bool IsNosCountInstalled() = 0;
 		virtual bool IsNosInstalled() = 0;
 		virtual bool IsSpeedBreakerInstalled() = 0;
 		virtual float GetSpeedBreaker() = 0;
@@ -41,6 +43,7 @@ namespace Game
 	int GetGear();
 	bool GetUnits();
 	bool IsInPerfectLaunchRange();
+	int GetNosCount();
 
 	int GetSpeed0();
 	int GetSpeed1();

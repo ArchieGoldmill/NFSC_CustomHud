@@ -9,5 +9,7 @@ namespace Game
 		float GetShake();
 		void Detour();
 		bool IsSpeedBreakerInstalled();
+		bool IsNosCountInstalled();
+		int GetNosCount();
 	};
 }

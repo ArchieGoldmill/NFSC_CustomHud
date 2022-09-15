@@ -11,6 +11,7 @@
 #include "Underground2.h"
 #include "MostWantedOnline.h"
 #include "Carbon.h"
+#include "ProStreet.h"
 #include "Undercover.h"
 
 #pragma comment(lib, "d3d9.lib")
@@ -58,6 +59,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		else if (ptr == 0x00670CB5)
 		{
 			Game::Current = new Game::Underground();
+		}
+		else if (ptr == 0x00828c25)
+		{
+			Game::Current = new Game::ProStreet();
 		}
 		else
 		{

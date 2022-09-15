@@ -3,7 +3,6 @@
 #include <string>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "TextureStateManager.h"
 
 #include "HUD_Gauge.h"
 #include "HUD_SpeedometerDigital.h"
@@ -20,7 +19,6 @@ class HUD
 {
 private:
 	LPDIRECT3DDEVICE9 pDevice;
-	//TextureStateManager* tsm;
 
 	HUD_Static* Background = NULL;
 	HUD_Gauge* TachometerGauge = NULL;
@@ -34,6 +32,7 @@ private:
 	HUD_Gauge* SpeedBreakGauge = NULL;
 	HUD_Liniar* SpeedBreakLiniar = NULL;
 	HUD_Digit* Gear = NULL;
+	HUD_Digit* NosCount = NULL;
 	HUD_Units* Units = NULL;
 	HUD_ShiftIcon* ShiftIcon = NULL;
 
@@ -41,7 +40,6 @@ public:
 	HUD(LPDIRECT3DDEVICE9 pDevice)
 	{
 		this->pDevice = pDevice;
-		//this->tsm = new TextureStateManager(pDevice);
 
 		try
 		{
@@ -74,6 +72,7 @@ public:
 			if (Global::HUDParams.TachometerLiniar.Enabled)
 			{
 				Global::HUDParams.TachometerLiniar.GetValue = Game::GetRPM;
+				Global::HUDParams.TachometerLiniar.IsInperfectZone = Game::IsInPerfectLaunchRange;
 				this->TachometerLiniar = new HUD_Liniar(pDevice, Global::HUDParams.TachometerLiniar);
 			}
 
@@ -113,26 +112,37 @@ public:
 				this->NosLiniar = new HUD_Liniar(pDevice, Global::HUDParams.NosLiniar);
 			}
 
-			if (Global::HUDParams.SpeedBreakGauge.Enabled)
+			if (Game::Current->IsSpeedBreakerInstalled())
 			{
-				Global::HUDParams.SpeedBreakGauge.GetArrowMaskValue1 = []() {return 0.0f; };
-				Global::HUDParams.SpeedBreakGauge.GetArrowMaskValue2 = Game::GetSpeedBreaker;
-				Global::HUDParams.SpeedBreakGauge.GetArrowValue = Game::GetSpeedBreaker;
-				Global::HUDParams.SpeedBreakGauge.IsInstalled = Game::IsSpeedBreakerInstalled;
-				this->SpeedBreakGauge = new HUD_Gauge(pDevice, Global::HUDParams.SpeedBreakGauge);
-			}
+				if (Global::HUDParams.SpeedBreakGauge.Enabled)
+				{
+					Global::HUDParams.SpeedBreakGauge.GetArrowMaskValue1 = []() {return 0.0f; };
+					Global::HUDParams.SpeedBreakGauge.GetArrowMaskValue2 = Game::GetSpeedBreaker;
+					Global::HUDParams.SpeedBreakGauge.GetArrowValue = Game::GetSpeedBreaker;
+					this->SpeedBreakGauge = new HUD_Gauge(pDevice, Global::HUDParams.SpeedBreakGauge);
+				}
 
-			if (Global::HUDParams.SpeedBreakLiniar.Enabled)
-			{
-				Global::HUDParams.SpeedBreakLiniar.GetValue = Game::GetSpeedBreaker;
-				Global::HUDParams.SpeedBreakLiniar.IsInstalled = Game::IsSpeedBreakerInstalled;
-				this->SpeedBreakLiniar = new HUD_Liniar(pDevice, Global::HUDParams.SpeedBreakLiniar);
+				if (Global::HUDParams.SpeedBreakLiniar.Enabled)
+				{
+					Global::HUDParams.SpeedBreakLiniar.GetValue = Game::GetSpeedBreaker;
+					this->SpeedBreakLiniar = new HUD_Liniar(pDevice, Global::HUDParams.SpeedBreakLiniar);
+				}
 			}
 
 			if (Global::HUDParams.Gear.Enabled)
 			{
 				Global::HUDParams.Gear.GetNumber = Game::GetGear;
 				this->Gear = new HUD_Digit(pDevice, Global::HUDParams.Gear);
+			}
+
+			if (Game::Current->IsNosCountInstalled())
+			{
+				if (Global::HUDParams.NosCount.Enabled)
+				{
+					Global::HUDParams.NosCount.GetNumber = Game::GetNosCount;
+					Global::HUDParams.NosCount.IsInstalled = Game::IsNosInstalled;
+					this->NosCount = new HUD_Digit(pDevice, Global::HUDParams.NosCount);
+				}
 			}
 
 			if (Global::HUDParams.Units.Enabled)
@@ -153,29 +163,6 @@ public:
 
 	void Draw()
 	{
-		//for (int i = 0; i < NUM_TEX; i++)
-		//{
-		//	this->tsm->SetTexture(i);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_COLOROP);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_COLORARG1);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_COLORARG2);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_ALPHAOP);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_ALPHAARG1);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_ALPHAARG2);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT00);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT01);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT10);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVMAT11);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_TEXCOORDINDEX);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVLSCALE);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_BUMPENVLOFFSET);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_TEXTURETRANSFORMFLAGS);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_COLORARG0);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_ALPHAARG0);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_RESULTARG);
-		//	this->tsm->SetTextureStageState(i, D3DTSS_CONSTANT);
-		//}
-
 		if (this->Background)
 		{
 			this->Background->Draw();
@@ -185,12 +172,12 @@ public:
 		{
 			this->TachometerGauge->Draw();
 		}
-		
+
 		if (this->TachometerDigital)
 		{
 			this->TachometerDigital->Draw();
 		}
-		
+
 		if (this->TachometerLiniar)
 		{
 			this->TachometerLiniar->Draw();
@@ -239,6 +226,11 @@ public:
 			this->Gear->Draw();
 		}
 
+		if (this->NosCount)
+		{
+			this->NosCount->Draw();
+		}
+
 		if (this->Units)
 		{
 			this->Units->Draw();
@@ -258,8 +250,6 @@ public:
 		{
 			this->SpeedometerGauge->DrawArrow();
 		}
-
-		//this->tsm->Restore();
 	}
 
 	~HUD()
@@ -273,12 +263,12 @@ public:
 		{
 			delete this->TachometerGauge;
 		}
-		
+
 		if (this->TachometerDigital)
 		{
 			delete this->TachometerDigital;
 		}
-		
+
 		if (this->TachometerLiniar)
 		{
 			delete this->TachometerLiniar;
@@ -324,6 +314,11 @@ public:
 			delete this->Gear;
 		}
 
+		if (this->NosCount)
+		{
+			delete this->NosCount;
+		}
+
 		if (this->Units)
 		{
 			delete this->Units;
@@ -333,7 +328,5 @@ public:
 		{
 			delete this->ShiftIcon;
 		}
-
-		//delete this->tsm;
 	}
 };

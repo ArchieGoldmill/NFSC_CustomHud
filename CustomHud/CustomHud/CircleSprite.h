@@ -15,8 +15,8 @@ private:
 	D3DXVECTOR2 center;
 	float angle1, _angle1 = 0;
 	float angle2, _angle2 = 0;
-	int color1;
-	int color2;
+	D3DCOLOR color1;
+	D3DCOLOR color2;
 
 public:
 	CircleSprite(LPDIRECT3DDEVICE9 pDevice, string& path, bool BlendMode, D3DXVECTOR2 maskSize) : Sprite(pDevice, path, BlendMode, maskSize)
@@ -29,7 +29,7 @@ public:
 		}
 	}
 
-	void SetupMask(D3DXVECTOR2 center, float angle1, float angle2, int color1, int color2)
+	void SetupMask(D3DXVECTOR2 center, float angle1, float angle2, D3DCOLOR color1, D3DCOLOR color2)
 	{
 		this->center = center;
 		this->angle1 = angle1;

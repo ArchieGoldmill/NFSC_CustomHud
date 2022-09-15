@@ -36,4 +36,14 @@ namespace Game
 	{
 		return true;
 	}
+
+	bool BaseGame::IsNosCountInstalled()
+	{
+		return false;
+	}
+
+	int BaseGame::GetNosCount()
+	{
+		return 0;
+	}
 }

@@ -39,6 +39,11 @@ namespace Game
 		return Current->GetNos();
 	}
 
+	int GetNosCount()
+	{
+		return Current->GetNosCount();
+	}
+
 	bool IsNosInstalled()
 	{
 		return Current->IsNosInstalled();
