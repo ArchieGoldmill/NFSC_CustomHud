@@ -1,7 +1,7 @@
 #pragma once
 #include <d3d9.h>
 #include <d3dx9.h>
-#include "ini/IniReader.h"
+#include "IniReader/IniReader.h"
 #include <string.h>
 
 class HUD_Params;
@@ -44,9 +44,7 @@ public:
 
 	std::string ReadTexturePath(CIniReader& ini, char* category, const char* field)
 	{
-		char* str = ini.ReadString(category, (char*)field, "");
-		std::string tex(str);
-		delete str;
+		auto tex = ini.ReadString(category, (char*)field, "");
 
 		if (!tex.empty())
 		{
@@ -306,6 +304,7 @@ public:
 	HUD_Liniar_Params TachometerLiniar;
 	HUD_Liniar_Params NosLiniar;
 	HUD_Liniar_Params SpeedBreakLiniar;
+	HUD_Liniar_Params BoostLiniar;
 
 	HUD_Digital_Params SpeedometerDigital;
 	HUD_Digital_Params TachometerDigital;
@@ -334,6 +333,7 @@ public:
 		this->BoostGauge.Init(ini, (char*)"BOOST_GAUGE");
 		this->SpeedBreakGauge.Init(ini, (char*)"SPEEDBREAK_GAUGE");
 		this->SpeedBreakLiniar.Init(ini, (char*)"SPEEDBREAK_LINIAR");
+		this->BoostLiniar.Init(ini, (char*)"BOOST_LINIAR");
 		this->Units.Init(ini, (char*)"UNITS");
 		this->Gear.Init(ini, (char*)"GEAR");
 		this->NosCount.Init(ini, (char*)"NOS_COUNT");

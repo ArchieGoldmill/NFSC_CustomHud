@@ -74,9 +74,8 @@ namespace Global
 		}
 		else
 		{
-			char* hudPathStr = main_ini.ReadString((char*)"GENERAL", (char*)"HUDpath", "");
-			HUDPath = "scripts\\" + std::string(hudPathStr);
-			delete hudPathStr;
+			auto hudPathStr = main_ini.ReadString((char*)"GENERAL", (char*)"HUDpath", "");
+			HUDPath = "scripts\\" + hudPathStr;
 
 			std::string iniName = main_ini.ReadString((char*)"GENERAL", (char*)"IniName", "");
 			iniPath = GetHudPath() + iniName;

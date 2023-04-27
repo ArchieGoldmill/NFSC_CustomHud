@@ -37,7 +37,7 @@ void DrawDebugInfo(int hudDrawText, IDirect3DDevice9* pDevice)
 }
 
 HUD* carHud = NULL;
-void __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPresentationParameters)
+HRESULT __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPresentationParameters)
 {
 	if (Font)
 	{
@@ -51,14 +51,26 @@ void __stdcall hookedReset(IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* pPr
 		carHud = NULL;
 		Sprite::Reset();
 	}
+
+	if (oReset)
+	{
+		return oReset(pDevice, pPresentationParameters);
+	}
+
+	return 0;
 }
 
 auto start = chrono::steady_clock::now();
-void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
+HRESULT __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 {
 	if (!Game::Current->IsHudVisible() || Global::ShowVanilla())
 	{
-		return;
+		if (oEndScene)
+		{
+			return oEndScene(pDevice);
+		}
+
+		return 0;
 	}
 
 	auto hudDrawStart = chrono::steady_clock::now();
@@ -107,4 +119,11 @@ void __stdcall hookedEndScene(IDirect3DDevice9* pDevice)
 		int hudDrawTime = chrono::duration_cast<std::chrono::microseconds>(now - hudDrawStart).count();
 		DrawDebugInfo(hudDrawTime, pDevice);
 	}
+
+	if (oEndScene)
+	{
+		return oEndScene(pDevice);
+	}
+
+	return 0;
 }

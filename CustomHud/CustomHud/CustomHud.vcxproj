@@ -85,7 +85,7 @@
     <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetExt>.asi</TargetExt>
-    <OutDir>..\..\..\..\..\Games\Need for Speed Carbon\_game\scripts</OutDir>
+    <OutDir>..\..\..\..\..\Games\Need for Speed - ProStreet\scripts</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -99,7 +99,7 @@
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_DEBUG;CUSTOMHUD_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -142,7 +142,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

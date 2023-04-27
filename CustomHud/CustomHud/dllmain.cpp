@@ -16,6 +16,7 @@
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
+#pragma comment(lib, "MinHook.lib")
 
 void Init()
 {
@@ -60,7 +61,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		{
 			Game::Current = new Game::Underground();
 		}
-		else if (ptr == 0x00828c25)
+		else if (ptr == 0x00828c25 || ptr == 0x1aaa080)
 		{
 			Game::Current = new Game::ProStreet();
 		}

@@ -5,6 +5,7 @@ Games supported:
 - Underground 2
 - MostWanted (+MWO)
 - Carbon
+- Pro Street
 - Undercover
 
 Replaces original in-game tachometer, speedometer and some other HUD elements.

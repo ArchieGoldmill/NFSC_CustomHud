@@ -1,11 +1,9 @@
 #include "BaseGame.h"
 #include <d3d9.h>
 #include <d3dx9.h>
-#include "MirrorHook/D3D9/D3D9Extender.hpp"
 #include "Hooks.h"
 #include "Globals.h"
-
-using namespace MirrorHookInternals;
+#include "MinHook.h"
 
 namespace Game
 {
@@ -15,16 +13,21 @@ namespace Game
 		while (pDevice == NULL)
 		{
 			Sleep(1000);
-			pDevice = *(IDirect3DDevice9**)Game::Current->Device();
+			auto device = (IDirect3DDevice9**)Game::Current->Device();
+			if (device)
+			{
+				pDevice = *device;
+			}
 		}
 
-		D3D9Extender::AddExtension(D3D9Extender::D3D9Extension::EndScene, hookedEndScene);
-		D3D9Extender::AddExtension(D3D9Extender::D3D9Extension::BeforeReset, hookedReset);
+		void** vt = *(void***)pDevice;
 
-		if (!D3D9Extender::Init(&pDevice))
-		{
-			MessageBoxA(NULL, "Unable to init hook.", "Custom HUD", MB_ICONERROR);
-		}
+		MH_Initialize();
+
+		MH_CreateHook(vt[16], hookedReset, (void**)&oReset);
+		MH_CreateHook(vt[42], hookedEndScene, (void**)&oEndScene);
+
+		MH_EnableHook(MH_ALL_HOOKS);
 	}
 
 	float BaseGame::GetShake()

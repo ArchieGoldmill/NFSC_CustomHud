@@ -27,6 +27,7 @@ private:
 	HUD_Gauge* SpeedometerGauge = NULL;
 	HUD_SpeedometerDigital* SpeedometerDigital = NULL;
 	HUD_Gauge* BoostGauge = NULL;
+	HUD_Liniar* BoostLiniar = NULL;
 	HUD_Gauge* NosGauge = NULL;
 	HUD_Liniar* NosLiniar = NULL;
 	HUD_Gauge* SpeedBreakGauge = NULL;
@@ -84,6 +85,8 @@ public:
 			if (Global::HUDParams.SpeedometerGauge.Enabled)
 			{
 				Global::HUDParams.SpeedometerGauge.GetArrowValue = Game::GetSpeed;
+				Global::HUDParams.SpeedometerGauge.GetArrowMaskValue1 = []() { return 0.0f; };
+				Global::HUDParams.SpeedometerGauge.GetArrowMaskValue2 = Game::GetSpeed;
 				this->SpeedometerGauge = new HUD_Gauge(pDevice, Global::HUDParams.SpeedometerGauge);
 			}
 
@@ -94,6 +97,12 @@ public:
 				Global::HUDParams.BoostGauge.GetArrowMaskValue2 = Game::GetBoost;
 				Global::HUDParams.BoostGauge.IsInstalled = Game::IsBoostInstalled;
 				this->BoostGauge = new HUD_Gauge(pDevice, Global::HUDParams.BoostGauge);
+			}
+
+			if (Global::HUDParams.BoostLiniar.Enabled)
+			{
+				Global::HUDParams.BoostLiniar.GetValue = Game::GetBoost;
+				this->BoostLiniar = new HUD_Liniar(pDevice, Global::HUDParams.BoostLiniar);
 			}
 
 			if (Global::HUDParams.NosGauge.Enabled)
@@ -198,6 +207,11 @@ public:
 			this->BoostGauge->Draw();
 			this->BoostGauge->DrawArrow();
 		}
+		
+		if (this->BoostLiniar)
+		{
+			this->BoostLiniar->Draw();
+		}
 
 		if (this->NosGauge)
 		{
@@ -287,6 +301,11 @@ public:
 		if (this->BoostGauge)
 		{
 			delete this->BoostGauge;
+		}
+		
+		if (this->BoostLiniar)
+		{
+			delete this->BoostLiniar;
 		}
 
 		if (this->NosGauge)
